@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="내 프로필 - 정중호 교수의 성경 사랑방 | My Profile - Bible Glocal">
+  <title>내 프로필 | 성경 사랑방 — Bible Glocal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/social.css">
+  <link rel="stylesheet" href="css/admin-editor.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✝</text></svg>">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="내 프로필 | Bible Glocal">
+  <meta property="og:description" content="프로필 관리">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
+  <meta property="og:url" content="https://bibleglocal.org/profile.html">
+  <meta property="og:site_name" content="Bible Glocal">
+  <meta property="og:locale" content="ko_KR">
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="내 프로필 | Bible Glocal">
+  <meta name="twitter:description" content="프로필 관리">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span>📖 bibleglocal.org</span>
+        <span>|</span>
+        <span>계명대학교 명예교수 정중호</span>
+      </div>
+      <div class="top-bar-right">
+        <div class="lang-switch">
+          <a href="profile.html" class="active">한국어</a>
+          <a href="en/profile.html">ENG</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">BG</div>
+          <div class="logo-text">
+            <h1>성경 사랑방</h1>
+            <span>Bible Glocal</span>
+          </div>
+        </a>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="index.html">홈</a></li>
+            <li><a href="about.html">운영자소개</a></li>
+            <li><a href="korean-thought.html">한국사상과 성경</a></li>
+            <li><a href="world-thought.html">세계사상과 성경</a></li>
+            <li><a href="publications.html">책과 논문</a></li>
+            <li><a href="forum.html">열린마당</a></li>
+          </ul>
+        </nav>
+        <div class="auth-area"></div>
+        <button class="menu-toggle" aria-label="메뉴 열기">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav-overlay"></div>
+  <nav class="mobile-nav">
+    <div class="mobile-nav-header">
+      <h3>성경 사랑방</h3>
+      <p>Bible Glocal — bibleglocal.org</p>
+    </div>
+    <ul>
+      <li><a href="index.html">🏠 홈</a></li>
+      <li><a href="about.html">👤 운영자소개</a></li>
+      <li><a href="korean-thought.html">🇰🇷 한국사상과 성경</a></li>
+      <li><a href="world-thought.html">🌍 세계사상과 성경</a></li>
+      <li><a href="publications.html">📚 책과 논문</a></li>
+      <li><a href="forum.html">💬 열린마당</a></li>
+    </ul>
+    <div class="mobile-auth-area"></div>
+    <div class="lang-mobile">
+      <a href="profile.html" class="active">한국어</a>
+      <a href="en/profile.html">English</a>
+    </div>
+  </nav>
+
+  <!-- Profile Section -->
+  <section class="auth-page profile-page">
+    <div class="container">
+      <div class="auth-card" style="max-width: 700px;">
+        <div class="auth-card-header">
+          <div class="auth-icon" id="profileAvatar">👤</div>
+          <h2>내 프로필</h2>
+          <p id="profileRole" class="profile-role-badge"></p>
+        </div>
+
+        <!-- Profile Info -->
+        <form id="profileForm" class="auth-form" onsubmit="handleProfileUpdate(event)">
+          <div class="profile-section-title">기본 정보</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="profileUsername">사용자 이름</label>
+              <div class="input-wrapper">
+                <span class="input-icon">👤</span>
+                <input type="text" id="profileUsername" name="username" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="profileDisplayName">표시 이름</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🏷</span>
+                <input type="text" id="profileDisplayName" name="displayName">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="profileEmail">이메일</label>
+            <div class="input-wrapper">
+              <span class="input-icon">✉</span>
+              <input type="email" id="profileEmail" name="email" readonly style="opacity: 0.7; cursor: not-allowed;">
+            </div>
+            <small style="color: var(--text-muted); font-size: 0.78rem;">이메일은 변경할 수 없습니다</small>
+          </div>
+
+          <div class="form-group">
+            <label for="profileBio">자기소개</label>
+            <textarea id="profileBio" name="bio" rows="3" placeholder="간단한 자기소개를 작성해주세요" style="width:100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.9rem; resize: vertical;"></textarea>
+          </div>
+
+          <div id="profileError" class="auth-error" style="display:none;"></div>
+          <div id="profileSuccess" class="auth-success" style="display:none;"></div>
+
+          <button type="submit" class="auth-submit-btn" id="profileBtn">
+            <span class="btn-text">프로필 저장</span>
+            <span class="btn-loader" style="display:none;">⟳</span>
+          </button>
+        </form>
+
+        <!-- Change Password -->
+        <div class="auth-divider" style="margin: 2rem 0;"><span>비밀번호 변경</span></div>
+
+        <form id="passwordForm" class="auth-form" onsubmit="handlePasswordChange(event)">
+          <div class="form-group">
+            <label for="currentPassword">현재 비밀번호</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="currentPassword" name="currentPassword" placeholder="현재 비밀번호" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="newPassword">새 비밀번호</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔑</span>
+              <input type="password" id="newPassword" name="newPassword" placeholder="최소 6자 이상" required minlength="6">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="confirmNewPassword">새 비밀번호 확인</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔑</span>
+              <input type="password" id="confirmNewPassword" name="confirmNewPassword" placeholder="새 비밀번호를 다시 입력" required>
+            </div>
+          </div>
+
+          <div id="pwError" class="auth-error" style="display:none;"></div>
+          <div id="pwSuccess" class="auth-success" style="display:none;"></div>
+
+          <button type="submit" class="auth-submit-btn" style="background: var(--primary);" id="pwBtn">
+            <span class="btn-text">비밀번호 변경</span>
+            <span class="btn-loader" style="display:none;">⟳</span>
+          </button>
+        </form>
+
+        <!-- Account Info -->
+        <div class="auth-divider" style="margin: 2rem 0;"><span>계정 정보</span></div>
+        <div class="profile-meta" style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+          <p>가입일: <span id="profileCreated">-</span></p>
+          <p>마지막 로그인: <span id="profileLastLogin">-</span></p>
+          <p>로그인 방식: <span id="profileProvider">-</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-bottom" style="padding-top: 2rem;">
+        <p>&copy; 2025 정중호 교수의 성경 사랑방 — Bible Glocal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/social.js"></script>
+  <script src="js/admin-editor.js"></script>
+  <script>
+    // Load profile data on init
+    document.addEventListener('DOMContentLoaded', async () => {
+      await BG_AUTH.init();
+      if (!BG_AUTH.user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      const u = BG_AUTH.user;
+      document.getElementById('profileUsername').value = u.username || '';
+      document.getElementById('profileDisplayName').value = u.display_name || '';
+      document.getElementById('profileEmail').value = u.email || '';
+      document.getElementById('profileBio').value = u.bio || '';
+      document.getElementById('profileAvatar').textContent = u.display_name ? u.display_name.charAt(0).toUpperCase() : '👤';
+      document.getElementById('profileRole').textContent = u.role === 'admin' ? '관리자 ⭐' : '회원';
+      document.getElementById('profileRole').className = 'profile-role-badge ' + (u.role === 'admin' ? 'role-admin' : 'role-member');
+      document.getElementById('profileCreated').textContent = u.created_at ? new Date(u.created_at).toLocaleDateString('ko-KR') : '-';
+      document.getElementById('profileLastLogin').textContent = u.last_login ? new Date(u.last_login).toLocaleDateString('ko-KR') : '-';
+      const providers = { email: '이메일', google: 'Google', naver: '네이버', kakao: '카카오' };
+      document.getElementById('profileProvider').textContent = providers[u.provider] || u.provider;
+    });
+
+    async function handleProfileUpdate(e) {
+      e.preventDefault();
+      const btn = document.getElementById('profileBtn');
+      const errorDiv = document.getElementById('profileError');
+      const successDiv = document.getElementById('profileSuccess');
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      btn.querySelector('.btn-text').style.display = 'none';
+      btn.querySelector('.btn-loader').style.display = 'inline-block';
+      btn.disabled = true;
+
+      try {
+        const result = await BG_AUTH.updateProfile({
+          username: document.getElementById('profileUsername').value.trim(),
+          display_name: document.getElementById('profileDisplayName').value.trim(),
+          bio: document.getElementById('profileBio').value.trim()
+        });
+        if (result.success) {
+          successDiv.textContent = '프로필이 저장되었습니다.';
+          successDiv.style.display = 'block';
+        } else {
+          errorDiv.textContent = result.message || '저장 실패';
+          errorDiv.style.display = 'block';
+        }
+      } catch (err) {
+        errorDiv.textContent = '서버 오류';
+        errorDiv.style.display = 'block';
+      }
+      btn.querySelector('.btn-text').style.display = 'inline';
+      btn.querySelector('.btn-loader').style.display = 'none';
+      btn.disabled = false;
+    }
+
+    async function handlePasswordChange(e) {
+      e.preventDefault();
+      const btn = document.getElementById('pwBtn');
+      const errorDiv = document.getElementById('pwError');
+      const successDiv = document.getElementById('pwSuccess');
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+
+      const current = document.getElementById('currentPassword').value;
+      const newPw = document.getElementById('newPassword').value;
+      const confirm = document.getElementById('confirmNewPassword').value;
+
+      if (newPw !== confirm) {
+        errorDiv.textContent = '새 비밀번호가 일치하지 않습니다.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      btn.querySelector('.btn-text').style.display = 'none';
+      btn.querySelector('.btn-loader').style.display = 'inline-block';
+      btn.disabled = true;
+
+      try {
+        const result = await BG_AUTH.changePassword(current, newPw);
+        if (result.success) {
+          successDiv.textContent = '비밀번호가 변경되었습니다.';
+          successDiv.style.display = 'block';
+          document.getElementById('passwordForm').reset();
+        } else {
+          errorDiv.textContent = result.message || '변경 실패';
+          errorDiv.style.display = 'block';
+        }
+      } catch (err) {
+        errorDiv.textContent = '서버 오류';
+        errorDiv.style.display = 'block';
+      }
+      btn.querySelector('.btn-text').style.display = 'inline';
+      btn.querySelector('.btn-loader').style.display = 'none';
+      btn.disabled = false;
+    }
+  </script>
+</body>
+</html>
