@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="css/auth.css">
   <link rel="stylesheet" href="css/social.css">
   <link rel="stylesheet" href="css/admin-editor.css">
+  <link rel="stylesheet" href="css/admin-advanced.css">
+  <!-- Quill.js for Rich Text Editor -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✝</text></svg>">
 
   <!-- Open Graph Meta Tags -->
@@ -141,6 +144,7 @@
       <!-- Admin Tabs -->
       <div class="admin-tabs">
         <button class="admin-tab active" onclick="switchTab('users')">👥 회원 관리</button>
+        <button class="admin-tab" onclick="switchTab('content')">✏️ 콘텐츠 편집</button>
         <button class="admin-tab" onclick="switchTab('settings')">⚙️ 사이트 설정</button>
       </div>
 
@@ -169,6 +173,75 @@
               <tr><td colspan="7" style="text-align:center; padding: 2rem;">로딩 중...</td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Content Editor Panel -->
+      <div class="admin-panel" id="contentPanel" style="display:none;">
+        <div class="admin-container">
+          <!-- Page Dashboard View -->
+          <div id="pageDashboard" class="page-dashboard">
+            <div class="dashboard-header">
+              <h2>📝 콘텐츠 관리</h2>
+              <p>웹사이트의 모든 페이지 콘텐츠를 편집하고 관리하세요</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="dashboard-stats">
+              <div class="stat-card">
+                <div class="stat-card-icon">📄</div>
+                <div class="stat-card-value">6</div>
+                <div class="stat-card-label">전체 페이지</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-icon">✏️</div>
+                <div class="stat-card-value" id="editableSections">18</div>
+                <div class="stat-card-label">편집 가능 섹션</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-icon">🔄</div>
+                <div class="stat-card-value" id="recentEdits">0</div>
+                <div class="stat-card-label">최근 수정</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-icon">🖼️</div>
+                <div class="stat-card-value" id="uploadedImages">0</div>
+                <div class="stat-card-label">업로드 이미지</div>
+              </div>
+            </div>
+
+            <!-- Page List -->
+            <div class="page-list-container">
+              <div class="page-list-header">
+                <h3>📚 페이지 목록</h3>
+              </div>
+              <div class="page-list" id="pageList">
+                <!-- Pages will be loaded here by JavaScript -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Editor Panel View -->
+          <div id="editorPanel" class="editor-panel">
+            <div class="editor-header">
+              <div>
+                <button class="back-btn" id="backToDashboard">
+                  ← 뒤로가기
+                </button>
+              </div>
+              <h2 id="pageTitle">페이지 제목</h2>
+              <div>
+                <button class="btn btn-secondary" onclick="window.open('/' + currentPage, '_blank')">
+                  👁️ 페이지 보기
+                </button>
+              </div>
+            </div>
+
+            <!-- Sections Grid -->
+            <div class="section-grid" id="sectionList">
+              <!-- Sections will be loaded here -->
+            </div>
+          </div>
         </div>
       </div>
 
@@ -217,6 +290,59 @@
     </div>
   </section>
 
+  <!-- Section Editor Modal -->
+  <div class="modal" id="sectionEditorModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="sectionEditorTitle">섹션 편집</h3>
+        <button class="modal-close" onclick="ADVANCED_ADMIN.closeModal('sectionEditorModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-title">📝 편집 도구</div>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-secondary" onclick="document.execCommand('undo')">↩️ 실행 취소</button>
+              <button class="btn btn-sm btn-secondary" onclick="document.execCommand('redo')">↪️ 다시 실행</button>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-title">🕐 수정 내역</div>
+            <div class="revision-list" id="revisionList">
+              <!-- Revisions will be loaded here -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-main">
+          <div class="editor-wrapper">
+            <div id="richEditor"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <button class="btn btn-danger" onclick="ADVANCED_ADMIN.closeModal('sectionEditorModal')">
+            취소
+          </button>
+        </div>
+        <div class="modal-footer-right">
+          <span class="save-hint">Ctrl+S로 저장</span>
+          <button class="btn btn-primary" id="saveSectionBtn">
+            💾 저장
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div style="text-align: center;">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">로딩 중...</div>
+    </div>
+  </div>
+
   <footer>
     <div class="container">
       <div class="footer-bottom" style="padding-top: 2rem;">
@@ -229,6 +355,9 @@
   <script src="js/auth.js"></script>
   <script src="js/social.js"></script>
   <script src="js/admin-editor.js"></script>
+  <!-- Quill.js for Rich Text Editor -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <script src="js/admin-advanced.js"></script>
   <script>
     let allUsers = [];
 
@@ -404,8 +533,15 @@
       if (tab === 'users') {
         document.querySelector('.admin-tab:nth-child(1)').classList.add('active');
         document.getElementById('usersPanel').style.display = 'block';
-      } else {
+      } else if (tab === 'content') {
         document.querySelector('.admin-tab:nth-child(2)').classList.add('active');
+        document.getElementById('contentPanel').style.display = 'block';
+        // Initialize advanced admin if needed
+        if (typeof ADVANCED_ADMIN !== 'undefined' && ADVANCED_ADMIN.init) {
+          ADVANCED_ADMIN.init();
+        }
+      } else {
+        document.querySelector('.admin-tab:nth-child(3)').classList.add('active');
         document.getElementById('settingsPanel').style.display = 'block';
       }
     }
