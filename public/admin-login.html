@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 로그인 | 시온산교회 시온산제국</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem;">
+  
+  <div style="background: white; padding: 3rem; border-radius: 12px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); width: 100%; max-width: 450px;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h1 style="font-size: 1.5rem; color: var(--primary-color); margin-bottom: 0.5rem;">
+        시온산교회 시온산제국
+      </h1>
+      <p style="font-size: 1.2rem; color: var(--secondary-color); font-weight: 500;">
+        관리자 로그인
+      </p>
+    </div>
+
+    <form id="adminLoginForm">
+      <div class="form-group">
+        <label for="username" class="form-label">아이디 또는 이메일</label>
+        <input type="text" id="username" class="form-control" required 
+               placeholder="정중호 또는 st805@naver.com">
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">비밀번호</label>
+        <input type="password" id="password" class="form-control" required 
+               placeholder="#9725">
+      </div>
+
+      <div id="errorMessage" style="display: none; background: #f8d7da; color: #721c24; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem;"></div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+        로그인
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="/" style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem;">
+        ← 메인 페이지로 돌아가기
+      </a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const errorMessage = document.getElementById('errorMessage');
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      
+      const usernameOrEmail = usernameInput.value.trim();
+      const password = passwordInput.value;
+      
+      // Disable button
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span class="loading" style="width: 20px; height: 20px; border-width: 3px;"></span> 로그인 중...';
+      
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usernameOrEmail, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Check if user is admin
+          if (data.user.role === 'admin') {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('adminUser', JSON.stringify(data.user));
+            window.location.href = '/admin';
+          } else {
+            errorMessage.style.display = 'block';
+            errorMessage.textContent = '관리자 권한이 없습니다.';
+            submitButton.disabled = false;
+            submitButton.textContent = '로그인';
+          }
+        } else {
+          errorMessage.style.display = 'block';
+          errorMessage.textContent = data.message || '로그인에 실패했습니다.';
+          submitButton.disabled = false;
+          submitButton.textContent = '로그인';
+        }
+      } catch (error) {
+        errorMessage.style.display = 'block';
+        errorMessage.textContent = '서버 오류가 발생했습니다.';
+        submitButton.disabled = false;
+        submitButton.textContent = '로그인';
+      }
+    });
+
+    // Check if already logged in as admin
+    window.addEventListener('load', () => {
+      const token = localStorage.getItem('token');
+      const adminUser = localStorage.getItem('adminUser');
+      
+      if (token && adminUser) {
+        try {
+          const user = JSON.parse(adminUser);
+          if (user.role === 'admin') {
+            window.location.href = '/admin';
+          }
+        } catch (error) {
+          // Invalid token, continue to login
+        }
+      }
+    });
+  </script>
+</body>
+</html>
