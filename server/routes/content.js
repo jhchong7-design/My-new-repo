@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Content = require('../models/Content');
+const { readFile, writeFile, DATA_FILES } = require('../config/simple-db');
 const { protect, authorize } = require('../middleware/auth');
 
 // Get all content for a page

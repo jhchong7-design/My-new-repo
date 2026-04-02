@@ -18,14 +18,20 @@ exports.protect = async (req, res, next) => {
     }
     
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id);
     
-    if (!req.user) {
+    // Get user from simple database
+    const { readFile, DATA_FILES } = require('../config/simple-db');
+    const users = await readFile(DATA_FILES.users);
+    const user = users.find(u => u._id === decoded.id);
+    
+    if (!user) {
       return res.status(401).json({ message: 'User no longer exists' });
     }
     
+    req.user = user;
     next();
   } catch (error) {
+    console.error('Auth error:', error);
     return res.status(401).json({ message: 'Not authorized to access this route' });
   }
 };

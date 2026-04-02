@@ -1,18 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const mongo = require('connect-mongo');
 const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
-const connectDB = require('./config/database');
 
 const app = express();
-
-// Connect to database
-connectDB();
 
 // Middleware
 app.use(helmet({
@@ -43,11 +38,17 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 app.set('view engine', 'html');
 app.set('views', path.join(__dirname, '../views'));
 
+// Initialize simple database
+const simpleDB = require('./config/simple-db');
+simpleDB.initDB();
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/content', require('./routes/content-simple'));
+app.use('/api/notices', require('./routes/notices-simple'));
+
+// Stub routes for remaining endpoints
 app.use('/api/users', require('./routes/users'));
-app.use('/api/content', require('./routes/content'));
-app.use('/api/notices', require('./routes/notices'));
 app.use('/api/posts', require('./routes/posts'));
 app.use('/api/media', require('./routes/media'));
 
