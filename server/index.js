@@ -51,6 +51,7 @@ app.use('/api/notices', require('./routes/notices-simple'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/posts', require('./routes/posts'));
 app.use('/api/media', require('./routes/media'));
+app.use('/api/media', require('./routes/media-upload'));
 
 // Main routes
 app.get('/', (req, res) => {

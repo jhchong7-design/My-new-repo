@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>갤러리 - 시온산교회</title>
+    <link rel="stylesheet" href="/css/modern-styles.css">
+    <link rel="stylesheet" href="/css/premium-animations.css">
+    <link rel="stylesheet" href="/css/imagery.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Vanta Background -->
+    <div id="vanta-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar glass">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/" class="brand-link">
+                    <i class="fas fa-church"></i>
+                    <span>시온산교회</span>
+                </a>
+            </div>
+            <button class="mobile-menu-toggle" aria-label="메뉴 열기">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/about.html">소개</a></li>
+                <li><a href="/gallery.html" class="active">갤러리</a></li>
+                <li><a href="/sermons.html">설교</a></li>
+                <li><a href="/worship.html">예배</a></li>
+                <li><a href="/ministry.html">사역</a></li>
+                <li><a href="/contact.html">교육</a></li>
+                <li><a href="/community.html">공동체</a></li>
+                <li><a href="/login.html" class="btn btn-gold btn-sm">로그인</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header glass-premium">
+        <div class="container">
+            <div class="page-header-content reveal-on-scroll">
+                <span class="page-header-badge">GALLERY</span>
+                <h1 class="page-title">갤러리</h1>
+                <p class="page-subtitle">시온산교회의 아름다운 순간들을 공유합니다</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Gallery Section -->
+    <section class="section">
+        <div class="container">
+            <!-- Gallery Filter -->
+            <div class="gallery-filter reveal-on-scroll">
+                <button class="filter-btn active" data-filter="all">전체</button>
+                <button class="filter-btn" data-filter="worship">예배</button>
+                <button class="filter-btn" data-filter="community">공동체</button>
+                <button class="filter-btn" data-filter="mission">선교</button>
+                <button class="filter-btn" data-filter="events">행사</button>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Worship Images -->
+                <div class="gallery-item reveal-scale stagger-1" data-category="worship">
+                    <img src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=800&q=80" alt="주일예배" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>주일예배</h3>
+                            <p>2024.01.07</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item reveal-scale stagger-2" data-category="worship">
+                    <img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=800&q=80" alt="찬양예배" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>찬양예배</h3>
+                            <p>2024.01.14</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item reveal-scale stagger-3" data-category="worship">
+                    <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&q=80" alt="특별기도회" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>특별기도회</h3>
+                            <p>2024.01.21</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Images -->
+                <div class="gallery-item reveal-scale stagger-4" data-category="community">
+                    <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=800&q=80" alt="구역모임" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>구역모임</h3>
+                            <p>2024.01.10</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item reveal-scale stagger-5" data-category="community">
+                    <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&q=80" alt="청년부 모임" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>청년부 모임</h3>
+                            <p>2024.01.12</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item reveal-scale stagger-6" data-category="community">
+                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80" alt="장년부 모임" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>장년부 모임</h3>
+                            <p>2024.01.15</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mission Images -->
+                <div class="gallery-item reveal-scale stagger-7" data-category="mission">
+                    <img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&q=80" alt="해외선교" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>해외선교</h3>
+                            <p>2024.01.05</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item reveal-scale stagger-8" data-category="mission">
+                    <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80" alt="지역사랑 봉사" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>지역사랑 봉사</h3>
+                            <p>2024.01.08</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events Images -->
+                <div class="gallery-item reveal-scale stagger-9" data-category="events">
+                    <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80" alt="성탄절 예배" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>성탄절 예배</h3>
+                            <p>2023.12.25</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item reveal-scale stagger-10" data-category="events">
+                    <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80" alt="새해맞이 예배" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>새해맞이 예배</h3>
+                            <p>2024.01.01</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item reveal-scale stagger-11" data-category="events">
+                    <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&q=80" alt="가정의달 예배" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>가정의달 예배</h3>
+                            <p>2023.05.14</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery-item reveal-scale stagger-12" data-category="events">
+                    <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=800&q=80" alt="추수감사절 예배" loading="lazy">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h3>추수감사절 예배</h3>
+                            <p>2023.11.23</p>
+                            <a href="#" class="gallery-link" title="크게보기">
+                                <i class="fas fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center reveal-on-scroll">
+                <button class="btn btn-gold btn-lg btn-magnetic" id="loadMore">
+                    <i class="fas fa-plus"></i>
+                    더 많은 사진 보기
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="lightbox-prev" id="lightboxPrev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="lightbox-next" id="lightboxNext">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="lightbox-image-container">
+                <img src="" alt="" class="lightbox-image" id="lightboxImage">
+            </div>
+            <div class="lightbox-caption">
+                <h3 id="lightboxTitle"></h3>
+                <p id="lightboxDate"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <section class="section glass-premium">
+        <div class="container">
+            <div class="cta-card reveal-on-scroll">
+                <div class="cta-content">
+                    <h2>시온산교회와 함께 하세요</h2>
+                    <p>우리와 함께 예배와 사역에 참여하여 주님의 사랑을 경험하세요</p>
+                    <div class="cta-buttons">
+                        <a href="/contact.html" class="btn btn-gold btn-lg btn-magnetic">
+                            <i class="fas fa-envelope"></i>
+                            문의하기
+                        </a>
+                        <a href="/worship.html" class="btn btn-secondary btn-lg btn-magnetic">
+                            <i class="fas fa-calendar-alt"></i>
+                            예배 안내
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer glass">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="fas fa-church"></i>
+                        <span>시온산교회</span>
+                    </div>
+                    <p>말씀 중심, 성령 충만, 사랑 공동체<br>시온산교회에 오신 것을 환영합니다.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>빠른 링크</h4>
+                    <ul>
+                        <li><a href="/about.html">교회 소개</a></li>
+                        <li><a href="/worship.html">예배 안내</a></li>
+                        <li><a href="/ministry.html">사역 소개</a></li>
+                        <li><a href="/contact.html">문의하기</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> 경기도 성남시 분당구 서현동 123-45</p>
+                    <p><i class="fas fa-phone"></i> 031-123-4567</p>
+                    <p><i class="fas fa-envelope"></i> info@mzchurch.org</p>
+                </div>
+                <div class="footer-social">
+                    <h4>소셜 미디어</h4>
+                    <div class="social-icons">
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Kakao"><i class="fas fa-comment"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 시온산교회. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/premium-interactions.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gallery Filter
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active state
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const filter = this.dataset.filter;
+
+                    // Filter items
+                    galleryItems.forEach(item => {
+                        if (filter === 'all' || item.dataset.category === filter) {
+                            item.style.display = 'block';
+                            setTimeout(() => {
+                                item.style.opacity = '1';
+                                item.style.transform = 'scale(1)';
+                            }, 50);
+                        } else {
+                            item.style.opacity = '0';
+                            item.style.transform = 'scale(0.8)';
+                            setTimeout(() => {
+                                item.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+
+            // Lightbox
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxTitle = document.getElementById('lightboxTitle');
+            lightboxDate = document.getElementById('lightboxDate');
+            lightboxClose = document.getElementById('lightboxClose');
+            lightboxPrev = document.getElementById('lightboxPrev');
+            lightboxNext = document.getElementById('lightboxNext');
+            const galleryLinks = document.querySelectorAll('.gallery-link');
+            let currentIndex = 0;
+            let visibleItems = [];
+
+            function updateVisibleItems() {
+                visibleItems = Array.from(galleryItems).filter(item => {
+                    return item.style.display !== 'none';
+                });
+            }
+
+            updateVisibleItems();
+
+            galleryLinks.forEach((link, index) => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const item = this.closest('.gallery-item');
+                    const img = item.querySelector('img');
+                    const title = item.querySelector('h3').textContent;
+                    const date = item.querySelector('p').textContent;
+
+                    currentIndex = visibleItems.indexOf(item);
+
+                    lightboxImage.src = img.src;
+                    lightboxTitle.textContent = title;
+                    lightboxDate.textContent = date;
+                    lightbox.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            lightboxClose.addEventListener('click', function() {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+
+            lightboxPrev.addEventListener('click', function() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    showLightboxItem(currentIndex);
+                } else {
+                    currentIndex = visibleItems.length - 1;
+                    showLightboxItem(currentIndex);
+                }
+            });
+
+            lightboxNext.addEventListener('click', function() {
+                if (currentIndex < visibleItems.length - 1) {
+                    currentIndex++;
+                    showLightboxItem(currentIndex);
+                } else {
+                    currentIndex = 0;
+                    showLightboxItem(currentIndex);
+                }
+            });
+
+            function showLightboxItem(index) {
+                const item = visibleItems[index];
+                const img = item.querySelector('img');
+                const title = item.querySelector('h3').textContent;
+                const date = item.querySelector('p').textContent;
+
+                lightboxImage.src = img.src;
+                lightboxTitle.textContent = title;
+                lightboxDate.textContent = date;
+            }
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (lightbox.style.display === 'flex') {
+                    if (e.key === 'Escape') {
+                        lightbox.style.display = 'none';
+                        document.body.style.overflow = '';
+                    } else if (e.key === 'ArrowLeft') {
+                        lightboxPrev.click();
+                    } else if (e.key === 'ArrowRight') {
+                        lightboxNext.click();
+                    }
+                }
+            });
+
+            // Load More functionality
+            const loadMoreBtn = document.getElementById('loadMore');
+            loadMoreBtn.addEventListener('click', function() {
+                // Simulate loading more images
+                loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 로딩 중...';
+                
+                setTimeout(() => {
+                    loadMoreBtn.innerHTML = '<i class="fas fa-check"></i> 모든 사진을 불러왔습니다';
+                    loadMoreBtn.disabled = true;
+                    loadMoreBtn.style.opacity = '0.5';
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>

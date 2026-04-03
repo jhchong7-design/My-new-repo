@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교회 소개 | 시온산교회</title>
+    <meta name="description" content="시온산교회의 비전, 사명, 그리고 역사를 소개합니다.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/modern-styles.css">
+    <link rel="stylesheet" href="/css/premium-animations.css">
+    <link rel="stylesheet" href="/css/imagery.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js & Vanta.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Vanta.js Background -->
+    <div id="vanta-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="nav glass-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/" class="brand-link">
+                    <span class="brand-icon"><i class="fas fa-church"></i></span>
+                    <span class="brand-text">시온산교회</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="/about" class="nav-link active">교회소개</a>
+                <a href="/empire" class="nav-link">시온산제국</a>
+                <a href="/books" class="nav-link">도서출판</a>
+                <a href="/notices" class="nav-link">공지사항</a>
+                <a href="/gallery" class="nav-link">갤러리</a>
+                <a href="/operator" class="nav-link">리더십</a>
+                <a href="/board" class="nav-link">게시판</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="btn btn-primary btn-sm btn-magnetic" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>로그인</span>
+                </button>
+                <button class="nav-toggle" id="navToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title reveal-on-scroll">교회 소개</h1>
+            <p class="page-subtitle reveal-on-scroll stagger-1">믿음과 사랑으로 하나님을 섬기는 공동체</p>
+        </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section class="section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content reveal-left" data-editable="true" data-id="vision">
+                    <span class="section-badge">VISION</span>
+                    <h2 class="section-title">우리의 비전</h2>
+                    <p class="about-text">
+                        시온산교회는 하나님의 말씀 중심의 건강한 교회 공동체를 지향합니다. 
+                        우리는 예수 그리스도의 사랑을 실천하며, 지역 사회와 세계에 복음을 전파하는 
+                        선교적 사명을 감당하고 있습니다.
+                    </p>
+                    <ul class="about-list">
+                        <li><i class="fas fa-check-circle text-gold"></i> 말씀 중심의 예배</li>
+                        <li><i class="fas fa-check-circle text-gold"></i> 사랑의 공동체</li>
+                        <li><i class="fas fa-check-circle text-gold"></i> 선교적 사명</li>
+                        <li><i class="fas fa-check-circle text-gold"></i> 다음 세대 양육</li>
+                    </ul>
+                </div>
+                <div class="about-image reveal-right">
+                    <div class="image-placeholder">
+                        <i class="fas fa-bible fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="section glass-premium">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">MISSION</span>
+                <h2 class="section-title">우리의 사명</h2>
+                <p class="section-subtitle">하나님 나라를 확장하는 사명</p>
+            </div>
+            
+            <div class="mission-grid">
+                <div class="glass-card mission-card reveal-scale stagger-1">
+                    <div class="mission-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>말씀 전파</h3>
+                    <p>성경 중심의 생명의 말씀을 전파하여 영적 성장을 돕습니다</p>
+                </div>
+                
+                <div class="glass-card mission-card reveal-scale stagger-2">
+                    <div class="mission-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>봉사와 섬김</h3>
+                    <p>이웃을 사랑하며 섬기는 봉사의 삶을 실천합니다</p>
+                </div>
+                
+                <div class="glass-card mission-card reveal-scale stagger-3">
+                    <div class="mission-icon">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <h3>세계 선교</h3>
+                    <p>세계 곳곳에 복음을 전파하여 하나님 나라를 확장합니다</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- History Timeline -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">HISTORY</span>
+                <h2 class="section-title">교회 역사</h2>
+                <p class="section-subtitle">하나님의 은혜로 걸어온 길</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item reveal-on-scroll">
+                    <div class="timeline-year">1989</div>
+                    <div class="timeline-content glass-card">
+                        <h3>교회 창립</h3>
+                        <p>시온산교회가 설립되었습니다. 소수의 성도들과 함께 시작된 사역이었습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item reveal-on-scroll">
+                    <div class="timeline-year">1995</div>
+                    <div class="timeline-content glass-card">
+                        <h3>선교 사역 시작</h3>
+                        <p>해외 선교 사역을 시작하여 첫 선교사를 파송하였습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item reveal-on-scroll">
+                    <div class="timeline-year">2005</div>
+                    <div class="timeline-content glass-card">
+                        <h3>교당 이전 및 확장</h3>
+                        <p>현재의 교당으로 이전하고 예배 공간을 확장하였습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item reveal-on-scroll">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-content glass-card">
+                        <h3>35주년</h3>
+                        <p>하나님의 은혜로 35주년을 맞이했습니다. 더 큰 비전을 향해 나아갑니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Values -->
+    <section class="section glass-gold">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">VALUES</span>
+                <h2 class="section-title">핵심 가치</h2>
+                <p class="section-subtitle">우리가 삶의 원칙으로 삼는 가치들</p>
+            </div>
+            
+            <div class="values-grid">
+                <div class="value-item reveal-left">
+                    <div class="value-number text-gold">01</div>
+                    <h3>성경 중심</h3>
+                    <p>하나님의 말씀을 최우선 가치로 삼습니다</p>
+                </div>
+                
+                <div class="value-item reveal-scale stagger-1">
+                    <div class="value-number text-gold">02</div>
+                    <h3>기도 중심</h3>
+                    <p>모든 사역을 기도로 시작하고 마칩니다</p>
+                </div>
+                
+                <div class="value-item reveal-scale stagger-2">
+                    <div class="value-number text-gold">03</div>
+                    <h3>사랑 중심</h3>
+                    <p>예수님의 사랑을 실천하는 공동체입니다</p>
+                </div>
+                
+                <div class="value-item reveal-right">
+                    <div class="value-number text-gold">04</div>
+                    <h3>성숙 중심</h3>
+                    <p>영적으로 성숙한 제자를 양성합니다</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-link">
+                        <span class="brand-icon"><i class="fas fa-church"></i></span>
+                        <span class="brand-text">시온산교회</span>
+                    </div>
+                    <p class="footer-description">
+                        믿음과 사랑으로 하나님을 섬기는 공동체
+                    </p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-link-group">
+                        <h4>바로가기</h4>
+                        <a href="/about">교회소개</a>
+                        <a href="/empire">시온산제국</a>
+                        <a href="/books">도서출판</a>
+                    </div>
+                    
+                    <div class="footer-link-group">
+                        <h4>소식</h4>
+                        <a href="/notices">공지사항</a>
+                        <a href="/gallery">갤러리</a>
+                        <a href="/board">게시판</a>
+                    </div>
+                    
+                    <div class="footer-link-group">
+                        <h4>연락처</h4>
+                        <a href="/contact">연락하기</a>
+                        <a href="/operator">리더십</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="footer-copyright">
+                    &copy; 2024 시온산교회. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/premium-interactions.js"></script>
+</body>
+</html>

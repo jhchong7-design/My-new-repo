@@ -1,448 +1,524 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="시온산교회 시온산제국 - Mount Zion Church & Empire">
-  <meta name="keywords" content="시온산교회, 시온산제국, Mount Zion Church, Mount Zion Empire, Korean Church">
-  <title>시온산교회 시온산제국 | Mount Zion Church & Empire</title>
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시온산교회 | Zion Mountain Church</title>
+    <meta name="description" content="시온산교회에 오신 것을 환영합니다. 믿음과 사랑의 공동체에서 함께 주님을 섬기세요.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/modern-styles.css">
+    <link rel="stylesheet" href="/css/premium-animations.css">
+    <link rel="stylesheet" href="/css/imagery.css">
+    <link rel="stylesheet" href="/css/pro-editor.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js & Vanta.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    
+    <!-- Inline Editor -->
+    <script src="/js/pro-editor.js"></script>
+    <script>
+        // Initialize Pro Editor for inline editing
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ProEditor !== 'undefined') {
+                const editor = new ProEditor({
+                    apiUrl: '/api/editor',
+                    saveEndpoint: '/api/content',
+                    autoSave: true,
+                    autoSaveInterval: 5000,
+                    enabled: true
+                });
+                
+                // Initialize editor on all editable elements
+                editor.init();
+            }
+        });
+    </script>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
-    <div class="header-content">
-      <a href="/" class="logo">
-        <div class="logo-text">
-          <span class="korean-name">시온산교회 시온산제국</span>
-          <span class="english-name">Mount Zion Church   Mount Zion Empire</span>
-        </div>
-      </a>
-      
-      <button class="mobile-toggle" aria-label="메뉴">
-        ☰
-      </button>
-      
-      <nav class="nav">
-        <ul class="main-menu">
-          <li class="nav-item">
-            <a href="/operator" class="nav-link" data-page="operator">운영자소개</a>
-          </li>
-          <li class="nav-item">
-            <a href="/church" class="nav-link" data-page="church">시온산교회</a>
-          </li>
-          <li class="nav-item">
-            <a href="/empire" class="nav-link" data-page="empire">시온산제국</a>
-          </li>
-          <li class="nav-item">
-            <a href="/books" class="nav-link" data-page="books">책과논문</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a href="#" class="nav-link">열린마당 ▼</a>
-            <div class="dropdown-content">
-              <a href="/notices">공지사항</a>
-              <a href="/board">게시판</a>
-              <a href="/gallery">이미지&동영상</a>
+    <!-- Vanta.js Background -->
+    <div id="vanta-bg"></div>
+    
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <div class="loader-cross"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="nav glass-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/" class="brand-link">
+                    <span class="brand-icon"><i class="fas fa-church"></i></span>
+                    <span class="brand-text">시온산교회</span>
+                </a>
             </div>
-          </li>
-        </ul>
-        
-        <div style="display: flex; gap: 0.5rem; align-items: center;">
-          <button id="loginBtn" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem; color: white; border-color: white;" data-modal="loginModal">
-            로그인
-          </button>
-          <button id="logoutBtn" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem; display: none;">
-            로그아웃
-          </button>
-          <a href="/admin" id="adminLink" class="btn btn-warning" style="padding: 0.5rem 1rem; font-size: 0.9rem; display: none; text-decoration: none;">
-            관리자
-          </a>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="/about" class="nav-link">교회소개</a>
+                <a href="/empire" class="nav-link">시온산제국</a>
+                <a href="/books" class="nav-link">도서출판</a>
+                <a href="/notices" class="nav-link">공지사항</a>
+                <a href="/gallery" class="nav-link">갤러리</a>
+                <a href="/operator" class="nav-link">리더십</a>
+                <a href="/board" class="nav-link">게시판</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="btn btn-primary btn-sm btn-magnetic" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>로그인</span>
+                </button>
+                <button class="nav-toggle" id="navToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
         </div>
-      </nav>
-    </div>
-  </header>
+    </nav>
 
-  <!-- Hero Section -->
-  <section class="hero" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 4rem 2rem; text-align: center; color: white;">
-    <div style="max-width: 800px; margin: 0 auto;">
-      <h1 style="font-size: 2.5rem; margin-bottom: 1rem; font-weight: 700;">
-        시온산교회 시온산제국
-      </h1>
-      <p style="font-size: 1.5rem; margin-bottom: 1rem; opacity: 0.9;">
-        Mount Zion Church   Mount Zion Empire
-      </p>
-      <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
-        하나님의 말씀을 전파하고, 그리스도의 사랑을 실천하는 곳입니다.<br>
-        여러분을 환영합니다.
-      </p>
-      
-      <div class="social-share" style="justify-content: center;">
-        <a href="#" class="social-btn social-naver" data-platform="naver">네이버 공유</a>
-        <a href="#" class="social-btn social-daum" data-platform="daum">다음 공유</a>
-        <a href="#" class="social-btn social-kakao" data-platform="kakao">카카오톡 공유</a>
-        <a href="#" class="social-btn social-facebook" data-platform="facebook">Facebook</a>
-        <a href="#" class="social-btn social-twitter" data-platform="twitter">Twitter</a>
-        <a href="#" class="social-btn social-youtube" data-platform="youtube">YouTube</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Main Content -->
-  <main class="main">
-    <div id="pageContent">
-      <!-- Welcome Section -->
-      <section class="section">
-        <h2 class="section-title">환영합니다</h2>
-        <div class="content">
-          <p style="font-size: 1.1rem; line-height: 1.8;">
-            시온산교회 시온산제국에 오신 것을 환영합니다. 우리는 하나님의 말씀을 통해 
-            영적으로 성장하고, 지역사회에 사랑을 나누는 교회 공동체입니다.
-          </p>
-          <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem;">
-            Welcome to Mount Zion Church & Empire. We are a church community that grows spiritually 
-            through God's word and shares love with our local community.
-          </p>
-        </div>
-      </section>
-
-      <!-- Quick Links -->
-      <section class="section">
-        <h2 class="section-title">빠른 링크</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
-          <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 2rem; border-radius: 8px; text-align: center; cursor: pointer; transition: transform 0.3s;">
-            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">운영자소개</h3>
-            <p style="font-size: 0.9rem; opacity: 0.9;">우리의 대표를 소개합니다</p>
-          </div>
-          
-          <div style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; padding: 2rem; border-radius: 8px; text-align: center; cursor: pointer; transition: transform 0.3s;">
-            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">시온산교회</h3>
-            <p style="font-size: 0.9rem; opacity: 0.9;">교회 소개 및 예배 정보</p>
-          </div>
-          
-          <div style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; padding: 2rem; border-radius: 8px; text-align: center; cursor: pointer; transition: transform 0.3s;">
-            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">시온산제국</h3>
-            <p style="font-size: 0.9rem; opacity: 0.9;">조직 및 활동 소개</p>
-          </div>
-          
-          <div style="background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; padding: 2rem; border-radius: 8px; text-align: center; cursor: pointer; transition: transform 0.3s;">
-            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">책과 논문</h3>
-            <p style="font-size: 0.9rem; opacity: 0.9;">발행물 및 자료</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Latest Notices -->
-      <section class="section">
-        <h2 class="section-title">최근 공지사항</h2>
-        <div id="latestNotices" style="margin-top: 1.5rem;">
-          <p style="text-align: center; color: #999; padding: 2rem;">공지사항을 불러오는 중...</p>
-        </div>
-        <div style="text-align: center; margin-top: 1.5rem;">
-          <a href="/notices" class="btn btn-primary">모든 공지사항 보기</a>
-        </div>
-      </section>
-
-      <!-- Latest Posts -->
-      <section class="section">
-        <h2 class="section-title">최근 게시물</h2>
-        <div id="latestPosts" style="margin-top: 1.5rem;">
-          <p style="text-align: center; color: #999; padding: 2rem;">게시물을 불러오는 중...</p>
-        </div>
-        <div style="text-align: center; margin-top: 1.5rem;">
-          <a href="/board" class="btn btn-primary">게시판 바로가기</a>
-        </div>
-      </section>
-
-      <!-- Latest Gallery -->
-      <section class="section">
-        <h2 class="section-title">이미지&동영상</h2>
-        <div id="latestGallery" style="margin-top: 1.5rem;">
-          <p style="text-align: center; color: #999; padding: 2rem;">미디어를 불러오는 중...</p>
-        </div>
-        <div style="text-align: center; margin-top: 1.5rem;">
-          <a href="/gallery" class="btn btn-primary">갤러리 바로가기</a>
-        </div>
-      </section>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
-        <div class="footer-section">
-          <h3 class="footer-title">시온산교회 시온산제국</h3>
-          <p style="color: #a0aec0; font-size: 0.9rem; line-height: 1.8; margin-bottom: 1rem;">
-            Mount Zion Church   Mount Zion Empire<br>
-            하나님의 말씀을 전파하고<br>
-            그리스도의 사랑을 실천합니다.
-          </p>
-          <div class="footer-social">
-            <a href="https://www.naver.com" target="_blank" style="color: white; font-size: 1.5rem;">📱</a>
-            <a href="https://www.facebook.com" target="_blank" style="color: white; font-size: 1.5rem;">📘</a>
-            <a href="https://www.youtube.com" target="_blank" style="color: white; font-size: 1.5rem;">📺</a>
-            <a href="https://www.kakaotalk.com" target="_blank" style="color: white; font-size: 1.5rem;">💬</a>
-          </div>
+    <!-- Hero Section -->
+    <section class="hero" data-editable="true" data-id="hero">
+        <div class="hero-background">
+            <div class="hero-gradient"></div>
+            <div class="hero-overlay"></div>
         </div>
         
-        <div class="footer-section">
-          <h3 class="footer-title">빠른 링크</h3>
-          <ul class="footer-links">
-            <li><a href="/operator">운영자소개</a></li>
-            <li><a href="/church">시온산교회</a></li>
-            <li><a href="/empire">시온산제국</a></li>
-            <li><a href="/books">책과논문</a></li>
-          </ul>
-        </div>
-        
-        <div class="footer-section">
-          <h3 class="footer-title">커뮤니티</h3>
-          <ul class="footer-links">
-            <li><a href="/notices">공지사항</a></li>
-            <li><a href="/board">게시판</a></li>
-            <li><a href="/gallery">이미지&동영상</a></li>
-          </ul>
-        </div>
-        
-        <div class="footer-section">
-          <h3 class="footer-title">연락처</h3>
-          <ul class="footer-links">
-            <li>이메일: st805@naver.com</li>
-            <li>대표: 정중호</li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="footer-bottom">
-        <p>&copy; 2024 시온산교회 시온산제국 | Mount Zion Church & Empire. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Login Modal -->
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 style="font-size: 1.5rem;">로그인</h2>
-        <button class="modal-close">&times;</button>
-      </div>
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="usernameOrEmail" class="form-label">아이디 또는 이메일</label>
-          <input type="text" id="usernameOrEmail" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label for="password" class="form-label">비밀번호</label>
-          <input type="password" id="password" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">로그인</button>
-        <div style="text-align: center; margin-top: 1rem;">
-          <a href="#" data-modal="registerModal" class="btn btn-link" style="color: var(--primary-color);">회원가입</a>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Register Modal -->
-  <div id="registerModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 style="font-size: 1.5rem;">회원가입</h2>
-        <button class="modal-close">&times;</button>
-      </div>
-      <form id="registerForm">
-        <div class="form-group">
-          <label for="regUsername" class="form-label">아이디</label>
-          <input type="text" id="regUsername" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label for="regEmail" class="form-label">이메일</label>
-          <input type="email" id="regEmail" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label for="regFullName" class="form-label">이름</label>
-          <input type="text" id="regFullName" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label for="regPhone" class="form-label">연락처</label>
-          <input type="tel" id="regPhone" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="regPassword" class="form-label">비밀번호</label>
-          <input type="password" id="regPassword" class="form-control" required minlength="6">
-        </div>
-        <div class="form-group">
-          <label for="regConfirmPassword" class="form-label">비밀번호 확인</label>
-          <input type="password" id="regConfirmPassword" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">가입하기</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Loading Overlay -->
-  <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; align-items: center; justify-content: center;">
-    <div style="background: white; padding: 2rem; border-radius: 8px; text-align: center;">
-      <div class="loading" style="width: 40px; height: 40px; margin: 0 auto 1rem; border-width: 4px; border-color: rgba(0, 0, 0, 0.1); border-top-color: var(--primary-color);"></div>
-      <p style="color: #666;">로딩 중...</p>
-    </div>
-  </div>
-
-  <script src="/js/app.js"></script>
-  <script>
-    // Load latest content on page load
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Load latest notices
-      try {
-        const noticesRes = await fetch('/api/notices?limit=5');
-        if (noticesRes.ok) {
-          const notices = await noticesRes.json();
-          const noticesContainer = document.getElementById('latestNotices');
-          
-          if (notices.length > 0) {
-            noticesContainer.innerHTML = notices.map(notice => `
-              <div class="notice-item">
-                <h3 class="notice-title">
-                  ${notice.isPinned ? '<span class="notice-badge urgent">중요</span>' : ''}
-                  <a href="/notices/${notice._id}" style="text-decoration: none; color: inherit;">${notice.title}</a>
-                </h3>
-                <div class="notice-meta">
-                  <span>📅 ${new Date(notice.createdAt).toLocaleDateString('ko-KR')}</span>
-                  <span>👤 ${notice.author.username}</span>
-                  <span>👁️ ${notice.views}</span>
+        <div class="hero-content">
+            <div class="container">
+                <div class="hero-text reveal-on-scroll">
+                    <h1 class="hero-title text-reveal" data-editable="true" data-type="text">
+                        시온산교회에<br>
+                        <span class="gradient-text-animated">오신 것을 환영합니다</span>
+                    </h1>
+                    <p class="hero-subtitle" data-editable="true" data-type="text">
+                        믿음과 사랑이 넘치는 공동체에서<br>
+                        함께 주님을 섬기며 하나님 나라를 확장해 나갑니다.
+                    </p>
+                    <div class="hero-actions stagger-1">
+                        <a href="/about" class="btn btn-gold btn-lg btn-magnetic shimmer-effect">
+                            <i class="fas fa-arrow-right"></i>
+                            교회소개
+                        </a>
+                        <button class="btn btn-outline-white btn-lg btn-magnetic" id="videoBtn">
+                            <i class="fas fa-play"></i>
+                            비디오 보기
+                        </button>
+                    </div>
                 </div>
-              </div>
-            `).join('');
-          } else {
-            noticesContainer.innerHTML = '<p style="text-align: center; color: #999; padding: 2rem;">공지사항이 없습니다.</p>';
-          }
-        }
-      } catch (error) {
-        console.error('Failed to load notices:', error);
-      }
+            </div>
+        </div>
+        
+        <div class="hero-scroll animate-float">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
 
-      // Load latest posts
-      try {
-        const postsRes = await fetch('/api/posts?limit=5');
-        if (postsRes.ok) {
-          const posts = await postsRes.json();
-          const postsContainer = document.getElementById('latestPosts');
-          
-          if (posts.length > 0) {
-            postsContainer.innerHTML = posts.map(post => `
-              <div class="post-card">
-                <h3 class="post-title">
-                  <span class="notice-badge" style="background-color: #6c757d; color: white;">${post.category}</span>
-                  <a href="/board/${post._id}" style="text-decoration: none; color: inherit;">${post.title}</a>
-                </h3>
-                <p class="post-author">작성자: ${post.author.username}</p>
-                <p class="post-content">${post.content.substring(0, 150)}...</p>
-                <div class="post-stats">
-                  <span>📅 ${new Date(post.createdAt).toLocaleDateString('ko-KR')}</span>
-                  <span>👁️ ${post.views}</span>
-                  <span>💬 ${post.comments.length}</span>
-                  <span>❤️ ${post.likes.length}</span>
+    <!-- Quick Features -->
+    <section class="section section-features">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">FEATURES</span>
+                <h2 class="section-title">그리스도의 몸으로서의 공동체</h2>
+                <p class="section-subtitle">시온산교회는 사랑과 봉사로 하나님을 섬기는 교회입니다</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="glass-card feature-card card-3d shimmer-effect reveal-on-scroll stagger-1" data-editable="true" data-id="feature-1">
+                    <div class="feature-icon icon-ripple">
+                        <i class="fas fa-bible"></i>
+                    </div>
+                    <h3 class="card-title">말씀 사역</h3>
+                    <p class="card-description">성경 중심의 생명의 말씀을 전파하여 영적 성장을 돕습니다</p>
                 </div>
-              </div>
-            `).join('');
-          } else {
-            postsContainer.innerHTML = '<p style="text-align: center; color: #999; padding: 2rem;">게시물이 없습니다.</p>';
-          }
-        }
-      } catch (error) {
-        console.error('Failed to load posts:', error);
-      }
+                
+                <div class="glass-card feature-card card-3d shimmer-effect reveal-on-scroll stagger-2" data-editable="true" data-id="feature-2">
+                    <div class="feature-icon feature-icon-gold icon-ripple">
+                        <i class="fas fa-hands-praying"></i>
+                    </div>
+                    <h3 class="card-title">기도 사역</h3>
+                    <p class="card-description">중보기도와 기도 모임을 통해 영적 각성과 부흥을 추구합니다</p>
+                </div>
+                
+                <div class="glass-card feature-card card-3d shimmer-effect reveal-on-scroll stagger-3" data-editable="true" data-id="feature-3">
+                    <div class="feature-icon icon-ripple">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="card-title">공동체 사역</h3>
+                    <p class="card-description">구역과 소그룹을 통해 사랑의 교류와 섬김을 실천합니다</p>
+                </div>
+                
+                <div class="glass-card feature-card card-3d shimmer-effect reveal-on-scroll stagger-4" data-editable="true" data-id="feature-4">
+                    <div class="feature-icon feature-icon-gold icon-ripple">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="card-title">선교 사역</h3>
+                    <p class="card-description">국내외 선교를 통해 복음을 전파하고 하나님 나라를 확장합니다</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      // Load latest gallery
-      try {
-        const mediaRes = await fetch('/api/media?limit=6');
-        if (mediaRes.ok) {
-          const media = await mediaRes.json();
-          const galleryContainer = document.getElementById('latestGallery');
-          
-          if (media.length > 0) {
-            galleryContainer.innerHTML = `
-              <div class="gallery-grid">
-                ${media.map(item => `
-                  <div class="gallery-item">
-                    ${item.type === 'video' 
-                      ? `<video controls style="width: 100%; height: 200px; object-fit: cover;">
-                           <source src="${item.url}" type="video/mp4">
-                         </video>`
-                      : `<img src="${item.url}" alt="${item.title}" style="width: 100%; height: 200px; object-fit: cover;">`
-                    }
-                    ${item.caption ? `<div class="gallery-caption">${item.caption}</div>` : ''}
-                  </div>
-                `).join('')}
-              </div>
-            `;
-          } else {
-            galleryContainer.innerHTML = '<p style="text-align: center; color: #999; padding: 2rem;">미디어가 없습니다.</p>';
-          }
-        }
-      } catch (error) {
-        console.error('Failed to load media:', error);
-      }
-    });
+    <!-- Stats Section (New) -->
+    <section class="section section-stats glass-premium">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item reveal-left">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-counter="1500" data-duration="2000">0</div>
+                        <div class="stat-label">성도 수</div>
+                    </div>
+                </div>
+                
+                <div class="stat-item reveal-scale stagger-1">
+                    <div class="stat-icon">
+                        <i class="fas fa-pray"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-counter="25" data-duration="2000">0</div>
+                        <div class="stat-label">구역 수</div>
+                    </div>
+                </div>
+                
+                <div class="stat-item reveal-scale stagger-2">
+                    <div class="stat-icon">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-counter="12" data-duration="2000">0</div>
+                        <div class="stat-label">선교지</div>
+                    </div>
+                </div>
+                
+                <div class="stat-item reveal-right">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-counter="35" data-duration="2000">0</div>
+                        <div class="stat-label">역사</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // Login form handler
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const usernameOrEmail = document.getElementById('usernameOrEmail').value;
-      const password = document.getElementById('password').value;
-      
-      if (app.login(usernameOrEmail, password)) {
-        app.closeModal('loginModal');
-        document.getElementById('loginForm').reset();
-      }
-    });
+    <!-- Worship Times -->
+    <section class="section section-worship">
+        <div class="container">
+            <div class="worship-grid">
+                <div class="worship-image reveal-left">
+                    <div class="image-placeholder">
+                        <div class="morphing-shape"></div>
+                        <i class="fas fa-church fa-3x"></i>
+                    </div>
+                </div>
+                
+                <div class="worship-content reveal-right">
+                    <span class="section-badge">WORSHIP</span>
+                    <h2 class="section-title">주일 예배 안내</h2>
+                    <p class="section-subtitle">주님께 예배드리며 은혜에 참여하세요</p>
+                    
+                    <div class="worship-schedule">
+                        <div class="schedule-item glass-card" data-parallax="0.5">
+                            <div class="schedule-time">
+                                <i class="fas fa-clock"></i>
+                                <span>1부 예배</span>
+                            </div>
+                            <div class="schedule-detail">오전 7:30</div>
+                        </div>
+                        
+                        <div class="schedule-item glass-card shimmer-effect" data-parallax="0.6">
+                            <div class="schedule-time">
+                                <i class="fas fa-clock"></i>
+                                <span>2부 예배</span>
+                            </div>
+                            <div class="schedule-detail">오전 10:00</div>
+                        </div>
+                        
+                        <div class="schedule-item glass-card" data-parallax="0.7">
+                            <div class="schedule-time">
+                                <i class="fas fa-clock"></i>
+                                <span>3부 예배</span>
+                            </div>
+                            <div class="schedule-detail">오후 2:00</div>
+                        </div>
+                    </div>
+                    
+                    <a href="/about" class="btn btn-primary btn-magnetic">
+                        <i class="fas fa-info-circle"></i>
+                        더 알아보기
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // Register form handler
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const username = document.getElementById('regUsername').value;
-      const email = document.getElementById('regEmail').value;
-      const fullName = document.getElementById('regFullName').value;
-      const phone = document.getElementById('regPhone').value;
-      const password = document.getElementById('regPassword').value;
-      const confirmPassword = document.getElementById('regConfirmPassword').value;
-      
-      if (password !== confirmPassword) {
-        app.showAlert('error', '비밀번호가 일치하지 않습니다.');
-        return;
-      }
-      
-      try {
-        const response = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, email, password, fullName, phone })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-          app.showAlert('success', '회원가입이 완료되었습니다.');
-          app.closeModal('registerModal');
-          document.getElementById('registerForm').reset();
-        } else {
-          app.showAlert('error', data.message || '회원가입에 실패했습니다.');
-        }
-      } catch (error) {
-        app.showAlert('error', '서버 오류가 발생했습니다.');
-      }
-    });
+    <!-- Latest News -->
+    <section class="section section-news">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">LATEST</span>
+                <h2 class="section-title">최신 소식</h2>
+                <p class="section-subtitle">시온산교회의 새로운 소식을 전해드립니다</p>
+            </div>
+            
+            <div class="news-grid">
+                <div class="glass-card news-card card-3d shimmer-effect reveal-on-scroll stagger-1">
+                    <div class="news-image">
+                        <div class="image-placeholder img-parallax">
+                            <i class="fas fa-image fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="news-content">
+                        <span class="news-category">공지사항</span>
+                        <h3 class="news-title">2024년도 하계 수련회 안내</h3>
+                        <p class="news-excerpt">올 여름, 하나님의 풍성한 은혜를 체험하는 특별한 시간...</p>
+                        <div class="news-meta">
+                            <span class="news-date"><i class="far fa-calendar"></i> 2024.06.15</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card news-card card-3d shimmer-effect reveal-on-scroll stagger-2">
+                    <div class="news-image">
+                        <div class="image-placeholder img-parallax">
+                            <i class="fas fa-image fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="news-content">
+                        <span class="news-category">행사</span>
+                        <h3 class="news-title">주일학교 가정의 달 예배</h3>
+                        <p class="news-excerpt">가정의 달을 맞이하여 가족들이 함께 참여하는 특별한 예배...</p>
+                        <div class="news-meta">
+                            <span class="news-date"><i class="far fa-calendar"></i> 2024.05.15</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card news-card card-3d shimmer-effect reveal-on-scroll stagger-3">
+                    <div class="news-image">
+                        <div class="image-placeholder img-parallax">
+                            <i class="fas fa-image fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="news-content">
+                        <span class="news-category">선교</span>
+                        <h3 class="news-title">해외 선교지 후원 안내</h3>
+                        <p class="news-excerpt">세계 곳곳에서 복음을 전하는 선교사님들을 위해...</p>
+                        <div class="news-meta">
+                            <span class="news-date"><i class="far fa-calendar"></i> 2024.05.01</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-footer reveal-on-scroll">
+                <a href="/notices" class="btn btn-outline-primary btn-magnetic">
+                    <i class="fas fa-arrow-right"></i>
+                    모든 소식 보기
+                </a>
+            </div>
+        </div>
+    </section>
 
-    // Logout handler
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-      e.preventDefault();
-      app.logout();
-    });
-  </script>
+    <!-- CTA Section -->
+    <section class="section section-cta">
+        <div class="container">
+            <div class="glass-card cta-card glass-gold animate-glow reveal-scale">
+                <h2 class="cta-title">함께 예배드리세요</h2>
+                <p class="cta-subtitle">시온산교회 가족이 되어주셔서 감사합니다</p>
+                <div class="cta-actions">
+                    <button class="btn btn-gold btn-lg btn-magnetic shimmer-effect" id="joinBtn">
+                        <i class="fas fa-user-plus"></i>
+                        교적 등록
+                    </button>
+                    <a href="/contact" class="btn btn-outline-primary btn-lg btn-magnetic">
+                        <i class="fas fa-envelope"></i>
+                        연락처
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand reveal-left">
+                    <div class="brand-link">
+                        <span class="brand-icon animate-float"><i class="fas fa-church"></i></span>
+                        <span class="brand-text">시온산교회</span>
+                    </div>
+                    <p class="footer-description">
+                        믿음과 사랑으로 하나님을 섬기는 공동체
+                    </p>
+                </div>
+                
+                <div class="footer-links reveal-right">
+                    <div class="footer-link-group">
+                        <h4>바로가기</h4>
+                        <a href="/about">교회소개</a>
+                        <a href="/empire">시온산제국</a>
+                        <a href="/books">도서출판</a>
+                    </div>
+                    
+                    <div class="footer-link-group">
+                        <h4>소식</h4>
+                        <a href="/notices">공지사항</a>
+                        <a href="/gallery">갤러리</a>
+                        <a href="/board">게시판</a>
+                    </div>
+                    
+                    <div class="footer-link-group">
+                        <h4>연락처</h4>
+                        <a href="/contact">연락하기</a>
+                        <a href="/operator">리더십</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="footer-copyright">
+                    &copy; 2024 시온산교회. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Login Modal -->
+    <div class="modal modal-login" id="loginModal">
+        <div class="modal-content glass-card glass-premium">
+            <button class="modal-close" id="closeLoginModal">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-header">
+                <h2 class="modal-title">로그인</h2>
+                <p class="modal-subtitle">시온산교회 회원으로 로그인하세요</p>
+            </div>
+            
+            <form class="form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">이메일</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-envelope form-input-icon"></i>
+                        <input type="email" class="form-input" placeholder="이메일을 입력하세요" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">비밀번호</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-lock form-input-icon"></i>
+                        <input type="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <label class="checkbox">
+                        <input type="checkbox" checked>
+                        <span>로그인 상태 유지</span>
+                    </label>
+                    <a href="#" class="form-forgot">비밀번호 찾기</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-magnetic">
+                    <i class="fas fa-sign-in-alt"></i>
+                    로그인
+                </button>
+            </form>
+            
+            <div class="modal-footer">
+                <p class="modal-footer-text">
+                    아직 회원이 아니신가요?
+                    <a href="#" class="link-primary" id="showRegisterModal">회원가입</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal modal-register" id="registerModal">
+        <div class="modal-content glass-card glass-premium">
+            <button class="modal-close" id="closeRegisterModal">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-header">
+                <h2 class="modal-title">회원가입</h2>
+                <p class="modal-subtitle">시온산교회 회원으로 가입하세요</p>
+            </div>
+            
+            <form class="form" id="registerForm">
+                <div class="form-group">
+                    <label class="form-label">이름</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-user form-input-icon"></i>
+                        <input type="text" class="form-input" placeholder="이름을 입력하세요" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">이메일</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-envelope form-input-icon"></i>
+                        <input type="email" class="form-input" placeholder="이메일을 입력하세요" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">비밀번호</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-lock form-input-icon"></i>
+                        <input type="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">비밀번호 확인</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-lock form-input-icon"></i>
+                        <input type="password" class="form-input" placeholder="비밀번호를 다시 입력하세요" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-magnetic">
+                    <i class="fas fa-user-plus"></i>
+                    회원가입
+                </button>
+            </form>
+            
+            <div class="modal-footer">
+                <p class="modal-footer-text">
+                    이미 회원이신가요?
+                    <a href="#" class="link-primary" id="showLoginModal">로그인</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/premium-interactions.js"></script>
 </body>
 </html>
