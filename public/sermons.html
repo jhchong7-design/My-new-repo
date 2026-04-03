@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설교 - 시온산교회</title>
+    <link rel="stylesheet" href="/css/modern-styles.css">
+    <link rel="stylesheet" href="/css/premium-animations.css">
+    <link rel="stylesheet" href="/css/imagery.css">
+    <link rel="stylesheet" href="/css/video-player.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Vanta Background -->
+    <div id="vanta-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar glass">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="/" class="brand-link">
+                    <i class="fas fa-church"></i>
+                    <span>시온산교회</span>
+                </a>
+            </div>
+            <button class="mobile-menu-toggle" aria-label="메뉴 열기">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/">홈</a></li>
+                <li><a href="/about.html">소개</a></li>
+                <li><a href="/gallery.html">갤러리</a></li>
+                <li><a href="/sermons.html" class="active">설교</a></li>
+                <li><a href="/worship.html">예배</a></li>
+                <li><a href="/ministry.html">사역</a></li>
+                <li><a href="/contact.html">교육</a></li>
+                <li><a href="/community.html">공동체</a></li>
+                <li><a href="/login.html" class="btn btn-gold btn-sm">로그인</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header glass-premium">
+        <div class="container">
+            <div class="page-header-content reveal-on-scroll">
+                <span class="page-header-badge">SERMONS</span>
+                <h1 class="page-title">설교</h1>
+                <p class="page-subtitle">말씀을 통해 양식을 얻으세요</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Video Player Section -->
+    <section class="section">
+        <div class="container">
+            <div class="video-player-container reveal-on-scroll">
+                <!-- Custom Video Player -->
+                <div class="video-wrapper">
+                    <video id="mainVideo" poster="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=1280&q=80">
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                        브라우저가 비디오 태그를 지원하지 않습니다.
+                    </video>
+                    
+                    <!-- Custom Controls -->
+                    <div class="video-controls">
+                        <div class="progress-bar">
+                            <div class="progress-filled"></div>
+                            <div class="progress-handle"></div>
+                        </div>
+                        
+                        <div class="controls-row">
+                            <div class="controls-left">
+                                <button class="control-btn play-pause-btn" title="재생/일시정지">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button class="control-btn volume-btn" title="볼륨">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                                <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="1">
+                                <span class="time-display">
+                                    <span class="current-time">00:00</span>
+                                    <span class="time-separator">/</span>
+                                    <span class="duration">00:00</span>
+                                </span>
+                            </div>
+                            
+                            <div class="controls-right">
+                                <button class="control-btn speed-btn" title="재생 속도">
+                                    <span class="speed-label">1x</span>
+                                </button>
+                                <button class="control-btn captions-btn" title="자막">
+                                    <i class="fas fa-closed-captioning"></i>
+                                </button>
+                                <button class="control-btn quality-btn" title="화질">
+                                    <span class="quality-label">HD</span>
+                                </button>
+                                <button class="control-btn pip-btn" title="PIP 모드">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>
+                                <button class="control-btn fullscreen-btn" title="전체화면">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Loading Spinner -->
+                    <div class="video-loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+
+                <!-- Video Info -->
+                <div class="video-info glass-card">
+                    <div class="video-header">
+                        <h2 class="video-title">믿음의 용사가 되는 길</h2>
+                        <div class="video-meta">
+                            <span class="video-date"><i class="fas fa-calendar"></i> 2024.01.07</span>
+                            <span class="video-preacher"><i class="fas fa-user"></i> 김목사 님</span>
+                            <span class="video-series"><i class="fas fa-book"></i> 히브리서 강해 시리즈</span>
+                        </div>
+                    </div>
+                    
+                    <div class="video-actions">
+                        <button class="action-btn like-btn">
+                            <i class="fas fa-heart"></i>
+                            <span>좋아요</span>
+                            <span class="count">1,234</span>
+                        </button>
+                        <button class="action-btn share-btn">
+                            <i class="fas fa-share"></i>
+                            <span>공유</span>
+                        </button>
+                        <button class="action-btn download-btn">
+                            <i class="fas fa-download"></i>
+                            <span>다운로드</span>
+                        </button>
+                        <button class="action-btn notes-btn">
+                            <i class="fas fa-sticky-note"></i>
+                            <span>설교 노트</span>
+                        </button>
+                    </div>
+                    
+                    <div class="video-description">
+                        <h3>설교 요약</h3>
+                        <p>히브리서 11장을 통해 믿음의 위대한 용사들의 삶을 살펴보며, 오늘 우리가 어떻게 믿음의 용사가 될 수 있는지를 배웁니다. 아벨, 에녹, 노아, 아브라함 등의 믿음의 조상들이 보여준 모범을 통해, 우리 자신의 믿음을 점검하고 성장하는 기회를 가집니다.</p>
+                        
+                        <h4>주요 성구</h4>
+                        <blockquote>"믿음은 바라는 것들의 실상이요 보이지 않는 것들의 증거니 선진들이 이로써 증거를 얻었느니라" - 히브리서 11:1-2</blockquote>
+                        
+                        <h4>설교 포인트</h4>
+                        <ul>
+                            <li>믿음의 정의: 보이지 않는 것들의 확신</li>
+                            <li>믿음의 용사들의 공통점: 하나님을 기쁘시게 함</li>
+                            <li>믿음으로 사는 삶의 실천적 적용</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sermon Series -->
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">SERIES</span>
+                <h2 class="section-title">히브리서 강해 시리즈</h2>
+            </div>
+
+            <div class="sermon-series-grid reveal-on-scroll">
+                <div class="sermon-card glass-card hover-lift">
+                    <div class="sermon-card-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=400&q=80" alt="설교" loading="lazy">
+                        <div class="play-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <span class="sermon-badge current">최신</span>
+                    </div>
+                    <div class="sermon-card-content">
+                        <span class="sermon-date">2024.01.07</span>
+                        <h3>믿음의 용사가 되는 길</h3>
+                        <p class="sermon-excerpt">히브리서 11장을 통해 믿음의 용사들의 삶을 배웁니다</p>
+                        <div class="sermon-meta">
+                            <span><i class="fas fa-clock"></i> 45분</span>
+                            <span><i class="fas fa-eye"></i> 1,234</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sermon-card glass-card hover-lift">
+                    <div class="sermon-card-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=400&q=80" alt="설교" loading="lazy">
+                        <div class="play-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="sermon-card-content">
+                        <span class="sermon-date">2024.01.01</span>
+                        <h3>새해의 비전</h3>
+                        <p class="sermon-excerpt">새해에 우리가 가져야 할 비전과 소망을 나눕니다</p>
+                        <div class="sermon-meta">
+                            <span><i class="fas fa-clock"></i> 50분</span>
+                            <span><i class="fas fa-eye"></i> 987</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sermon-card glass-card hover-lift">
+                    <div class="sermon-card-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=400&q=80" alt="설교" loading="lazy">
+                        <div class="play-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="sermon-card-content">
+                        <span class="sermon-date">2023.12.31</span>
+                        <h3>연말에 묵상하는 말씀</h3>
+                        <p class="sermon-excerpt">지난 한 해를 돌아보며 하나님의 은혜를 감사합니다</p>
+                        <div class="sermon-meta">
+                            <span><i class="fas fa-clock"></i> 55분</span>
+                            <span><i class="fas fa-eye"></i> 856</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sermon-card glass-card hover-lift">
+                    <div class="sermon-card-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&q=80" alt="설교" loading="lazy">
+                        <div class="play-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="sermon-card-content">
+                        <span class="sermon-date">2023.12.25</span>
+                        <h3>성탄절의 의미</h3>
+                        <p class="sermon-excerpt">예수님의 탄생이 우리에게 주는 의미를 묵상합니다</p>
+                        <div class="sermon-meta">
+                            <span><i class="fas fa-clock"></i> 40분</span>
+                            <span><i class="fas fa-eye"></i> 2,345</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sermon Notes Section -->
+    <section class="section glass-premium">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">RESOURCES</span>
+                <h2 class="section-title">설교 자료</h2>
+            </div>
+
+            <div class="resources-grid reveal-on-scroll">
+                <div class="resource-card glass-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>설교 노트</h3>
+                    <p>설교 내용을 요약한 PDF 다운로드</p>
+                    <button class="btn btn-secondary btn-sm">
+                        <i class="fas fa-download"></i>
+                        다운로드
+                    </button>
+                </div>
+
+                <div class="resource-card glass-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-headphones"></i>
+                    </div>
+                    <h3>오디오 파일</h3>
+                    <p>설교 오디오 MP3 다운로드</p>
+                    <button class="btn btn-secondary btn-sm">
+                        <i class="fas fa-download"></i>
+                        다운로드
+                    </button>
+                </div>
+
+                <div class="resource-card glass-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3>비디오 파일</h3>
+                    <p>설교 비디오 MP4 다운로드</p>
+                    <button class="btn btn-secondary btn-sm">
+                        <i class="fas fa-download"></i>
+                        다운로드
+                    </button>
+                </div>
+
+                <div class="resource-card glass-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3>설교 슬라이드</h3>
+                    <p>설교 시 사용된 프레젠테이션</p>
+                    <button class="btn btn-secondary btn-sm">
+                        <i class="fas fa-download"></i>
+                        다운로드
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer glass">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <i class="fas fa-church"></i>
+                        <span>시온산교회</span>
+                    </div>
+                    <p>말씀 중심, 성령 충만, 사랑 공동체<br>시온산교회에 오신 것을 환영합니다.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>빠른 링크</h4>
+                    <ul>
+                        <li><a href="/about.html">교회 소개</a></li>
+                        <li><a href="/worship.html">예배 안내</a></li>
+                        <li><a href="/ministry.html">사역 소개</a></li>
+                        <li><a href="/contact.html">문의하기</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>연락처</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> 경기도 성남시 분당구 서현동 123-45</p>
+                    <p><i class="fas fa-phone"></i> 031-123-4567</p>
+                    <p><i class="fas fa-envelope"></i> info@mzchurch.org</p>
+                </div>
+                <div class="footer-social">
+                    <h4>소셜 미디어</h4>
+                    <div class="social-icons">
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Kakao"><i class="fas fa-comment"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 시온산교회. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/premium-interactions.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Video Player Controls
+            const video = document.getElementById('mainVideo');
+            const playPauseBtn = document.querySelector('.play-pause-btn');
+            const volumeBtn = document.querySelector('.volume-btn');
+            const volumeSlider = document.querySelector('.volume-slider');
+            const progressFilled = document.querySelector('.progress-filled');
+            const progressHandle = document.querySelector('.progress-handle');
+            const currentTimeDisplay = document.querySelector('.current-time');
+            const durationDisplay = document.querySelector('.duration');
+            const speedBtn = document.querySelector('.speed-btn');
+            const fullscreenBtn = document.querySelector('.fullscreen-btn');
+            const pipBtn = document.querySelector('.pip-btn');
+            const loadingSpinner = document.querySelector('.video-loading');
+
+            // Play/Pause
+            function togglePlay() {
+                if (video.paused) {
+                    video.play();
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                } else {
+                    video.pause();
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                }
+            }
+
+            playPauseBtn.addEventListener('click', togglePlay);
+            video.addEventListener('click', togglePlay);
+
+            // Volume
+            function updateVolume() {
+                video.volume = volumeSlider.value;
+                if (video.volume === 0) {
+                    volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                } else if (video.volume < 0.5) {
+                    volumeBtn.innerHTML = '<i class="fas fa-volume-down"></i>';
+                } else {
+                    volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                }
+            }
+
+            volumeSlider.addEventListener('input', updateVolume);
+            volumeBtn.addEventListener('click', function() {
+                if (video.volume > 0) {
+                    video.volume = 0;
+                    volumeSlider.value = 0;
+                    volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                } else {
+                    video.volume = 1;
+                    volumeSlider.value = 1;
+                    volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                }
+            });
+
+            // Progress Bar
+            function updateProgress() {
+                const percent = (video.currentTime / video.duration) * 100;
+                progressFilled.style.width = percent + '%';
+                progressHandle.style.left = percent + '%';
+                updateCurrentTime();
+            }
+
+            video.addEventListener('timeupdate', updateProgress);
+
+            function seek(e) {
+                const rect = e.target.closest('.progress-bar').getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                video.currentTime = percent * video.duration;
+            }
+
+            document.querySelector('.progress-bar').addEventListener('click', seek);
+
+            // Dragging progress handle
+            let isDragging = false;
+            progressHandle.addEventListener('mousedown', () => isDragging = true);
+            document.addEventListener('mouseup', () => isDragging = false);
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const rect = document.querySelector('.progress-bar').getBoundingClientRect();
+                const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                video.currentTime = percent * video.duration;
+            });
+
+            // Time Display
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            function updateCurrentTime() {
+                currentTimeDisplay.textContent = formatTime(video.currentTime);
+            }
+
+            video.addEventListener('loadedmetadata', function() {
+                durationDisplay.textContent = formatTime(video.duration);
+            });
+
+            // Playback Speed
+            const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+            let speedIndex = 2;
+
+            speedBtn.addEventListener('click', function() {
+                speedIndex = (speedIndex + 1) % speeds.length;
+                video.playbackRate = speeds[speedIndex];
+                this.querySelector('.speed-label').textContent = speeds[speedIndex] + 'x';
+            });
+
+            // Fullscreen
+            fullscreenBtn.addEventListener('click', function() {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                    this.innerHTML = '<i class="fas fa-expand"></i>';
+                } else {
+                    video.closest('.video-wrapper').requestFullscreen();
+                    this.innerHTML = '<i class="fas fa-compress"></i>';
+                }
+            });
+
+            // Picture in Picture
+            if (document.pictureInPictureEnabled) {
+                pipBtn.addEventListener('click', async function() {
+                    try {
+                        if (document.pictureInPictureElement) {
+                            await document.exitPictureInPicture();
+                        } else {
+                            await video.requestPictureInPicture();
+                        }
+                    } catch (error) {
+                        console.error('PIP error:', error);
+                    }
+                });
+            } else {
+                pipBtn.style.display = 'none';
+            }
+
+            // Loading State
+            video.addEventListener('waiting', () => loadingSpinner.style.display = 'flex');
+            video.addEventListener('canplay', () => loadingSpinner.style.display = 'none');
+
+            // Keyboard Controls
+            document.addEventListener('keydown', function(e) {
+                if (!video.closest('.video-wrapper')) return;
+                
+                switch(e.key) {
+                    case ' ':
+                        e.preventDefault();
+                        togglePlay();
+                        break;
+                    case 'ArrowLeft':
+                        video.currentTime -= 10;
+                        break;
+                    case 'ArrowRight':
+                        video.currentTime += 10;
+                        break;
+                    case 'ArrowUp':
+                        video.volume = Math.min(1, video.volume + 0.1);
+                        volumeSlider.value = video.volume;
+                        updateVolume();
+                        break;
+                    case 'ArrowDown':
+                        video.volume = Math.max(0, video.volume - 0.1);
+                        volumeSlider.value = video.volume;
+                        updateVolume();
+                        break;
+                    case 'f':
+                        fullscreenBtn.click();
+                        break;
+                    case 'm':
+                        volumeBtn.click();
+                        break;
+                }
+            });
+
+            // Like Button
+            const likeBtn = document.querySelector('.like-btn');
+            likeBtn.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const icon = this.querySelector('i');
+                const count = this.querySelector('.count');
+                
+                if (this.classList.contains('active')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    count.textContent = parseInt(count.textContent.replace(',', '')) + 1;
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    count.textContent = parseInt(count.textContent.replace(',', '')) - 1;
+                }
+            });
+
+            // Share Button
+            const shareBtn = document.querySelector('.share-btn');
+            shareBtn.addEventListener('click', function() {
+                const url = window.location.href;
+                const title = '믿음의 용사가 되는 길 - 시온산교회 설교';
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: title,
+                        url: url
+                    });
+                } else {
+                    // Fallback: copy to clipboard
+                    navigator.clipboard.writeText(url);
+                    alert('링크가 클립보드에 복사되었습니다!');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
