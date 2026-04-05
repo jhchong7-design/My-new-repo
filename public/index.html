@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/css/premium-animations.css">
     <link rel="stylesheet" href="/css/imagery.css">
     <link rel="stylesheet" href="/css/pro-editor.css">
+    <link rel="stylesheet" href="/css/recent-posts.css">
     
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -42,7 +43,148 @@
                 // Initialize editor on all editable elements
                 editor.init();
             }
+            
+            // Load recent posts
+            loadRecentPosts();
         });
+
+        async function loadRecentPosts() {
+            try {
+                const response = await fetch('/api/posts/recent');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayRecentPosts(data.recentPosts);
+                    displayRecentMedia(data.recentMedia || []);
+                }
+            } catch (error) {
+                console.error('Error loading recent posts:', error);
+                // Load demo data if API fails
+                loadDemoData();
+            }
+        }
+
+        function displayRecentPosts(recentPosts) {
+            const boards = [
+                { type: 'notice', elementId: 'recent-notices' },
+                { type: 'korean_bible', elementId: 'recent-korean-bible' },
+                { type: 'world_bible', elementId: 'recent-world-bible' },
+                { type: 'books_papers', elementId: 'recent-books-papers' },
+                { type: 'openforum', elementId: 'recent-openforum' },
+                { type: 'board', elementId: 'recent-board' }
+            ];
+
+            boards.forEach(board => {
+                const container = document.getElementById(board.elementId);
+                if (container) {
+                    const posts = recentPosts[board.type] || [];
+                    
+                    if (posts.length === 0) {
+                        container.innerHTML = '<div class="no-posts">게시글이 없습니다</div>';
+                    } else {
+                        container.innerHTML = posts.map(post => `
+                            <div class="recent-post-item">
+                                ${post.isPinned ? '<div class="pinned-indicator"><i class="fas fa-thumbtack"></i> 상단고정</div>' : ''}
+                                <div class="recent-post-title" onclick="viewPost('${post._id}', '${board.type}')">${post.title}</div>
+                                <div class="recent-post-meta">
+                                    <div class="recent-post-author">
+                                        <i class="fas fa-user"></i>
+                                        <span>${post.author}</span>
+                                    </div>
+                                    <div class="recent-post-date">
+                                        <i class="fas fa-clock"></i>
+                                        ${formatDate(post.createdAt)}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            });
+        }
+
+        function displayRecentMedia(mediaList) {
+            const container = document.getElementById('recent-media');
+            if (container) {
+                if (mediaList.length === 0) {
+                    container.innerHTML = '<div class="no-posts">미디어가 없습니다</div>';
+                } else {
+                    container.innerHTML = mediaList.slice(0, 4).map(media => `
+                        <div class="recent-media-item" onclick="viewMedia('${media._id}')">
+                            ${media.mediaType === 'image' 
+                                ? `<img src="${media.url}" alt="${media.title}" loading="lazy">`
+                                : '<div class="media-icon"><i class="fas fa-play-circle"></i></div>'
+                            }
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            // Less than 1 day
+            if (diff < 24 * 60 * 60 * 1000) {
+                const hours = Math.floor(diff / (60 * 60 * 1000));
+                if (hours < 1) return '방금 전';
+                return `${hours}시간 전`;
+            }
+            
+            // Less than 1 week
+            if (diff < 7 * 24 * 60 * 60 * 1000) {
+                const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+                return `${days}일 전`;
+            }
+            
+            // Otherwise show date
+            return date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+        }
+
+        function viewPost(postId, boardType) {
+            // Navigate to board page with post ID
+            window.location.href = `board.html?type=${boardType}&post=${postId}`;
+        }
+
+        function viewMedia(mediaId) {
+            window.location.href = `gallery.html?media=${mediaId}`;
+        }
+
+        function loadDemoData() {
+            // Display demo data when API is not available
+            const demoData = {
+                notice: [
+                    { _id: '1', title: '시온산교회 주일예배 시간 안내', author: '관리자', createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), isPinned: true },
+                    { _id: '2', title: '새해 맞이 특별 기도회 안내', author: '관리자', createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), isPinned: false }
+                ],
+                korean_bible: [
+                    { _id: '3', title: '한국 사상과 성경의 만남 1부', author: '강성열', createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), isPinned: false }
+                ],
+                world_bible: [
+                    { _id: '4', title: '플라톤의 이데아와 창세기', author: '강성열', createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), isPinned: false }
+                ],
+                books_papers: [
+                    { _id: '5', title: '한국철학과 성경학의 대화', author: '강성열', createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), isPinned: false }
+                ],
+                openforum: [
+                    { _id: '6', title: '이번 주 구역모임 공지사항', author: '구역장', createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), isPinned: false }
+                ],
+                board: [
+                    { _id: '7', title: '자유 게시판에 오신 것을 환영합니다', author: '관리자', createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), isPinned: false }
+                ]
+            };
+
+            displayRecentPosts(demoData);
+            
+            // Demo media
+            const demoMedia = [
+                { _id: '1', mediaType: 'image', url: 'images/worship-service.png', title: '주일예배' },
+                { _id: '2', mediaType: 'image', url: 'images/community-fellowship.png', title: '공동체' }
+            ];
+            displayRecentMedia(demoMedia);
+        }
     </script>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
@@ -176,6 +318,104 @@
             <div style="text-align: center; color: white;">
                 <h2 style="font-size: 2.5rem; margin-bottom: 1rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">함께하는 공동체</h2>
                 <p style="font-size: 1.2rem; opacity: 0.9; max-width: 600px;">시온산교회에서 따뜻한 교제와 사랑을 나누세요</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Posts Section (New) -->
+    <section class="section glass-premium" style="background: linear-gradient(135deg, rgba(26, 35, 126, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);">
+        <div class="container">
+            <div class="section-header reveal-on-scroll" style="text-align: center; margin-bottom: 2rem;">
+                <h2 class="section-title" style="color: #ffd700;">최신 소식</h2>
+                <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">시온산교회의 다양한 활동과 소식을 확인하세요</p>
+            </div>
+            
+            <div class="recent-posts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                
+                <!-- 공지사항 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-1">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-bell" style="color: #ffd700;"></i>
+                        <h3>공지사항</h3>
+                    </div>
+                    <div id="recent-notices" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=notice" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 한국사상과성경 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-2">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-book" style="color: #ffd700;"></i>
+                        <h3>한국사상과성경</h3>
+                    </div>
+                    <div id="recent-korean-bible" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=korean_bible" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 세계사상과성경 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-3">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-globe" style="color: #ffd700;"></i>
+                        <h3>세계사상과성경</h3>
+                    </div>
+                    <div id="recent-world-bible" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=world_bible" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 책과논문 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-4">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-file-alt" style="color: #ffd700;"></i>
+                        <h3>책과논문</h3>
+                    </div>
+                    <div id="recent-books-papers" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=books_papers" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 열린마당 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-5">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-comments" style="color: #ffd700;"></i>
+                        <h3>열린마당</h3>
+                    </div>
+                    <div id="recent-openforum" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=openforum" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 게시판 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-6">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-list" style="color: #ffd700;"></i>
+                        <h3>게시판</h3>
+                    </div>
+                    <div id="recent-board" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=board" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 이미지&동영상 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-7" style="grid-column: span 1;">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-photo-video" style="color: #ffd700;"></i>
+                        <h3>이미지&동영상</h3>
+                    </div>
+                    <div id="recent-media" class="recent-media-grid">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="gallery.html" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
             </div>
         </div>
     </section>
