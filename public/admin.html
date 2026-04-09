@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="관리자 대시보드 - 정중호 교수의 성경 사랑방 | Admin Dashboard - Bible Glocal">
+  <title>관리자 대시보드 | 성경 사랑방 — Bible Glocal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/social.css">
+  <link rel="stylesheet" href="css/admin-editor.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✝</text></svg>">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="관리자 대시보드 | Bible Glocal">
+  <meta property="og:description" content="사이트 관리 대시보드">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
+  <meta property="og:url" content="https://bibleglocal.org/admin.html">
+  <meta property="og:site_name" content="Bible Glocal">
+  <meta property="og:locale" content="ko_KR">
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="관리자 대시보드 | Bible Glocal">
+  <meta name="twitter:description" content="사이트 관리 대시보드">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span>📖 bibleglocal.org</span>
+        <span>|</span>
+        <span>⭐ 관리자 모드</span>
+      </div>
+      <div class="top-bar-right">
+        <div class="lang-switch">
+          <a href="admin.html" class="active">한국어</a>
+          <a href="en/index.html">ENG</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">BG</div>
+          <div class="logo-text">
+            <h1>성경 사랑방</h1>
+            <span>Bible Glocal</span>
+          </div>
+        </a>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="index.html">홈</a></li>
+            <li><a href="about.html">운영자소개</a></li>
+            <li><a href="korean-thought.html">한국사상과 성경</a></li>
+            <li><a href="world-thought.html">세계사상과 성경</a></li>
+            <li><a href="publications.html">책과 논문</a></li>
+            <li><a href="forum.html">열린마당</a></li>
+          </ul>
+        </nav>
+        <div class="auth-area"></div>
+        <button class="menu-toggle" aria-label="메뉴 열기">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav-overlay"></div>
+  <nav class="mobile-nav">
+    <div class="mobile-nav-header">
+      <h3>성경 사랑방</h3>
+      <p>관리자 대시보드</p>
+    </div>
+    <ul>
+      <li><a href="index.html">🏠 홈</a></li>
+      <li><a href="about.html">👤 운영자소개</a></li>
+      <li><a href="korean-thought.html">🇰🇷 한국사상과 성경</a></li>
+      <li><a href="world-thought.html">🌍 세계사상과 성경</a></li>
+      <li><a href="publications.html">📚 책과 논문</a></li>
+      <li><a href="forum.html">💬 열린마당</a></li>
+    </ul>
+    <div class="mobile-auth-area"></div>
+    <div class="lang-mobile">
+      <a href="admin.html" class="active">한국어</a>
+      <a href="en/index.html">English</a>
+    </div>
+  </nav>
+
+  <!-- Admin Dashboard -->
+  <section class="admin-dashboard">
+    <div class="container">
+      <div class="admin-header">
+        <h2>⭐ 관리자 대시보드</h2>
+        <p>성경 사랑방 사이트 관리</p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="admin-stats" id="adminStats">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <span class="stat-number" id="totalUsers">-</span>
+            <span class="stat-label">전체 회원</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <span class="stat-number" id="activeUsers">-</span>
+            <span class="stat-label">활성 회원</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🛡</div>
+          <div class="stat-info">
+            <span class="stat-number" id="adminCount">-</span>
+            <span class="stat-label">관리자</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <span class="stat-number" id="todayLogins">-</span>
+            <span class="stat-label">오늘 로그인</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('users')">👥 회원 관리</button>
+        <button class="admin-tab" onclick="switchTab('settings')">⚙️ 사이트 설정</button>
+      </div>
+
+      <!-- Users Panel -->
+      <div class="admin-panel" id="usersPanel">
+        <div class="panel-header">
+          <h3>회원 목록</h3>
+          <div class="panel-actions">
+            <input type="text" id="userSearch" placeholder="이름 또는 이메일 검색..." oninput="filterUsers(this.value)" class="panel-search">
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table" id="usersTable">
+            <thead>
+              <tr>
+                <th>이름</th>
+                <th>이메일</th>
+                <th>역할</th>
+                <th>가입방식</th>
+                <th>가입일</th>
+                <th>상태</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody">
+              <tr><td colspan="7" style="text-align:center; padding: 2rem;">로딩 중...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Settings Panel -->
+      <div class="admin-panel" id="settingsPanel" style="display:none;">
+        <div class="panel-header">
+          <h3>사이트 설정</h3>
+        </div>
+        <form id="settingsForm" class="settings-form" onsubmit="handleSettingsSave(event)">
+          <div class="settings-group">
+            <label>사이트 이름</label>
+            <input type="text" id="siteName" value="정중호 교수의 성경 사랑방">
+          </div>
+          <div class="settings-group">
+            <label>사이트 설명</label>
+            <textarea id="siteDescription" rows="3">한국과 세계의 사상 속에서 성경을 연구하고, 구약학의 깊이를 탐구하는 학문의 공간입니다.</textarea>
+          </div>
+          <div class="settings-group">
+            <label>관리자 이메일</label>
+            <input type="email" id="adminEmail" value="st805@naver.com" readonly style="opacity:0.7;">
+          </div>
+          <div class="settings-group">
+            <label>회원가입 허용</label>
+            <select id="allowRegistration">
+              <option value="true">허용</option>
+              <option value="false">비허용</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label>유지보수 모드</label>
+            <select id="maintenanceMode">
+              <option value="false">비활성</option>
+              <option value="true">활성</option>
+            </select>
+          </div>
+
+          <div id="settingsError" class="auth-error" style="display:none;"></div>
+          <div id="settingsSuccess" class="auth-success" style="display:none;"></div>
+
+          <button type="submit" class="auth-submit-btn" style="max-width: 300px;">
+            <span class="btn-text">설정 저장</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-bottom" style="padding-top: 2rem;">
+        <p>&copy; 2025 정중호 교수의 성경 사랑방 — Bible Glocal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/social.js"></script>
+  <script src="js/admin-editor.js"></script>
+  <script>
+    let allUsers = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await BG_AUTH.init();
+      if (!BG_AUTH.user || BG_AUTH.user.role !== 'admin') {
+        alert('관리자 권한이 필요합니다.');
+        window.location.href = 'index.html';
+        return;
+      }
+      loadStats();
+      loadUsers();
+    });
+
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/admin/stats', { credentials: 'include' });
+        const data = await res.json();
+        console.log('Stats response:', data);
+        if (data && data.success && data.stats) {
+          const s = data.stats;
+          document.getElementById('totalUsers').textContent = (s.totalUsers != null) ? s.totalUsers : 0;
+          document.getElementById('activeUsers').textContent = (s.activeUsers != null) ? s.activeUsers : 0;
+          document.getElementById('todayLogins').textContent = (s.todayLogins != null) ? s.todayLogins : 0;
+        }
+      } catch (e) { 
+        console.error('Stats load error', e);
+        document.getElementById('totalUsers').textContent = 0;
+        document.getElementById('activeUsers').textContent = 0;
+        document.getElementById('todayLogins').textContent = 0;
+      }
+      // Admin count from users endpoint
+      try {
+        const res2 = await fetch('/api/admin/users', { credentials: 'include' });
+        const data2 = await res2.json();
+        if (data2 && data2.success && data2.stats) {
+          document.getElementById('adminCount').textContent = (data2.stats.admins != null) ? data2.stats.admins : 0;
+        }
+      } catch (e) {
+        document.getElementById('adminCount').textContent = 0;
+      }
+    }
+
+    async function loadUsers() {
+      try {
+        const res = await fetch('/api/admin/users', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            allUsers = data.users;
+            renderUsers(allUsers);
+          }
+        }
+      } catch (e) { console.error('Users load error', e); }
+    }
+
+    function renderUsers(users) {
+      const tbody = document.getElementById('usersBody');
+      if (!users || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">회원이 없습니다.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = users.map(u => `
+        <tr data-id="${u.id}">
+          <td>
+            <div class="user-cell">
+              <span class="user-avatar-sm">${(u.display_name || u.username || '?').charAt(0).toUpperCase()}</span>
+              <div>
+                <strong>${u.display_name || u.username}</strong>
+                <small style="display:block; color: var(--text-muted);">@${u.username}</small>
+              </div>
+            </div>
+          </td>
+          <td>${u.email}</td>
+          <td>
+            <select onchange="changeRole('${u.id}', this.value)" ${u.role === 'admin' && u.email === 'st805@naver.com' ? 'disabled' : ''}>
+              <option value="member" ${u.role === 'member' ? 'selected' : ''}>회원</option>
+              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>관리자</option>
+            </select>
+          </td>
+          <td><span class="provider-badge provider-${u.provider}">${u.provider}</span></td>
+          <td>${u.created_at ? new Date(u.created_at).toLocaleDateString('ko-KR') : '-'}</td>
+          <td>
+            <span class="status-badge ${u.is_active ? 'status-active' : 'status-inactive'}">
+              ${u.is_active ? '활성' : '비활성'}
+            </span>
+          </td>
+          <td>
+            ${u.email !== 'st805@naver.com' ? `
+              <button class="admin-action-btn" onclick="toggleUserStatus('${u.id}', ${u.is_active})" title="${u.is_active ? '비활성화' : '활성화'}">
+                ${u.is_active ? '🚫' : '✅'}
+              </button>
+              <button class="admin-action-btn danger" onclick="deleteUser('${u.id}', '${u.display_name || u.username}')" title="삭제">
+                🗑
+              </button>
+            ` : '<span style="color: var(--accent); font-weight: 600;">소유자</span>'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterUsers(query) {
+      if (!query) {
+        renderUsers(allUsers);
+        return;
+      }
+      const q = query.toLowerCase();
+      const filtered = allUsers.filter(u =>
+        (u.username || '').toLowerCase().includes(q) ||
+        (u.display_name || '').toLowerCase().includes(q) ||
+        (u.email || '').toLowerCase().includes(q)
+      );
+      renderUsers(filtered);
+    }
+
+    async function changeRole(userId, newRole) {
+      try {
+        const res = await fetch(`/api/admin/users/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ role: newRole })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadUsers();
+          loadStats();
+        } else {
+          alert(data.message || '역할 변경 실패');
+          loadUsers();
+        }
+      } catch (e) { alert('서버 오류'); }
+    }
+
+    async function toggleUserStatus(userId, currentStatus) {
+      try {
+        const res = await fetch(`/api/admin/users/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ is_active: currentStatus ? 0 : 1 })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadUsers();
+          loadStats();
+        } else {
+          alert(data.message || '상태 변경 실패');
+        }
+      } catch (e) { alert('서버 오류'); }
+    }
+
+    async function deleteUser(userId, name) {
+      if (!confirm(`"${name}" 회원을 정말 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+      try {
+        const res = await fetch(`/api/admin/users/${userId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadUsers();
+          loadStats();
+        } else {
+          alert(data.message || '삭제 실패');
+        }
+      } catch (e) { alert('서버 오류'); }
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-panel').forEach(p => p.style.display = 'none');
+      if (tab === 'users') {
+        document.querySelector('.admin-tab:nth-child(1)').classList.add('active');
+        document.getElementById('usersPanel').style.display = 'block';
+      } else {
+        document.querySelector('.admin-tab:nth-child(2)').classList.add('active');
+        document.getElementById('settingsPanel').style.display = 'block';
+      }
+    }
+
+    async function handleSettingsSave(e) {
+      e.preventDefault();
+      const errorDiv = document.getElementById('settingsError');
+      const successDiv = document.getElementById('settingsSuccess');
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      try {
+        const res = await fetch('/api/admin/settings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            site_name: document.getElementById('siteName').value,
+            site_description: document.getElementById('siteDescription').value,
+            allow_registration: document.getElementById('allowRegistration').value,
+            maintenance_mode: document.getElementById('maintenanceMode').value
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          successDiv.textContent = '설정이 저장되었습니다.';
+          successDiv.style.display = 'block';
+        } else {
+          errorDiv.textContent = data.message || '저장 실패';
+          errorDiv.style.display = 'block';
+        }
+      } catch (err) {
+        errorDiv.textContent = '서버 오류';
+        errorDiv.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
