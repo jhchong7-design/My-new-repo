@@ -94,7 +94,7 @@ const adminExists = db.prepare('SELECT id FROM users WHERE email = ?').get(admin
 
 if (!adminExists) {
   const adminId = uuidv4();
-  const hashedPassword = bcrypt.hashSync('#9725', 12);
+  const hashedPassword = bcrypt.hashSync('#972553', 12);
   db.prepare(`
     INSERT INTO users (id, email, username, password_hash, display_name, role, provider, is_active)
     VALUES (?, ?, ?, ?, ?, 'admin', 'email', 1)
