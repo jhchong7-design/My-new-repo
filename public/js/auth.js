@@ -13,10 +13,29 @@ const BG_AUTH = {
     return '';
   },
 
+  // Get API URL (uses BG_CONFIG if available)
+  _api(path) {
+    if (typeof BG_CONFIG !== 'undefined' && BG_CONFIG.apiUrl) {
+      return BG_CONFIG.apiUrl(path);
+    }
+    return path;
+  },
+
+  // Check if backend is available
+  _hasBackend() {
+    return typeof BG_CONFIG === 'undefined' || !BG_CONFIG.isStaticDeploy;
+  },
+
   // Initialize auth state
   async init() {
+    if (!this._hasBackend()) {
+      // Static deployment — no backend available
+      this.user = null;
+      this.updateUI();
+      return false;
+    }
     try {
-      const res = await fetch('/api/auth/me', { credentials: 'include' });
+      const res = await fetch(this._api('/api/auth/me'), { credentials: 'include' });
       if (res.ok) {
         const data = await res.json();
         if (data.success && data.user) {
@@ -34,7 +53,17 @@ const BG_AUTH = {
 
   // Login
   async login(email, password) {
-    const res = await fetch('/api/auth/login', {
+    if (!this._hasBackend()) {
+      const isEn = this.isEnglish();
+      return {
+        success: false,
+        error: isEn
+          ? 'Login is not available on the static preview site. Please use the full server deployment.'
+          : '정적 미리보기 사이트에서는 로그인할 수 없습니다. 전체 서버 배포를 이용해주세요.',
+        error_kr: '정적 미리보기 사이트에서는 로그인할 수 없습니다. 전체 서버 배포를 이용해주세요.'
+      };
+    }
+    const res = await fetch(this._api('/api/auth/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -51,7 +80,17 @@ const BG_AUTH = {
 
   // Register
   async register(email, password, username, display_name) {
-    const res = await fetch('/api/auth/register', {
+    if (!this._hasBackend()) {
+      const isEn = this.isEnglish();
+      return {
+        success: false,
+        error: isEn
+          ? 'Registration is not available on the static preview site.'
+          : '정적 미리보기 사이트에서는 회원가입할 수 없습니다.',
+        error_kr: '정적 미리보기 사이트에서는 회원가입할 수 없습니다.'
+      };
+    }
+    const res = await fetch(this._api('/api/auth/register'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -79,7 +118,7 @@ const BG_AUTH = {
   // Logout
   async logout() {
     try {
-      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      await fetch(this._api('/api/auth/logout'), { method: 'POST', credentials: 'include' });
     } catch(e) {}
     this.user = null;
     this.token = null;
@@ -90,7 +129,7 @@ const BG_AUTH = {
 
   // Update profile
   async updateProfile(data) {
-    const res = await fetch('/api/auth/profile', {
+    const res = await fetch(this._api('/api/auth/profile'), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -106,7 +145,7 @@ const BG_AUTH = {
 
   // Change password
   async changePassword(current_password, new_password) {
-    const res = await fetch('/api/auth/change-password', {
+    const res = await fetch(this._api('/api/auth/change-password'), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',

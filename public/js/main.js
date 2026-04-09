@@ -3,7 +3,7 @@
  * Handles recent posts loading, authentication, and UI interactions
  */
 
-const API_BASE = window.location.origin + '/api';
+const API_BASE = (typeof BG_CONFIG !== 'undefined' && BG_CONFIG.API_BASE) ? BG_CONFIG.API_BASE : (window.location.origin + '/api');
 
 // Global state
 let currentUser = null;
@@ -35,6 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
  * Load recent posts from API
  */
 async function loadRecentPosts() {
+    // Skip API call on static deployment
+    if (typeof BG_CONFIG !== 'undefined' && BG_CONFIG.isStaticDeploy) {
+        displaySamplePosts();
+        return;
+    }
     try {
         const response = await fetch(`${API_BASE}/posts/recent`);
         const result = await response.json();
@@ -159,6 +164,11 @@ function displaySamplePosts() {
  * Check authentication status
  */
 async function checkAuthStatus() {
+    // Skip API call on static deployment
+    if (typeof BG_CONFIG !== 'undefined' && BG_CONFIG.isStaticDeploy) {
+        showLoginButton();
+        return;
+    }
     try {
         const token = localStorage.getItem('auth_token');
         if (!token) {
