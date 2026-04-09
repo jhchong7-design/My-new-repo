@@ -11,6 +11,19 @@ let recentPosts = {};
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
+    // Hide preloader after page loads
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        // Hide after a short delay to allow content to render
+        setTimeout(() => {
+            preloader.classList.add('hidden');
+            // Remove from DOM after transition
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 600);
+        }, 800);
+    }
+    
     loadRecentPosts();
     checkAuthStatus();
     initializeMobileMenu();
