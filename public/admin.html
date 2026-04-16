@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="관리자 대시보드 - 정중호 교수의 성경 사랑방 | Admin Dashboard - Bible Glocal">
+  <title>관리자 대시보드 | 성경 사랑방 — Bible Glocal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/social.css">
+  <link rel="stylesheet" href="css/admin-editor.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✝</text></svg>">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="관리자 대시보드 | Bible Glocal">
+  <meta property="og:description" content="사이트 관리 대시보드">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
+  <meta property="og:url" content="https://bibleglocal.org/admin.html">
+  <meta property="og:site_name" content="Bible Glocal">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="관리자 대시보드 | Bible Glocal">
+  <meta name="twitter:description" content="사이트 관리 대시보드">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
+
+  <style>
+    /* ========== Content Management Styles ========== */
+    .content-toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .content-toolbar select,
+    .content-toolbar input {
+      padding: 10px 14px;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: border-color 0.3s;
+    }
+    .content-toolbar select:focus,
+    .content-toolbar input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .content-toolbar input {
+      flex: 1;
+      min-width: 180px;
+    }
+    .btn-primary {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-warm));
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+    }
+    .btn-secondary {
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: var(--accent);
+    }
+    .btn-danger {
+      padding: 6px 14px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: all 0.3s;
+    }
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+    .btn-edit {
+      padding: 6px 14px;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: all 0.3s;
+    }
+    .btn-edit:hover {
+      background: rgba(59, 130, 246, 0.25);
+    }
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+    }
+
+    /* Post status badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .badge-published {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    .badge-draft {
+      background: rgba(234, 179, 8, 0.15);
+      color: #eab308;
+      border: 1px solid rgba(234, 179, 8, 0.3);
+    }
+    .badge-pinned {
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+    .badge-category {
+      background: rgba(99, 102, 241, 0.12);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.25);
+    }
+
+    /* Content table enhancements */
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .content-table th {
+      padding: 12px 14px;
+      text-align: left;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+      border-bottom: 2px solid rgba(139, 92, 246, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .content-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.88rem;
+      vertical-align: middle;
+    }
+    .content-table tr:hover td {
+      background: rgba(139, 92, 246, 0.04);
+    }
+    .post-title-cell {
+      max-width: 300px;
+    }
+    .post-title-cell strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .post-title-cell small {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+    .post-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+    .post-meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+    .empty-state h4 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .empty-state p {
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    /* ========== Content Editor Modal ========== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--card-bg, #1a1a2e);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      animation: modalSlideIn 0.3s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.15);
+    }
+    .modal-header h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+    }
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .modal-close:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+    .modal-body {
+      padding: 24px;
+    }
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      padding: 16px 24px;
+      border-top: 1px solid rgba(139, 92, 246, 0.15);
+    }
+
+    /* Form fields in modal */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-size: 0.92rem;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      box-sizing: border-box;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    }
+    .form-group textarea {
+      min-height: 250px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-check input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+    .form-check label {
+      margin-bottom: 0;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .form-help {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Notification toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 14px 24px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 99999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Noto Sans KR', sans-serif;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast-success {
+      background: linear-gradient(135deg, #059669, #10b981);
+    }
+    .toast-error {
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+    }
+    .toast-info {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 24px;
+    }
+    .pagination button {
+      padding: 8px 14px;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .pagination button:hover:not(:disabled) {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: var(--accent);
+    }
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .pagination .page-info {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      padding: 0 8px;
+    }
+
+    /* Stats enhancement */
+    .stat-card .stat-number {
+      font-size: 1.8rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .content-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .form-row, .form-row-3 {
+        grid-template-columns: 1fr;
+      }
+      .modal-content {
+        margin: 10px;
+        border-radius: 12px;
+      }
+      .modal-overlay {
+        padding: 20px 10px;
+      }
+      .post-actions {
+        flex-direction: column;
+      }
+      .content-table {
+        font-size: 0.82rem;
+      }
+      .content-table th, .content-table td {
+        padding: 8px 10px;
+      }
+      .hide-mobile {
+        display: none;
+      }
+    }
+
+    /* Delete confirmation modal */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(3px);
+      z-index: 10001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .confirm-overlay.active {
+      display: flex;
+    }
+    .confirm-box {
+      background: var(--card-bg, #1a1a2e);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 14px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.4);
+    }
+    .confirm-box .confirm-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    .confirm-box h4 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .confirm-box p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .confirm-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span>📖 bibleglocal.org</span>
+        <span>|</span>
+        <span>⭐ 관리자 모드</span>
+      </div>
+      <div class="top-bar-right">
+        <div class="lang-switch">
+          <a href="admin.html" class="active">한국어</a>
+          <a href="en/index.html">ENG</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">BG</div>
+          <div class="logo-text">
+            <h1>성경 사랑방</h1>
+            <span>Bible Glocal</span>
+          </div>
+        </a>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="index.html">홈</a></li>
+            <li><a href="about.html">운영자소개</a></li>
+            <li><a href="korean-thought.html">한국사상과 성경</a></li>
+            <li><a href="world-thought.html">세계사상과 성경</a></li>
+            <li><a href="publications.html">책과 논문</a></li>
+            <li><a href="forum.html">열린마당</a></li>
+          </ul>
+        </nav>
+        <div class="auth-area"></div>
+        <button class="menu-toggle" aria-label="메뉴 열기">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav-overlay"></div>
+  <nav class="mobile-nav">
+    <div class="mobile-nav-header">
+      <h3>성경 사랑방</h3>
+      <p>관리자 대시보드</p>
+    </div>
+    <ul>
+      <li><a href="index.html">🏠 홈</a></li>
+      <li><a href="about.html">👤 운영자소개</a></li>
+      <li><a href="korean-thought.html">🇰🇷 한국사상과 성경</a></li>
+      <li><a href="world-thought.html">🌍 세계사상과 성경</a></li>
+      <li><a href="publications.html">📚 책과 논문</a></li>
+      <li><a href="forum.html">💬 열린마당</a></li>
+    </ul>
+    <div class="mobile-auth-area"></div>
+    <div class="lang-mobile">
+      <a href="admin.html" class="active">한국어</a>
+      <a href="en/index.html">English</a>
+    </div>
+  </nav>
+
+  <!-- Admin Dashboard -->
+  <section class="admin-dashboard">
+    <div class="container">
+      <div class="admin-header">
+        <h2>⭐ 관리자 대시보드</h2>
+        <p>성경 사랑방 사이트 관리</p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="admin-stats" id="adminStats">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <span class="stat-number" id="totalUsers">-</span>
+            <span class="stat-label">전체 회원</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <span class="stat-number" id="activeUsers">-</span>
+            <span class="stat-label">활성 회원</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📝</div>
+          <div class="stat-info">
+            <span class="stat-number" id="totalPosts">-</span>
+            <span class="stat-label">전체 게시물</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <span class="stat-number" id="todayLogins">-</span>
+            <span class="stat-label">오늘 로그인</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('content')">📝 콘텐츠 관리</button>
+        <button class="admin-tab" onclick="switchTab('users')">👥 회원 관리</button>
+        <button class="admin-tab" onclick="switchTab('settings')">⚙️ 사이트 설정</button>
+      </div>
+
+      <!-- Content Management Panel -->
+      <div class="admin-panel" id="contentPanel">
+        <div class="panel-header">
+          <h3>콘텐츠 관리</h3>
+        </div>
+
+        <!-- Content Toolbar -->
+        <div class="content-toolbar">
+          <select id="categoryFilter" onchange="loadPosts()">
+            <option value="all">📂 전체 카테고리</option>
+            <option value="korean_thought">🇰🇷 한국사상과성경</option>
+            <option value="world_thought">🌍 세계사상과성경</option>
+            <option value="publications">📚 책과논문</option>
+            <option value="comparative_research">🔬 비교연구</option>
+            <option value="ai_research">🤖 AI 연구</option>
+            <option value="forum">💬 열린마당</option>
+            <option value="announcements">📢 공지사항</option>
+            <option value="general">📋 게시판</option>
+            <option value="media">🎬 이미지&동영상</option>
+            <option value="archive">📁 자료실</option>
+            <option value="seminar">🎓 세미나</option>
+            <option value="participation">🤝 참여마당</option>
+          </select>
+          <input type="text" id="postSearch" placeholder="제목 또는 내용 검색..." onkeyup="debounceSearch()">
+          <button class="btn-primary" onclick="openCreateModal()">➕ 새 콘텐츠 작성</button>
+        </div>
+
+        <!-- Content Table -->
+        <div class="table-responsive">
+          <table class="content-table" id="contentTable">
+            <thead>
+              <tr>
+                <th>제목</th>
+                <th class="hide-mobile">카테고리</th>
+                <th class="hide-mobile">작성자</th>
+                <th>상태</th>
+                <th class="hide-mobile">조회</th>
+                <th class="hide-mobile">날짜</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="contentBody">
+              <tr><td colspan="7" style="text-align:center; padding: 2rem;">로딩 중...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="contentPagination"></div>
+      </div>
+
+      <!-- Users Panel -->
+      <div class="admin-panel" id="usersPanel" style="display:none;">
+        <div class="panel-header">
+          <h3>회원 목록</h3>
+          <div class="panel-actions">
+            <input type="text" id="userSearch" placeholder="이름 또는 이메일 검색..." oninput="filterUsers(this.value)" class="panel-search">
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table" id="usersTable">
+            <thead>
+              <tr>
+                <th>이름</th>
+                <th>이메일</th>
+                <th>역할</th>
+                <th>가입방식</th>
+                <th>가입일</th>
+                <th>상태</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody">
+              <tr><td colspan="7" style="text-align:center; padding: 2rem;">로딩 중...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Settings Panel -->
+      <div class="admin-panel" id="settingsPanel" style="display:none;">
+        <div class="panel-header">
+          <h3>사이트 설정</h3>
+        </div>
+        <form id="settingsForm" class="settings-form" onsubmit="handleSettingsSave(event)">
+          <div class="settings-group">
+            <label>사이트 이름</label>
+            <input type="text" id="siteName" value="정중호 교수의 성경 사랑방">
+          </div>
+          <div class="settings-group">
+            <label>사이트 설명</label>
+            <textarea id="siteDescription" rows="3">한국과 세계의 사상 속에서 성경을 연구하고, 구약학의 깊이를 탐구하는 학문의 공간입니다.</textarea>
+          </div>
+          <div class="settings-group">
+            <label>관리자 이메일</label>
+            <input type="email" id="adminEmail" value="st805@naver.com" readonly style="opacity:0.7;">
+          </div>
+          <div class="settings-group">
+            <label>회원가입 허용</label>
+            <select id="allowRegistration">
+              <option value="true">허용</option>
+              <option value="false">비허용</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label>유지보수 모드</label>
+            <select id="maintenanceMode">
+              <option value="false">비활성</option>
+              <option value="true">활성</option>
+            </select>
+          </div>
+
+          <div id="settingsError" class="auth-error" style="display:none;"></div>
+          <div id="settingsSuccess" class="auth-success" style="display:none;"></div>
+
+          <button type="submit" class="auth-submit-btn" style="max-width: 300px;">
+            <span class="btn-text">설정 저장</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Content Editor Modal -->
+  <div class="modal-overlay" id="editorModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">📝 새 콘텐츠 작성</h3>
+        <button class="modal-close" onclick="closeEditorModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editPostId">
+        
+        <div class="form-group">
+          <label>제목 *</label>
+          <input type="text" id="postTitleInput" placeholder="게시물 제목을 입력하세요">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>카테고리 *</label>
+            <select id="postCategoryInput">
+              <option value="korean_thought">🇰🇷 한국사상과성경</option>
+              <option value="world_thought">🌍 세계사상과성경</option>
+              <option value="publications">📚 책과논문</option>
+              <option value="comparative_research">🔬 비교연구</option>
+              <option value="ai_research">🤖 AI 연구</option>
+              <option value="forum">💬 열린마당</option>
+              <option value="announcements">📢 공지사항</option>
+              <option value="general">📋 게시판</option>
+              <option value="media">🎬 이미지&동영상</option>
+              <option value="archive">📁 자료실</option>
+              <option value="seminar">🎓 세미나</option>
+              <option value="participation">🤝 참여마당</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>게시물 유형</label>
+            <select id="postTypeInput">
+              <option value="post">📄 일반 게시물</option>
+              <option value="article">📰 기사/아티클</option>
+              <option value="notice">📢 공지</option>
+              <option value="resource">📁 자료</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>내용 *</label>
+          <textarea id="postContentInput" placeholder="게시물 내용을 입력하세요. HTML 태그를 사용할 수 있습니다."></textarea>
+          <p class="form-help">HTML 태그 사용 가능: <h3>, <p>, <strong>, <em>, <a>, <ul>, <ol>, <li>, <blockquote>, <img> 등</p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>이미지 URL (선택)</label>
+            <input type="text" id="postImageInput" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>동영상 URL (선택)</label>
+            <input type="text" id="postVideoInput" placeholder="https://youtube.com/...">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>태그 (선택)</label>
+          <input type="text" id="postTagsInput" placeholder="쉼표로 구분: 성경, 한국사상, 연구">
+          <p class="form-help">쉼표로 구분하여 여러 태그를 입력할 수 있습니다</p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-check">
+            <input type="checkbox" id="postPublishedInput" checked>
+            <label for="postPublishedInput">게시 (공개)</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="postPinnedInput">
+            <label for="postPinnedInput">📌 상단 고정</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeEditorModal()">취소</button>
+        <button class="btn-primary" id="savePostBtn" onclick="savePost()">💾 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="confirm-overlay" id="deleteConfirm">
+    <div class="confirm-box">
+      <div class="confirm-icon">⚠️</div>
+      <h4>콘텐츠 삭제</h4>
+      <p id="deleteConfirmMsg">이 게시물을 정말 삭제하시겠습니까?<br>이 작업은 되돌릴 수 없습니다.</p>
+      <input type="hidden" id="deletePostId">
+      <div class="confirm-actions">
+        <button class="btn-secondary" onclick="closeDeleteConfirm()">취소</button>
+        <button class="btn-danger" onclick="confirmDelete()" style="padding: 10px 24px; font-size: 0.9rem;">🗑 삭제</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-bottom" style="padding-top: 2rem;">
+        <p>&copy; 2025 정중호 교수의 성경 사랑방 — Bible Glocal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/social.js"></script>
+  <script src="js/admin-editor.js"></script>
+  <script>
+    // ========================================
+    // State
+    // ========================================
+    let allUsers = [];
+    let allPosts = [];
+    let currentPage = 0;
+    const PAGE_SIZE = 20;
+    let searchTimer = null;
+
+    // Category map for display
+    const CATEGORY_MAP = {
+      korean_thought: { emoji: '🇰🇷', name: '한국사상과성경' },
+      world_thought: { emoji: '🌍', name: '세계사상과성경' },
+      publications: { emoji: '📚', name: '책과논문' },
+      comparative_research: { emoji: '🔬', name: '비교연구' },
+      ai_research: { emoji: '🤖', name: 'AI 연구' },
+      forum: { emoji: '💬', name: '열린마당' },
+      announcements: { emoji: '📢', name: '공지사항' },
+      general: { emoji: '📋', name: '게시판' },
+      media: { emoji: '🎬', name: '이미지&동영상' },
+      archive: { emoji: '📁', name: '자료실' },
+      seminar: { emoji: '🎓', name: '세미나' },
+      participation: { emoji: '🤝', name: '참여마당' }
+    };
+
+    // API helper
+    function apiUrl(path) {
+      if (typeof BG_CONFIG !== 'undefined' && BG_CONFIG.apiUrl) return BG_CONFIG.apiUrl(path);
+      return path;
+    }
+
+    // ========================================
+    // Initialization
+    // ========================================
+    document.addEventListener('DOMContentLoaded', async () => {
+      await BG_AUTH.init();
+      if (!BG_AUTH.user || BG_AUTH.user.role !== 'admin') {
+        alert('관리자 권한이 필요합니다.');
+        window.location.href = 'index.html';
+        return;
+      }
+      loadStats();
+      loadPosts();
+      loadUsers();
+    });
+
+    // ========================================
+    // Toast Notifications
+    // ========================================
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast toast-${type} show`;
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    // ========================================
+    // Stats
+    // ========================================
+    async function loadStats() {
+      try {
+        const res = await fetch(apiUrl('/api/admin/stats'), { credentials: 'include' });
+        const data = await res.json();
+        if (data && data.success && data.stats) {
+          const s = data.stats;
+          document.getElementById('totalUsers').textContent = s.totalUsers ?? 0;
+          document.getElementById('activeUsers').textContent = s.activeUsers ?? 0;
+          document.getElementById('todayLogins').textContent = s.todayLogins ?? 0;
+          document.getElementById('totalPosts').textContent = s.totalPosts ?? 0;
+        }
+      } catch (e) {
+        console.error('Stats load error', e);
+        ['totalUsers','activeUsers','todayLogins','totalPosts'].forEach(id => {
+          document.getElementById(id).textContent = '0';
+        });
+      }
+    }
+
+    // ========================================
+    // Content Management - Load Posts
+    // ========================================
+    async function loadPosts() {
+      const category = document.getElementById('categoryFilter').value;
+      const search = document.getElementById('postSearch').value.trim();
+      const offset = currentPage * PAGE_SIZE;
+
+      try {
+        let url = `/api/admin/posts?limit=${PAGE_SIZE}&offset=${offset}`;
+        if (category && category !== 'all') url += `&category=${encodeURIComponent(category)}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+
+        const res = await fetch(apiUrl(url), { credentials: 'include' });
+        const data = await res.json();
+
+        if (data.success) {
+          allPosts = data.data;
+          renderPosts(allPosts);
+          renderPagination(data.total || 0);
+        } else {
+          renderEmptyState('콘텐츠를 불러올 수 없습니다.');
+        }
+      } catch (e) {
+        console.error('Posts load error', e);
+        renderEmptyState('서버 연결 오류입니다.');
+      }
+    }
+
+    function renderPosts(posts) {
+      const tbody = document.getElementById('contentBody');
+
+      if (!posts || posts.length === 0) {
+        renderEmptyState();
+        return;
+      }
+
+      tbody.innerHTML = posts.map(post => {
+        const cat = CATEGORY_MAP[post.category] || { emoji: '📄', name: post.category };
+        const date = post.created_at ? new Date(post.created_at).toLocaleDateString('ko-KR') : '-';
+        const excerpt = (post.content || '').replace(/<[^>]*>/g, '').substring(0, 60);
+
+        return `
+          <tr>
+            <td class="post-title-cell">
+              <strong>${escapeHtml(post.title)}</strong>
+              <small>${escapeHtml(excerpt)}${excerpt.length >= 60 ? '...' : ''}</small>
+            </td>
+            <td class="hide-mobile">
+              <span class="badge badge-category">${cat.emoji} ${cat.name}</span>
+            </td>
+            <td class="hide-mobile">${escapeHtml(post.author_name || '-')}</td>
+            <td>
+              <div class="post-meta">
+                ${post.is_published ? '<span class="badge badge-published">게시</span>' : '<span class="badge badge-draft">비공개</span>'}
+                ${post.is_pinned ? '<span class="badge badge-pinned">📌 고정</span>' : ''}
+              </div>
+            </td>
+            <td class="hide-mobile">${post.views || 0}</td>
+            <td class="hide-mobile">${date}</td>
+            <td>
+              <div class="post-actions">
+                <button class="btn-edit btn-sm" onclick="openEditModal(${post.id})">✏️ 수정</button>
+                <button class="btn-danger btn-sm" onclick="openDeleteConfirm(${post.id}, '${escapeHtml(post.title).replace(/'/g, "\\'")}')">🗑</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderEmptyState(msg) {
+      const tbody = document.getElementById('contentBody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <h4>${msg || '콘텐츠가 없습니다'}</h4>
+              <p>새 콘텐츠를 작성하여 사이트에 게시하세요.</p>
+              <button class="btn-primary" onclick="openCreateModal()">➕ 새 콘텐츠 작성</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderPagination(total) {
+      const pag = document.getElementById('contentPagination');
+      const totalPages = Math.ceil(total / PAGE_SIZE);
+
+      if (totalPages <= 1) {
+        pag.innerHTML = '';
+        return;
+      }
+
+      pag.innerHTML = `
+        <button ${currentPage <= 0 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">◀ 이전</button>
+        <span class="page-info">${currentPage + 1} / ${totalPages} 페이지</span>
+        <button ${currentPage >= totalPages - 1 ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">다음 ▶</button>
+      `;
+    }
+
+    function goToPage(page) {
+      currentPage = page;
+      loadPosts();
+    }
+
+    function debounceSearch() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        currentPage = 0;
+        loadPosts();
+      }, 400);
+    }
+
+    // ========================================
+    // Content Management - Create / Edit
+    // ========================================
+    function openCreateModal() {
+      document.getElementById('editPostId').value = '';
+      document.getElementById('modalTitle').textContent = '📝 새 콘텐츠 작성';
+      document.getElementById('postTitleInput').value = '';
+      document.getElementById('postCategoryInput').value = 'korean_thought';
+      document.getElementById('postTypeInput').value = 'post';
+      document.getElementById('postContentInput').value = '';
+      document.getElementById('postImageInput').value = '';
+      document.getElementById('postVideoInput').value = '';
+      document.getElementById('postTagsInput').value = '';
+      document.getElementById('postPublishedInput').checked = true;
+      document.getElementById('postPinnedInput').checked = false;
+      document.getElementById('savePostBtn').textContent = '💾 저장';
+      document.getElementById('editorModal').classList.add('active');
+    }
+
+    async function openEditModal(postId) {
+      try {
+        const res = await fetch(apiUrl(`/api/posts/${postId}`), { credentials: 'include' });
+        const data = await res.json();
+
+        if (!data.success || !data.data) {
+          showToast('게시물을 불러올 수 없습니다.', 'error');
+          return;
+        }
+
+        const post = data.data;
+        document.getElementById('editPostId').value = post.id;
+        document.getElementById('modalTitle').textContent = '✏️ 콘텐츠 수정';
+        document.getElementById('postTitleInput').value = post.title || '';
+        document.getElementById('postCategoryInput').value = post.category || 'general';
+        document.getElementById('postTypeInput').value = post.post_type || 'post';
+        document.getElementById('postContentInput').value = post.content || '';
+        document.getElementById('postImageInput').value = post.image_url || '';
+        document.getElementById('postVideoInput').value = post.video_url || '';
+        document.getElementById('postTagsInput').value = post.tags || '';
+        document.getElementById('postPublishedInput').checked = !!post.is_published;
+        document.getElementById('postPinnedInput').checked = !!post.is_pinned;
+        document.getElementById('savePostBtn').textContent = '💾 수정 저장';
+        document.getElementById('editorModal').classList.add('active');
+      } catch (e) {
+        showToast('서버 연결 오류입니다.', 'error');
+      }
+    }
+
+    function closeEditorModal() {
+      document.getElementById('editorModal').classList.remove('active');
+    }
+
+    async function savePost() {
+      const postId = document.getElementById('editPostId').value;
+      const title = document.getElementById('postTitleInput').value.trim();
+      const content = document.getElementById('postContentInput').value.trim();
+      const category = document.getElementById('postCategoryInput').value;
+      const post_type = document.getElementById('postTypeInput').value;
+      const image_url = document.getElementById('postImageInput').value.trim();
+      const video_url = document.getElementById('postVideoInput').value.trim();
+      const tags = document.getElementById('postTagsInput').value.trim();
+      const is_published = document.getElementById('postPublishedInput').checked;
+      const is_pinned = document.getElementById('postPinnedInput').checked;
+
+      if (!title) {
+        showToast('제목을 입력하세요.', 'error');
+        return;
+      }
+      if (!content) {
+        showToast('내용을 입력하세요.', 'error');
+        return;
+      }
+
+      const body = { title, content, category, post_type, is_published, is_pinned, image_url, video_url, tags };
+
+      try {
+        const url = postId ? `/api/posts/${postId}` : '/api/posts';
+        const method = postId ? 'PUT' : 'POST';
+
+        const res = await fetch(apiUrl(url), {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          showToast(postId ? '게시물이 수정되었습니다.' : '새 게시물이 작성되었습니다.', 'success');
+          closeEditorModal();
+          loadPosts();
+          loadStats();
+        } else {
+          showToast(data.error || '저장에 실패했습니다.', 'error');
+        }
+      } catch (e) {
+        showToast('서버 연결 오류입니다.', 'error');
+      }
+    }
+
+    // ========================================
+    // Content Management - Delete
+    // ========================================
+    function openDeleteConfirm(postId, title) {
+      document.getElementById('deletePostId').value = postId;
+      document.getElementById('deleteConfirmMsg').innerHTML = 
+        `"<strong>${title}</strong>" 게시물을 정말 삭제하시겠습니까?<br>이 작업은 되돌릴 수 없습니다.`;
+      document.getElementById('deleteConfirm').classList.add('active');
+    }
+
+    function closeDeleteConfirm() {
+      document.getElementById('deleteConfirm').classList.remove('active');
+    }
+
+    async function confirmDelete() {
+      const postId = document.getElementById('deletePostId').value;
+      if (!postId) return;
+
+      try {
+        const res = await fetch(apiUrl(`/api/posts/${postId}`), {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          showToast('게시물이 삭제되었습니다.', 'success');
+          closeDeleteConfirm();
+          loadPosts();
+          loadStats();
+        } else {
+          showToast(data.error || '삭제에 실패했습니다.', 'error');
+        }
+      } catch (e) {
+        showToast('서버 연결 오류입니다.', 'error');
+      }
+    }
+
+    // ========================================
+    // Users Management
+    // ========================================
+    async function loadUsers() {
+      try {
+        const res = await fetch(apiUrl('/api/admin/users'), { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            allUsers = data.users;
+            renderUsers(allUsers);
+          }
+        }
+      } catch (e) { console.error('Users load error', e); }
+    }
+
+    function renderUsers(users) {
+      const tbody = document.getElementById('usersBody');
+      if (!users || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">회원이 없습니다.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = users.map(u => `
+        <tr data-id="${u.id}">
+          <td>
+            <div class="user-cell">
+              <span class="user-avatar-sm">${(u.display_name || u.username || '?').charAt(0).toUpperCase()}</span>
+              <div>
+                <strong>${u.display_name || u.username}</strong>
+                <small style="display:block; color: var(--text-muted);">@${u.username}</small>
+              </div>
+            </div>
+          </td>
+          <td>${u.email}</td>
+          <td>
+            <select onchange="changeRole('${u.id}', this.value)" ${u.role === 'admin' && u.email === 'st805@naver.com' ? 'disabled' : ''}>
+              <option value="member" ${u.role === 'member' ? 'selected' : ''}>회원</option>
+              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>관리자</option>
+            </select>
+          </td>
+          <td><span class="provider-badge provider-${u.provider}">${u.provider}</span></td>
+          <td>${u.created_at ? new Date(u.created_at).toLocaleDateString('ko-KR') : '-'}</td>
+          <td>
+            <span class="status-badge ${u.is_active ? 'status-active' : 'status-inactive'}">
+              ${u.is_active ? '활성' : '비활성'}
+            </span>
+          </td>
+          <td>
+            ${u.email !== 'st805@naver.com' ? `
+              <button class="admin-action-btn" onclick="toggleUserStatus('${u.id}', ${u.is_active})" title="${u.is_active ? '비활성화' : '활성화'}">
+                ${u.is_active ? '🚫' : '✅'}
+              </button>
+              <button class="admin-action-btn danger" onclick="deleteUser('${u.id}', '${u.display_name || u.username}')" title="삭제">
+                🗑
+              </button>
+            ` : '<span style="color: var(--accent); font-weight: 600;">소유자</span>'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterUsers(query) {
+      if (!query) {
+        renderUsers(allUsers);
+        return;
+      }
+      const q = query.toLowerCase();
+      const filtered = allUsers.filter(u =>
+        (u.username || '').toLowerCase().includes(q) ||
+        (u.display_name || '').toLowerCase().includes(q) ||
+        (u.email || '').toLowerCase().includes(q)
+      );
+      renderUsers(filtered);
+    }
+
+    async function changeRole(userId, newRole) {
+      try {
+        const res = await fetch(apiUrl(`/api/admin/users/${userId}`), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ role: newRole })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('역할이 변경되었습니다.', 'success');
+          loadUsers();
+          loadStats();
+        } else {
+          showToast(data.message || '역할 변경 실패', 'error');
+          loadUsers();
+        }
+      } catch (e) { showToast('서버 오류', 'error'); }
+    }
+
+    async function toggleUserStatus(userId, currentStatus) {
+      try {
+        const res = await fetch(apiUrl(`/api/admin/users/${userId}`), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ is_active: currentStatus ? 0 : 1 })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('상태가 변경되었습니다.', 'success');
+          loadUsers();
+          loadStats();
+        } else {
+          showToast(data.message || '상태 변경 실패', 'error');
+        }
+      } catch (e) { showToast('서버 오류', 'error'); }
+    }
+
+    async function deleteUser(userId, name) {
+      if (!confirm(`"${name}" 회원을 정말 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+      try {
+        const res = await fetch(apiUrl(`/api/admin/users/${userId}`), {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('회원이 삭제되었습니다.', 'success');
+          loadUsers();
+          loadStats();
+        } else {
+          showToast(data.message || '삭제 실패', 'error');
+        }
+      } catch (e) { showToast('서버 오류', 'error'); }
+    }
+
+    // ========================================
+    // Tab Management
+    // ========================================
+    function switchTab(tab) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-panel').forEach(p => p.style.display = 'none');
+
+      if (tab === 'content') {
+        document.querySelector('.admin-tab:nth-child(1)').classList.add('active');
+        document.getElementById('contentPanel').style.display = 'block';
+      } else if (tab === 'users') {
+        document.querySelector('.admin-tab:nth-child(2)').classList.add('active');
+        document.getElementById('usersPanel').style.display = 'block';
+      } else {
+        document.querySelector('.admin-tab:nth-child(3)').classList.add('active');
+        document.getElementById('settingsPanel').style.display = 'block';
+      }
+    }
+
+    // ========================================
+    // Settings
+    // ========================================
+    async function handleSettingsSave(e) {
+      e.preventDefault();
+      const errorDiv = document.getElementById('settingsError');
+      const successDiv = document.getElementById('settingsSuccess');
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      try {
+        const res = await fetch(apiUrl('/api/admin/settings'), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            site_name: document.getElementById('siteName').value,
+            site_description: document.getElementById('siteDescription').value,
+            allow_registration: document.getElementById('allowRegistration').value,
+            maintenance_mode: document.getElementById('maintenanceMode').value
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('설정이 저장되었습니다.', 'success');
+          successDiv.textContent = '설정이 저장되었습니다.';
+          successDiv.style.display = 'block';
+        } else {
+          errorDiv.textContent = data.message || '저장 실패';
+          errorDiv.style.display = 'block';
+        }
+      } catch (err) {
+        errorDiv.textContent = '서버 오류';
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    // ========================================
+    // Utilities
+    // ========================================
+    function escapeHtml(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // Close modals on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeEditorModal();
+        closeDeleteConfirm();
+      }
+    });
+
+    // Close modals on overlay click
+    document.getElementById('editorModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeEditorModal();
+    });
+    document.getElementById('deleteConfirm').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeDeleteConfirm();
+    });
+  </script>
+</body>
+</html>

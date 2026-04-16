@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시글 보기 - 성경 사랑방 | Bible Glocal</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/recent-posts.css">
+  <script src="js/auth.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div id="preloader">
+    <div class="preloader-cross"></div>
+  </div>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span>📕 bibleglocal.org</span>
+      </div>
+      <div class="top-bar-right">
+        <div id="auth-buttons">
+          <!-- Will be populated by auth.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">BG</div>
+          <div class="logo-text">
+            <h1>성경 사랑방</h1>
+            <span>Bible Glocal</span>
+          </div>
+        </a>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="index.html">홈</a></li>
+            <li><a href="korean-thought.html">한국사상과성경</a></li>
+            <li><a href="world-thought.html">세계사상과성경</a></li>
+            <li><a href="publications.html">책과논문</a></li>
+            <li><a href="forum.html">열린마당</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="section" style="padding: 2rem 0;">
+      <div class="container" style="max-width: 900px;">
+        
+        <!-- Loading State -->
+        <div id="post-loading" class="posts-loading">
+          게시글 로드 중
+        </div>
+
+        <!-- Post Content -->
+        <div id="post-content" class="post-container" style="display: none;">
+          <div class="post-header">
+            <div class="post-category" id="post-category"></div>
+            <h1 id="post-title"></h1>
+            <div class="post-meta">
+              <span id="post-author"></span>
+              <span>|</span>
+              <span id="post-date"></span>
+              <span>|</span>
+              <span id="post-views"></span>
+            </div>
+            <div id="post-tags" class="post-tags"></div>
+          </div>
+
+          <div id="post-body" class="post-body"></div>
+
+          <div id="post-media" class="post-media"></div>
+
+          <div class="post-actions">
+            <a href="forum.html" class="btn btn-outline">목록으로</a>
+            <div id="post-edit-actions" style="display: none;">
+              <button id="edit-post-btn" class="btn">수정</button>
+              <button id="delete-post-btn" class="btn btn-danger">삭제</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div id="comments-section" class="comments-section" style="display: none;">
+          <h3>댓글</h3>
+          
+          <!-- Comment Form -->
+          <div id="comment-form-container" class="comment-form" style="display: none;">
+            <textarea id="comment-content" rows="3" placeholder="댓글을 입력하세요..."></textarea>
+            <button id="submit-comment" class="btn btn-primary">댓글 작성</button>
+          </div>
+
+          <div id="login-to-comment" style="display: none; text-align: center; padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+            <p>댓글을 작성하려면 <a href="login.html" style="color: var(--primary);">로그인</a>하세요.</p>
+          </div>
+
+          <div id="comments-list"></div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2025 정중호 교수의 성경 사랑방 — Bible Glocal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/post-viewer.js"></script>
+</body>
+</html>
