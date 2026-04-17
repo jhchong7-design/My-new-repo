@@ -5,21 +5,57 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const Database = require('better-sqlite3');
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const crypto = require('crypto');
 
 // ============================================
 // CONFIG
 // ============================================
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'bibleglocal_secret_key_2025_jjh';
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+// Persistent JWT secret: env var > file-based > generated
+const JWT_SECRET = process.env.JWT_SECRET || (() => {
+  const _sp = path.join(__dirname, '.jwt_secret');
+  try { if (fs.existsSync(_sp)) return fs.readFileSync(_sp, 'utf8').trim(); } catch(e) {}
+  const _s = crypto.randomBytes(48).toString('hex');
+  try { fs.writeFileSync(_sp, _s, { mode: 0o600 }); } catch(e) {}
+  return _s;
+})();
 const JWT_EXPIRES = '7d';
 const COOKIE_NAME = 'bg_token';
 
+// Cookie options helper — secure in production
+function getCookieOptions(maxAge) {
+  return {
+    httpOnly: true,
+    secure: IS_PRODUCTION,
+    maxAge: maxAge || 7 * 24 * 60 * 60 * 1000,
+    sameSite: IS_PRODUCTION ? 'none' : 'lax'
+  };
+}
+
 const app = express();
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middleware — with body size limits (BUG-008)
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(cookieParser());
+
+// CORS headers (BUG-014)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  }
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 // Security headers
 app.use((req, res, next) => {
@@ -158,8 +194,20 @@ function adminMiddleware(req, res, next) {
   next();
 }
 
-// Rate limiter for login
+// Rate limiter for login (BUG-007: with periodic cleanup)
 const loginAttempts = new Map();
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, attempts] of loginAttempts.entries()) {
+    const recent = attempts.filter(t => now - t < 15 * 60 * 1000);
+    if (recent.length === 0) {
+      loginAttempts.delete(ip);
+    } else {
+      loginAttempts.set(ip, recent);
+    }
+  }
+}, 30 * 60 * 1000); // Cleanup every 30 minutes
+
 function rateLimitLogin(req, res, next) {
   const ip = req.ip;
   const now = Date.now();
@@ -197,41 +245,41 @@ app.post('/api/auth/register', (req, res) => {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Invalid email format', error_kr: '올바른 이메일 형식이 아닙니다' });
+      return res.status(400).json({ error: 'Invalid email format', error_kr: '이메일 형식이 올바르지 않습니다' });
     }
 
-    const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
-    if (existing) {
+    const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(email.toLowerCase());
+    if (existingUser) {
       return res.status(409).json({ error: 'Email already registered', error_kr: '이미 등록된 이메일입니다' });
     }
 
     const id = uuidv4();
     const password_hash = bcrypt.hashSync(password, 12);
-    const dname = display_name || username;
 
     db.prepare(`
-      INSERT INTO users (id, email, username, password_hash, display_name, role, provider)
-      VALUES (?, ?, ?, ?, ?, 'member', 'email')
-    `).run(id, email.toLowerCase(), username, password_hash, dname);
+      INSERT INTO users (id, email, username, password_hash, display_name, role, provider, is_active)
+      VALUES (?, ?, ?, ?, ?, 'member', 'email', 1)
+    `).run(id, email.toLowerCase(), username, password_hash, display_name || username);
 
     const user = db.prepare('SELECT id, email, username, display_name, role FROM users WHERE id = ?').get(id);
     const token = generateToken(user);
 
-    res.cookie(COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'lax'
-    });
+    res.cookie(COOKIE_NAME, token, getCookieOptions());
 
-    res.json({ success: true, message: 'Registration successful', message_kr: '회원가입이 완료되었습니다', user: { id: user.id, email: user.email, username: user.username, display_name: user.display_name, role: user.role }, token });
+    res.json({
+      success: true,
+      message: 'Registration successful',
+      message_kr: '회원가입 성공',
+      user,
+      token
+    });
   } catch (err) {
     console.error('Registration error:', err);
     res.status(500).json({ error: 'Server error', error_kr: '서버 오류가 발생했습니다' });
   }
 });
 
-// POST /api/auth/login
+// POST /api/auth/login (BUG-012: minimal logging)
 app.post('/api/auth/login', rateLimitLogin, (req, res) => {
   try {
     const { email, password } = req.body;
@@ -240,52 +288,40 @@ app.post('/api/auth/login', rateLimitLogin, (req, res) => {
       return res.status(400).json({ error: 'Email and password are required', error_kr: '이메일과 비밀번호를 입력해 주세요' });
     }
 
-    // Debug logging
-    console.log(`[LOGIN ATTEMPT] Email: ${email.toLowerCase()}, IP: ${req.ip}`);
-
     const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase());
     
     if (!user) {
-      console.log(`[LOGIN FAILED] User not found: ${email.toLowerCase()}`);
       try {
         db.prepare('INSERT INTO login_attempts (email, ip_address, success) VALUES (?, ?, 0)').run(email, req.ip);
-      } catch (e) {
-        // Ignore if login_attempts table doesn't exist
-      }
+      } catch (e) { /* ignore */ }
       const attempts = loginAttempts.get(req.ip) || [];
       attempts.push(Date.now());
       loginAttempts.set(req.ip, attempts);
       return res.status(401).json({ error: 'Invalid email or password', error_kr: '이메일 또는 비밀번호가 올바르지 않습니다' });
     }
 
+    // BUG-016: Guard against null password_hash (social login users)
     if (!user.password_hash) {
-      console.log(`[LOGIN FAILED] No password hash for user: ${email.toLowerCase()}`);
       return res.status(401).json({ error: 'Please login with your social account', error_kr: '소셜 계정으로 로그인해 주세요' });
     }
 
-    console.log(`[LOGIN ATTEMPT] User found, comparing password for: ${email.toLowerCase()}`);
-
     const valid = bcrypt.compareSync(password, user.password_hash);
-    console.log(`[LOGIN ATTEMPT] Password comparison result: ${valid} for ${email.toLowerCase()}`);
     
     if (!valid) {
-      console.log(`[LOGIN FAILED] Invalid password for: ${email.toLowerCase()}`);
       try {
         db.prepare('INSERT INTO login_attempts (email, ip_address, success) VALUES (?, ?, 0)').run(email, req.ip);
-      } catch (e) {
-        // Ignore if login_attempts table doesn't exist
-      }
+      } catch (e) { /* ignore */ }
       const attempts = loginAttempts.get(req.ip) || [];
       attempts.push(Date.now());
       loginAttempts.set(req.ip, attempts);
       return res.status(401).json({ error: 'Invalid email or password', error_kr: '이메일 또는 비밀번호가 올바르지 않습니다' });
     }
 
-    console.log(`[LOGIN SUCCESS] User logged in: ${email.toLowerCase()}, Role: ${user.role}`);
-
     // Update last login
     db.prepare('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?').run(user.id);
-    db.prepare('INSERT INTO login_attempts (email, ip_address, success) VALUES (?, ?, 1)').run(email, req.ip);
+    try {
+      db.prepare('INSERT INTO login_attempts (email, ip_address, success) VALUES (?, ?, 1)').run(email, req.ip);
+    } catch (e) { /* ignore */ }
 
     const token = generateToken(user);
 
@@ -295,12 +331,7 @@ app.post('/api/auth/login', rateLimitLogin, (req, res) => {
     db.prepare('INSERT INTO sessions (id, user_id, token, ip_address, user_agent, expires_at) VALUES (?, ?, ?, ?, ?, ?)')
       .run(sessionId, user.id, token, req.ip, req.headers['user-agent'] || '', expiresAt);
 
-    res.cookie(COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'lax'
-    });
+    res.cookie(COOKIE_NAME, token, getCookieOptions());
 
     res.json({
       success: true,
@@ -315,61 +346,12 @@ app.post('/api/auth/login', rateLimitLogin, (req, res) => {
   }
 });
 
-// POST /api/auth/social-login (Simulated OAuth for Gmail, Naver, Kakao)
+// POST /api/auth/social-login — DISABLED (BUG-015: no OAuth verification)
 app.post('/api/auth/social-login', (req, res) => {
-  try {
-    const { provider, provider_id, email, name, avatar_url } = req.body;
-
-    if (!provider || !email) {
-      return res.status(400).json({ error: 'Provider and email required', error_kr: '소셜 로그인 정보가 필요합니다' });
-    }
-
-    const validProviders = ['google', 'naver', 'kakao'];
-    if (!validProviders.includes(provider)) {
-      return res.status(400).json({ error: 'Invalid provider', error_kr: '지원하지 않는 소셜 로그인입니다' });
-    }
-
-    // Check if user exists
-    let user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase());
-
-    if (user) {
-      // Update provider info if needed
-      if (!user.provider_id && provider_id) {
-        db.prepare('UPDATE users SET provider = ?, provider_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
-          .run(provider, provider_id, user.id);
-      }
-      db.prepare('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?').run(user.id);
-    } else {
-      // Create new user via social login
-      const id = uuidv4();
-      const username = name || email.split('@')[0];
-      db.prepare(`
-        INSERT INTO users (id, email, username, display_name, role, provider, provider_id, avatar_url)
-        VALUES (?, ?, ?, ?, 'member', ?, ?, ?)
-      `).run(id, email.toLowerCase(), username, name || username, provider, provider_id || '', avatar_url || '');
-      user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
-    }
-
-    const token = generateToken(user);
-
-    res.cookie(COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'lax'
-    });
-
-    res.json({
-      success: true,
-      message: 'Social login successful',
-      message_kr: '소셜 로그인 성공',
-      user: { id: user.id, email: user.email, username: user.username, display_name: user.display_name, role: user.role, avatar_url: user.avatar_url },
-      token
-    });
-  } catch (err) {
-    console.error('Social login error:', err);
-    res.status(500).json({ error: 'Server error', error_kr: '서버 오류가 발생했습니다' });
-  }
+  return res.status(501).json({
+    error: 'Social login is temporarily disabled',
+    error_kr: '소셜 로그인이 일시적으로 비활성화되어 있습니다'
+  });
 });
 
 // GET /api/auth/me
@@ -388,7 +370,7 @@ app.get('/api/auth/verify', authMiddleware, (req, res) => {
 app.post('/api/auth/logout', (req, res) => {
   const token = req.cookies[COOKIE_NAME];
   if (token) {
-    db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
+    try { db.prepare('DELETE FROM sessions WHERE token = ?').run(token); } catch(e) {}
   }
   res.clearCookie(COOKIE_NAME);
   res.json({ success: true, message: 'Logged out', message_kr: '로그아웃 되었습니다' });
@@ -421,7 +403,7 @@ app.put('/api/auth/profile', authMiddleware, (req, res) => {
   }
 });
 
-// PUT /api/auth/change-password
+// PUT /api/auth/change-password (BUG-016: null password_hash guard)
 app.put('/api/auth/change-password', authMiddleware, (req, res) => {
   try {
     const { current_password, new_password } = req.body;
@@ -430,6 +412,10 @@ app.put('/api/auth/change-password', authMiddleware, (req, res) => {
     }
     if (new_password.length < 6) {
       return res.status(400).json({ error: 'New password must be at least 6 characters', error_kr: '새 비밀번호는 최소 6자 이상이어야 합니다' });
+    }
+    // Guard: social login users have no password_hash
+    if (!req.user.password_hash) {
+      return res.status(400).json({ error: 'Cannot change password for social login accounts', error_kr: '소셜 로그인 계정은 비밀번호를 변경할 수 없습니다' });
     }
     if (!bcrypt.compareSync(current_password, req.user.password_hash)) {
       return res.status(401).json({ error: 'Current password is incorrect', error_kr: '현재 비밀번호가 올바르지 않습니다' });
@@ -517,62 +503,45 @@ app.put('/api/admin/settings', authMiddleware, adminMiddleware, (req, res) => {
   }
 });
 
-// GET /api/admin/stats
+// GET /api/admin/stats (includes totalPosts)
 app.get('/api/admin/stats', authMiddleware, adminMiddleware, (req, res) => {
-  const totalUsers = db.prepare('SELECT COUNT(*) as count FROM users').get().count;
-  const activeUsers = db.prepare('SELECT COUNT(*) as count FROM users WHERE is_active = 1').get().count;
-  const todayLogins = db.prepare("SELECT COUNT(*) as count FROM login_attempts WHERE success = 1 AND attempted_at >= date('now')").get().count;
-  const recentUsers = db.prepare('SELECT id, email, username, display_name, role, created_at FROM users ORDER BY created_at DESC LIMIT 5').all();
-  const loginHistory = db.prepare("SELECT DATE(attempted_at) as date, COUNT(*) as total, SUM(success) as successful FROM login_attempts WHERE attempted_at >= date('now', '-7 days') GROUP BY DATE(attempted_at) ORDER BY date").all();
-  const totalPosts = db.prepare('SELECT COUNT(*) as count FROM posts').get().count;
-  res.json({ success: true, stats: { totalUsers, activeUsers, todayLogins, recentUsers, loginHistory, totalPosts } });
+  try {
+    const totalUsers = db.prepare('SELECT COUNT(*) as count FROM users').get().count;
+    const activeUsers = db.prepare('SELECT COUNT(*) as count FROM users WHERE is_active = 1').get().count;
+    const todayLogins = db.prepare("SELECT COUNT(*) as count FROM login_attempts WHERE success = 1 AND attempted_at >= date('now')").get().count;
+    
+    let totalPosts = 0;
+    try {
+      totalPosts = db.prepare('SELECT COUNT(*) as count FROM posts').get().count;
+    } catch(e) { /* posts table may not exist yet */ }
+    
+    const recentUsers = db.prepare('SELECT id, email, username, display_name, role, created_at FROM users ORDER BY created_at DESC LIMIT 5').all();
+    const loginHistory = db.prepare("SELECT DATE(attempted_at) as date, COUNT(*) as total, SUM(success) as successful FROM login_attempts WHERE attempted_at >= date('now', '-7 days') GROUP BY DATE(attempted_at) ORDER BY date").all();
+    
+    res.json({ success: true, stats: { totalUsers, activeUsers, todayLogins, totalPosts, recentUsers, loginHistory } });
+  } catch (err) {
+    console.error('Admin stats error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
-// Admin: Get ALL posts (including unpublished) with filters
+// GET /api/admin/posts — returns ALL posts (including unpublished) for admin CMS
 app.get('/api/admin/posts', authMiddleware, adminMiddleware, (req, res) => {
   try {
-    const { category, search, limit = 50, offset = 0 } = req.query;
-    
-    let query = `
-      SELECT p.*, 
-        COUNT(c.id) as comment_count
+    const posts = db.prepare(`
+      SELECT p.*, COUNT(c.id) as comment_count
       FROM posts p
       LEFT JOIN comments c ON p.id = c.post_id
-      WHERE 1=1
-    `;
-    
-    const params = [];
-    
-    if (category && category !== 'all') {
-      query += ' AND p.category = ?';
-      params.push(category);
-    }
-    
-    if (search) {
-      query += ' AND (p.title LIKE ? OR p.content LIKE ?)';
-      params.push(`%${search}%`, `%${search}%`);
-    }
-    
-    query += ' GROUP BY p.id ORDER BY p.is_pinned DESC, p.created_at DESC LIMIT ? OFFSET ?';
-    params.push(parseInt(limit), parseInt(offset));
-    
-    const posts = db.prepare(query).all(...params);
-    const total = db.prepare('SELECT COUNT(*) as count FROM posts').get().count;
-    
-    res.json({
-      success: true,
-      data: posts,
-      total: total,
-      count: posts.length
-    });
-  } catch (error) {
-    console.error('Error fetching admin posts:', error);
+      GROUP BY p.id
+      ORDER BY p.created_at DESC
+    `).all();
+    res.json({ success: true, data: posts, count: posts.length, total: posts.length });
+  } catch (err) {
+    console.error('Admin posts error:', err);
     res.status(500).json({ success: false, error: 'Failed to fetch posts' });
   }
 });
 
-// ============================================
-// SERVE FRONTEND
 // ============================================
 // CONTENT MANAGEMENT SYSTEM (CMS)
 // ============================================
@@ -608,7 +577,7 @@ db.exec(`
   );
 `);
 
-// Create board system tables
+// Create board system tables (BUG-001: aligned with actual DB schema)
 db.exec(`
   CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -620,7 +589,9 @@ db.exec(`
     author_name TEXT NOT NULL,
     is_published INTEGER DEFAULT 1,
     is_pinned INTEGER DEFAULT 0,
-    view_count INTEGER DEFAULT 0,
+    views INTEGER DEFAULT 0,
+    likes INTEGER DEFAULT 0,
+    pinned INTEGER DEFAULT 0,
     image_url TEXT,
     video_url TEXT,
     tags TEXT,
@@ -630,6 +601,7 @@ db.exec(`
   );
 `);
 
+// BUG-002: Comments table — NO is_deleted column, add updated_at
 db.exec(`
   CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -637,8 +609,8 @@ db.exec(`
     author_id TEXT NOT NULL,
     author_name TEXT NOT NULL,
     content TEXT NOT NULL,
-    is_deleted INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
   );
@@ -655,13 +627,11 @@ db.exec(`
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(__dirname, 'public', 'uploads');
-if (!require('fs').existsSync(uploadsDir)) {
-  require('fs').mkdirSync(uploadsDir, { recursive: true });
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
 // --- Image Upload (using built-in parsing) ---
-const fs = require('fs');
-const crypto = require('crypto');
 
 // Multipart form parser for image uploads
 app.post('/api/admin/upload-image', authMiddleware, adminMiddleware, (req, res) => {
@@ -743,22 +713,27 @@ app.post('/api/admin/upload-image', authMiddleware, adminMiddleware, (req, res) 
   });
 });
 
-// Simple multipart parser
+// BUG-004: Fixed multipart parser with proper Buffer CRLF handling
 function parseMultipart(body, boundary) {
   const parts = [];
   const boundaryBuffer = Buffer.from(`--${boundary}`);
-  let start = body.indexOf(boundaryBuffer) + boundaryBuffer.length + 2;
+  const CRLF = Buffer.from('\r\n');
+  const CRLFCRLF = Buffer.from('\r\n\r\n');
+
+  let start = bufferIndexOf(body, boundaryBuffer, 0);
+  if (start === -1) return parts;
+  start += boundaryBuffer.length + CRLF.length;
 
   while (start < body.length) {
-    const end = body.indexOf(boundaryBuffer, start);
+    const end = bufferIndexOf(body, boundaryBuffer, start);
     if (end === -1) break;
 
-    const part = body.slice(start, end - 2);
-    const headerEnd = part.indexOf('\r\n\r\n');
-    if (headerEnd === -1) { start = end + boundaryBuffer.length + 2; continue; }
+    const part = body.slice(start, end - CRLF.length);
+    const headerEnd = bufferIndexOf(part, CRLFCRLF, 0);
+    if (headerEnd === -1) { start = end + boundaryBuffer.length + CRLF.length; continue; }
 
     const headers = part.slice(0, headerEnd).toString();
-    const data = part.slice(headerEnd + 4);
+    const data = part.slice(headerEnd + CRLFCRLF.length);
 
     const nameMatch = headers.match(/name="([^"]+)"/);
     const filenameMatch = headers.match(/filename="([^"]+)"/);
@@ -771,9 +746,21 @@ function parseMultipart(body, boundary) {
       data
     });
 
-    start = end + boundaryBuffer.length + 2;
+    start = end + boundaryBuffer.length + CRLF.length;
   }
   return parts;
+}
+
+// Helper: find Buffer in Buffer
+function bufferIndexOf(buf, search, offset) {
+  for (let i = offset || 0; i <= buf.length - search.length; i++) {
+    let found = true;
+    for (let j = 0; j < search.length; j++) {
+      if (buf[i + j] !== search[j]) { found = false; break; }
+    }
+    if (found) return i;
+  }
+  return -1;
 }
 
 // --- List uploaded images ---
@@ -883,310 +870,315 @@ app.get('/api/admin/layout/:pagePath', authMiddleware, (req, res) => {
 
 // Get posts with filters
 app.get('/api/posts', (req, res) => {
-    try {
-      const { category, post_type, limit = 20, offset = 0, search } = req.query;
-      
-      let query = `
-        SELECT p.*, 
-          COUNT(c.id) as comment_count
-        FROM posts p
-        LEFT JOIN comments c ON p.id = c.post_id
-        WHERE p.is_published = 1
-      `;
-      
-      const params = [];
-      
-      if (category) {
-        query += ' AND p.category = ?';
-        params.push(category);
-      }
-      
-      if (post_type) {
-        query += ' AND p.post_type = ?';
-        params.push(post_type);
-      }
-      
-      if (search) {
-        query += ' AND (p.title LIKE ? OR p.content LIKE ?)';
-        params.push(`%${search}%`, `%${search}%`);
-      }
-      
-      query += ' GROUP BY p.id ORDER BY p.is_pinned DESC, p.created_at DESC LIMIT ? OFFSET ?';
-      params.push(parseInt(limit), parseInt(offset));
-      
-      const posts = db.prepare(query).all(...params);
-      
-      res.json({
-        success: true,
-        data: posts,
-        count: posts.length
-      });
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-      res.status(500).json({ success: false, error: 'Failed to fetch posts' });
+  try {
+    const { category, post_type, limit = 20, offset = 0, search } = req.query;
+    
+    let query = `
+      SELECT p.*, 
+        COUNT(c.id) as comment_count
+      FROM posts p
+      LEFT JOIN comments c ON p.id = c.post_id
+      WHERE p.is_published = 1
+    `;
+    
+    const params = [];
+    
+    if (category) {
+      query += ' AND p.category = ?';
+      params.push(category);
     }
-  });
-
-  // Get recent posts for main page
-  app.get('/api/posts/recent', (req, res) => {
-    try {
-      const { limit = 5 } = req.query;
-      
-      const categories = [
-        { key: 'korean_thought', name: '한국사상과성경' },
-        { key: 'world_thought', name: '세계사상과성경' },
-        { key: 'publications', name: '책과논문' },
-        { key: 'forum', name: '열린마당' },
-        { key: 'announcements', name: '공지사항' },
-        { key: 'general', name: '게시판' },
-        { key: 'media', name: '이미지&동영상' }
-      ];
-      
-      const result = {};
-      
-      for (const cat of categories) {
-        const posts = db.prepare(`
-          SELECT id, title, content, author_name, created_at, image_url, video_url
-          FROM posts
-          WHERE category = ? AND is_published = 1
-          ORDER BY is_pinned DESC, created_at DESC
-          LIMIT ?
-        `).all(cat.key, parseInt(limit));
-        
-        result[cat.key] = {
-          name: cat.name,
-          posts: posts.map(post => ({
-            ...post,
-            excerpt: post.content.substring(0, 150) + '...'
-          }))
-        };
-      }
-      
-      res.json({
-        success: true,
-        data: result
-      });
-    } catch (error) {
-      console.error('Error fetching recent posts:', error);
-      res.status(500).json({ success: false, error: 'Failed to fetch recent posts' });
+    
+    if (post_type) {
+      query += ' AND p.post_type = ?';
+      params.push(post_type);
     }
-  });
+    
+    if (search) {
+      query += ' AND (p.title LIKE ? OR p.content LIKE ?)';
+      params.push(`%${search}%`, `%${search}%`);
+    }
+    
+    query += ' GROUP BY p.id ORDER BY p.is_pinned DESC, p.created_at DESC LIMIT ? OFFSET ?';
+    params.push(parseInt(limit), parseInt(offset));
+    
+    const posts = db.prepare(query).all(...params);
+    
+    res.json({
+      success: true,
+      data: posts,
+      count: posts.length
+    });
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch posts' });
+  }
+});
 
-  // Get single post with comments
-  app.get('/api/posts/:id', (req, res) => {
-    try {
-      const { id } = req.params;
+// Get recent posts for main page (BUG-010: all 12 categories)
+app.get('/api/posts/recent', (req, res) => {
+  try {
+    const { limit = 5 } = req.query;
+    
+    const categories = [
+      { key: 'korean_thought', name: '한국사상과성경' },
+      { key: 'world_thought', name: '세계사상과성경' },
+      { key: 'publications', name: '책과논문' },
+      { key: 'comparative_research', name: '비교연구' },
+      { key: 'ai_research', name: 'AI연구' },
+      { key: 'forum', name: '열린마당' },
+      { key: 'announcements', name: '공지사항' },
+      { key: 'general', name: '게시판' },
+      { key: 'media', name: '이미지&동영상' },
+      { key: 'archive', name: '아카이브' },
+      { key: 'seminar', name: '세미나' },
+      { key: 'participation', name: '참여마당' }
+    ];
+    
+    const result = {};
+    
+    for (const cat of categories) {
+      const posts = db.prepare(`
+        SELECT id, title, content, author_name, created_at, image_url, video_url
+        FROM posts
+        WHERE category = ? AND is_published = 1
+        ORDER BY is_pinned DESC, created_at DESC
+        LIMIT ?
+      `).all(cat.key, parseInt(limit));
       
-      // Increment view count
-      db.prepare('UPDATE posts SET views = views + 1 WHERE id = ?').run(id);
-      
-      // Get post
-      const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(id);
-      
-      if (!post) {
-        return res.status(404).json({ success: false, error: 'Post not found' });
-      }
-      
-      // Get comments
-      const comments = db.prepare(`
-        SELECT c.*, u.email
-        FROM comments c
-        LEFT JOIN users u ON c.author_id = u.id
-        WHERE c.post_id = ?
-        ORDER BY c.created_at ASC
-      `).all(id);
-      
-      res.json({
-        success: true,
-        data: {
+      result[cat.key] = {
+        name: cat.name,
+        posts: posts.map(post => ({
           ...post,
-          comments
-        }
-      });
-    } catch (error) {
-      console.error('Error fetching post:', error);
-      res.status(500).json({ success: false, error: 'Failed to fetch post' });
+          excerpt: post.content ? post.content.substring(0, 150) + '...' : ''
+        }))
+      };
     }
-  });
+    
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    console.error('Error fetching recent posts:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch recent posts' });
+  }
+});
 
-  // Create new post (admin only)
-  app.post('/api/posts', authMiddleware, (req, res) => {
-    try {
-      const user = req.user;
-      
-      if (user.role !== 'admin') {
-        return res.status(403).json({ success: false, error: 'Admin access required' });
-      }
-      
-      const { title, content, category, post_type, is_published, is_pinned, image_url, video_url, tags } = req.body;
-      
-      if (!title || !content) {
-        return res.status(400).json({ success: false, error: 'Title and content are required' });
-      }
-      
-      const result = db.prepare(`
-        INSERT INTO posts (title, content, category, post_type, author_id, author_name, is_published, is_pinned, image_url, video_url, tags)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(
-        title,
-        content,
-        category || 'general',
-        post_type || 'post',
-        user.id,
-        user.display_name || user.username,
-        is_published ? 1 : 0,
-        is_pinned ? 1 : 0,
-        image_url || null,
-        video_url || null,
-        tags || null
-      );
-      
-      res.json({
-        success: true,
-        data: { id: result.lastInsertRowid, message: 'Post created successfully' }
-      });
-    } catch (error) {
-      console.error('Error creating post:', error);
-      res.status(500).json({ success: false, error: 'Failed to create post' });
+// Get single post with comments (BUG-001: views not view_count, BUG-002: no is_deleted)
+app.get('/api/posts/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Increment view count (BUG-001: use 'views' column)
+    db.prepare('UPDATE posts SET views = views + 1 WHERE id = ?').run(id);
+    
+    // Get post
+    const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(id);
+    
+    if (!post) {
+      return res.status(404).json({ success: false, error: 'Post not found' });
     }
-  });
+    
+    // Get comments (BUG-002: no is_deleted filter)
+    const comments = db.prepare(`
+      SELECT c.*, u.email
+      FROM comments c
+      LEFT JOIN users u ON c.author_id = u.id
+      WHERE c.post_id = ?
+      ORDER BY c.created_at ASC
+    `).all(id);
+    
+    res.json({
+      success: true,
+      data: {
+        ...post,
+        comments
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch post' });
+  }
+});
 
-  // Update post
-  app.put('/api/posts/:id', authMiddleware, (req, res) => {
-    try {
-      const { id } = req.params;
-      const user = req.user;
-      
-      // Check ownership or admin
-      const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(id);
-      
-      if (!post) {
-        return res.status(404).json({ success: false, error: 'Post not found' });
-      }
-      
-      if (user.role !== 'admin' && post.author_id !== user.id) {
-        return res.status(403).json({ success: false, error: 'Not authorized to edit this post' });
-      }
-      
-      const { title, content, category, post_type, is_published, is_pinned, image_url, video_url, tags } = req.body;
-      
-      db.prepare(`
-        UPDATE posts
-        SET title = ?, content = ?, category = ?, post_type = ?, is_published = ?, is_pinned = ?, image_url = ?, video_url = ?, tags = ?, updated_at = CURRENT_TIMESTAMP
-        WHERE id = ?
-      `).run(
-        title,
-        content,
-        category || post.category,
-        post_type || post.post_type,
-        is_published !== undefined ? (is_published ? 1 : 0) : post.is_published,
-        is_pinned !== undefined ? (is_pinned ? 1 : 0) : post.is_pinned,
-        image_url !== undefined ? image_url : post.image_url,
-        video_url !== undefined ? video_url : post.video_url,
-        tags !== undefined ? tags : post.tags,
-        id
-      );
-      
-      res.json({
-        success: true,
-        message: 'Post updated successfully'
-      });
-    } catch (error) {
-      console.error('Error updating post:', error);
-      res.status(500).json({ success: false, error: 'Failed to update post' });
+// Create new post (admin only)
+app.post('/api/posts', authMiddleware, (req, res) => {
+  try {
+    const user = req.user;
+    
+    if (user.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Admin access required' });
     }
-  });
+    
+    const { title, content, category, post_type, is_published, is_pinned, image_url, video_url, tags } = req.body;
+    
+    if (!title || !content) {
+      return res.status(400).json({ success: false, error: 'Title and content are required' });
+    }
+    
+    const result = db.prepare(`
+      INSERT INTO posts (title, content, category, post_type, author_id, author_name, is_published, is_pinned, image_url, video_url, tags)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      title,
+      content,
+      category || 'general',
+      post_type || 'post',
+      user.id,
+      user.display_name || user.username,
+      is_published ? 1 : 0,
+      is_pinned ? 1 : 0,
+      image_url || null,
+      video_url || null,
+      tags || null
+    );
+    
+    res.json({
+      success: true,
+      data: { id: result.lastInsertRowid, message: 'Post created successfully' }
+    });
+  } catch (error) {
+    console.error('Error creating post:', error);
+    res.status(500).json({ success: false, error: 'Failed to create post' });
+  }
+});
 
-  // Delete post
-  app.delete('/api/posts/:id', authMiddleware, (req, res) => {
-    try {
-      const { id } = req.params;
-      const user = req.user;
-      
-      // Check ownership or admin
-      const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(id);
-      
-      if (!post) {
-        return res.status(404).json({ success: false, error: 'Post not found' });
-      }
-      
-      if (user.role !== 'admin' && post.author_id !== user.id) {
-        return res.status(403).json({ success: false, error: 'Not authorized to delete this post' });
-      }
-      
-      db.prepare('DELETE FROM posts WHERE id = ?').run(id);
-      
-      res.json({
-        success: true,
-        message: 'Post deleted successfully'
-      });
-    } catch (error) {
-      console.error('Error deleting post:', error);
-      res.status(500).json({ success: false, error: 'Failed to delete post' });
+// Update post
+app.put('/api/posts/:id', authMiddleware, (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+    
+    // Check ownership or admin
+    const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(id);
+    
+    if (!post) {
+      return res.status(404).json({ success: false, error: 'Post not found' });
     }
-  });
+    
+    if (user.role !== 'admin' && post.author_id !== user.id) {
+      return res.status(403).json({ success: false, error: 'Not authorized to edit this post' });
+    }
+    
+    const { title, content, category, post_type, is_published, is_pinned, image_url, video_url, tags } = req.body;
+    
+    db.prepare(`
+      UPDATE posts
+      SET title = ?, content = ?, category = ?, post_type = ?, is_published = ?, is_pinned = ?, image_url = ?, video_url = ?, tags = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).run(
+      title,
+      content,
+      category || post.category,
+      post_type || post.post_type,
+      is_published !== undefined ? (is_published ? 1 : 0) : post.is_published,
+      is_pinned !== undefined ? (is_pinned ? 1 : 0) : post.is_pinned,
+      image_url !== undefined ? image_url : post.image_url,
+      video_url !== undefined ? video_url : post.video_url,
+      tags !== undefined ? tags : post.tags,
+      id
+    );
+    
+    res.json({
+      success: true,
+      message: 'Post updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating post:', error);
+    res.status(500).json({ success: false, error: 'Failed to update post' });
+  }
+});
 
-  // Add comment to post
-  app.post('/api/posts/:id/comments', authMiddleware, (req, res) => {
-    try {
-      const { id } = req.params;
-      const user = req.user;
-      const { content } = req.body;
-      
-      if (!content) {
-        return res.status(400).json({ success: false, error: 'Comment content is required' });
-      }
-      
-      // Check if post exists
-      const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(id);
-      
-      if (!post) {
-        return res.status(404).json({ success: false, error: 'Post not found' });
-      }
-      
-      const result = db.prepare(`
-        INSERT INTO comments (post_id, content, author_id, author_name)
-        VALUES (?, ?, ?, ?)
-      `).run(id, content, user.id, user.name);
-      
-      res.json({
-        success: true,
-        data: { id: result.lastInsertRowid, message: 'Comment added successfully' }
-      });
-    } catch (error) {
-      console.error('Error adding comment:', error);
-      res.status(500).json({ success: false, error: 'Failed to add comment' });
+// Delete post
+app.delete('/api/posts/:id', authMiddleware, (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+    
+    // Check ownership or admin
+    const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(id);
+    
+    if (!post) {
+      return res.status(404).json({ success: false, error: 'Post not found' });
     }
-  });
+    
+    if (user.role !== 'admin' && post.author_id !== user.id) {
+      return res.status(403).json({ success: false, error: 'Not authorized to delete this post' });
+    }
+    
+    db.prepare('DELETE FROM posts WHERE id = ?').run(id);
+    
+    res.json({
+      success: true,
+      message: 'Post deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    res.status(500).json({ success: false, error: 'Failed to delete post' });
+  }
+});
 
-  // Delete comment
-  app.delete('/api/posts/:id/comments/:commentId', authMiddleware, (req, res) => {
-    try {
-      const { id, commentId } = req.params;
-      const user = req.user;
-      
-      // Check ownership or admin
-      const comment = db.prepare('SELECT * FROM comments WHERE id = ? AND post_id = ?').get(commentId, id);
-      
-      if (!comment) {
-        return res.status(404).json({ success: false, error: 'Comment not found' });
-      }
-      
-      if (user.role !== 'admin' && comment.author_id !== user.id) {
-        return res.status(403).json({ success: false, error: 'Not authorized to delete this comment' });
-      }
-      
-      db.prepare('UPDATE comments SET is_deleted = 1 WHERE id = ?').run(commentId);
-      
-      res.json({
-        success: true,
-        message: 'Comment deleted successfully'
-      });
-    } catch (error) {
-      console.error('Error deleting comment:', error);
-      res.status(500).json({ success: false, error: 'Failed to delete comment' });
+// Add comment to post (BUG-003: use display_name || username, not user.name)
+app.post('/api/posts/:id/comments', authMiddleware, (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+    const { content } = req.body;
+    
+    if (!content) {
+      return res.status(400).json({ success: false, error: 'Comment content is required' });
     }
-  });
+    
+    // Check if post exists
+    const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(id);
+    
+    if (!post) {
+      return res.status(404).json({ success: false, error: 'Post not found' });
+    }
+    
+    const result = db.prepare(`
+      INSERT INTO comments (post_id, content, author_id, author_name)
+      VALUES (?, ?, ?, ?)
+    `).run(id, content, user.id, user.display_name || user.username);
+    
+    res.json({
+      success: true,
+      data: { id: result.lastInsertRowid, message: 'Comment added successfully' }
+    });
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).json({ success: false, error: 'Failed to add comment' });
+  }
+});
+
+// Delete comment (BUG-002: hard delete, not soft delete)
+app.delete('/api/posts/:id/comments/:commentId', authMiddleware, (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const user = req.user;
+    
+    // Check ownership or admin
+    const comment = db.prepare('SELECT * FROM comments WHERE id = ? AND post_id = ?').get(commentId, id);
+    
+    if (!comment) {
+      return res.status(404).json({ success: false, error: 'Comment not found' });
+    }
+    
+    if (user.role !== 'admin' && comment.author_id !== user.id) {
+      return res.status(403).json({ success: false, error: 'Not authorized to delete this comment' });
+    }
+    
+    db.prepare('DELETE FROM comments WHERE id = ?').run(commentId);
+    
+    res.json({
+      success: true,
+      message: 'Comment deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ success: false, error: 'Failed to delete comment' });
+  }
+});
 
 // ============================================
 // Catch-all: serve 404 for non-existent routes

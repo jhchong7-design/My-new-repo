@@ -1,9 +1,8 @@
 node_modules/
-*.db
-*.db-shm
-*.db-wal
 server.log
 *.pyc
+*.db-shm
+*.db-wal
 debug_*.js
 debug_*.log
 check_*.js
@@ -17,3 +16,6 @@ todo.md
 test-*.js
 inject-*.js
 index-completed.html
+.jwt_secret
+*.db
+test_api.js
