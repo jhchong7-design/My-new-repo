@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시온산교회 관리자</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin-unified.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+
+<!-- ============================================
+     LOGIN SCREEN
+     ============================================ -->
+<div id="loginScreen" class="login-screen">
+    <div class="login-card">
+        <div class="login-logo">
+            <i class="fas fa-church"></i>
+            <h1>시온산교회 관리자</h1>
+            <p>Mount Zion Church Administration</p>
+        </div>
+        <div id="loginError" class="login-error"></div>
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="loginUsername">아이디</label>
+                <input type="text" id="loginUsername" placeholder="관리자 아이디" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">비밀번호</label>
+                <input type="password" id="loginPassword" placeholder="비밀번호" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> 로그인
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================
+     ADMIN LAYOUT
+     ============================================ -->
+<div id="adminLayout" class="admin-layout">
+    <!-- Sidebar Overlay (mobile) -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="adminSidebar" class="admin-sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-church"></i> 시온산교회</h2>
+            <p>관리자 대시보드</p>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">메인</div>
+            <div class="nav-item active" data-panel="dashboard" onclick="AdminApp.navigateTo('dashboard')">
+                <i class="fas fa-tachometer-alt"></i> 대시보드
+            </div>
+
+            <div class="nav-section-title">게시판 관리</div>
+            <div class="nav-item" data-board="notice" onclick="AdminApp.navigateTo('board','notice')">
+                <i class="fas fa-bell"></i> 공지사항 <span class="nav-badge">0</span>
+            </div>
+            <div class="nav-item" data-board="korean_bible" onclick="AdminApp.navigateTo('board','korean_bible')">
+                <i class="fas fa-book"></i> 한국사상과성경 <span class="nav-badge">0</span>
+            </div>
+            <div class="nav-item" data-board="world_bible" onclick="AdminApp.navigateTo('board','world_bible')">
+                <i class="fas fa-globe"></i> 세계사상과성경 <span class="nav-badge">0</span>
+            </div>
+            <div class="nav-item" data-board="books_papers" onclick="AdminApp.navigateTo('board','books_papers')">
+                <i class="fas fa-file-alt"></i> 책과논문 <span class="nav-badge">0</span>
+            </div>
+            <div class="nav-item" data-board="openforum" onclick="AdminApp.navigateTo('board','openforum')">
+                <i class="fas fa-comments"></i> 열린마당 <span class="nav-badge">0</span>
+            </div>
+            <div class="nav-item" data-board="board" onclick="AdminApp.navigateTo('board','board')">
+                <i class="fas fa-list"></i> 게시판 <span class="nav-badge">0</span>
+            </div>
+
+            <div class="nav-section-title">미디어</div>
+            <div class="nav-item" data-panel="media" onclick="AdminApp.navigateTo('media')">
+                <i class="fas fa-images"></i> 미디어 관리
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="nav-item" onclick="AdminApp.logout()">
+                <i class="fas fa-sign-out-alt"></i> 로그아웃
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-main">
+        <!-- TOPBAR -->
+        <header class="admin-topbar">
+            <div class="topbar-left">
+                <button class="mobile-menu-toggle" onclick="AdminApp.toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="topbarTitle">대시보드</h1>
+                <div id="topbarBreadcrumb" class="breadcrumb">관리자 > 대시보드</div>
+            </div>
+            <div class="topbar-right">
+                <div class="admin-user-badge">
+                    <i class="fas fa-user-shield"></i>
+                    <span id="adminUserName">관리자</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- DASHBOARD PANEL -->
+            <div id="panelDashboard" class="panel active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-file-alt"></i></div>
+                        <div class="stat-info"><h3 id="statTotalPosts">0</h3><p>전체 게시글</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-users"></i></div>
+                        <div class="stat-info"><h3 id="statTotalUsers">0</h3><p>전체 회원</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-images"></i></div>
+                        <div class="stat-info"><h3 id="statTotalMedia">0</h3><p>미디어 파일</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><i class="fas fa-bell"></i></div>
+                        <div class="stat-info"><h3 id="statNotice">0</h3><p>공지사항</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon cyan"><i class="fas fa-book"></i></div>
+                        <div class="stat-info"><h3 id="statKoreanBible">0</h3><p>한국사상과성경</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon indigo"><i class="fas fa-globe"></i></div>
+                        <div class="stat-info"><h3 id="statWorldBible">0</h3><p>세계사상과성경</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pink"><i class="fas fa-file-alt"></i></div>
+                        <div class="stat-info"><h3 id="statBooksPapers">0</h3><p>책과논문</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fas fa-comments"></i></div>
+                        <div class="stat-info"><h3 id="statOpenForum">0</h3><p>열린마당</p></div>
+                    </div>
+                </div>
+                <h2 style="margin-bottom:16px; font-size:1.1rem;">빠른 접근</h2>
+                <div class="quick-access">
+                    <div class="quick-card" onclick="AdminApp.navigateTo('board','notice')">
+                        <h3><i class="fas fa-bell"></i> 공지사항 관리</h3>
+                        <p>공지사항을 작성하고 관리합니다</p>
+                    </div>
+                    <div class="quick-card" onclick="AdminApp.navigateTo('media')">
+                        <h3><i class="fas fa-images"></i> 미디어 관리</h3>
+                        <p>이미지와 동영상을 업로드합니다</p>
+                    </div>
+                    <div class="quick-card" onclick="AdminApp.navigateTo('board','korean_bible')">
+                        <h3><i class="fas fa-book"></i> 한국사상과성경</h3>
+                        <p>연구 게시글을 관리합니다</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOARD PANEL -->
+            <div id="panelBoard" class="panel">
+                <div class="board-toolbar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="boardSearch" placeholder="게시글 검색..." oninput="AdminApp.handleSearch(this.value)">
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="AdminApp.openCreateModal()">
+                        <i class="fas fa-plus"></i> 새 게시글
+                    </button>
+                </div>
+                <div id="bulkActions" class="bulk-actions">
+                    <span id="selectedCount">0개 선택됨</span>
+                    <button class="btn btn-danger btn-sm" onclick="AdminApp.bulkDelete()">
+                        <i class="fas fa-trash"></i> 선택 삭제
+                    </button>
+                </div>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width:40px"><input type="checkbox" class="table-checkbox" onchange="AdminApp.toggleSelectAll(this)"></th>
+                                <th>제목</th>
+                                <th>카테고리</th>
+                                <th>작성자</th>
+                                <th>조회</th>
+                                <th>날짜</th>
+                                <th style="width:100px">관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="postsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="boardPagination" class="pagination"></div>
+            </div>
+
+            <!-- MEDIA PANEL -->
+            <div id="panelMedia" class="panel">
+                <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>파일을 여기에 드래그하거나 <span class="upload-btn-label">클릭하여 업로드</span></p>
+                    <p style="font-size:0.78rem; color:#94a3b8; margin-top:6px;">JPG, PNG, GIF, MP4 (최대 10MB)</p>
+                    <input type="file" id="fileInput" accept="image/*,video/*" style="display:none" onchange="AdminApp.handleFileUpload(this)">
+                </div>
+                <div id="mediaGrid" class="media-grid"></div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ============================================
+     CREATE/EDIT MODAL
+     ============================================ -->
+<div id="postModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">새 게시글 작성</h2>
+            <button class="modal-close" onclick="AdminApp.closeModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="postForm">
+                <input type="hidden" id="postId">
+                <div class="form-group">
+                    <label>게시판</label>
+                    <select id="postBoardType">
+                        <option value="notice">공지사항</option>
+                        <option value="korean_bible">한국사상과성경</option>
+                        <option value="world_bible">세계사상과성경</option>
+                        <option value="books_papers">책과논문</option>
+                        <option value="openforum">열린마당</option>
+                        <option value="board">게시판</option>
+                        <option value="sermon">설교</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>카테고리</label>
+                    <input type="text" id="postCategory" placeholder="카테고리">
+                </div>
+                <div class="form-group">
+                    <label>제목 *</label>
+                    <input type="text" id="postTitle" placeholder="제목을 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label>내용 *</label>
+                    <textarea id="postContent" placeholder="내용을 입력하세요" rows="8" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>태그 (Enter로 추가)</label>
+                    <div class="tags-input-container" id="tagsContainer">
+                        <input type="text" id="tagInput" placeholder="태그 입력 후 Enter" onkeydown="AdminApp.handleTagKey(event)">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>동영상 URL</label>
+                    <input type="text" id="postVideoUrl" placeholder="YouTube 링크 등">
+                </div>
+                <div class="checkbox-row">
+                    <input type="checkbox" id="postPinned">
+                    <label for="postPinned">상단 고정</label>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="AdminApp.closeModal()">취소</button>
+            <button class="btn btn-primary" onclick="AdminApp.handlePostSubmit()">
+                <i class="fas fa-save"></i> 저장
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     VIEW POST MODAL
+     ============================================ -->
+<div id="viewModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="viewTitle">게시글</h2>
+            <button class="modal-close" onclick="AdminApp.closeViewModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div id="viewMeta" class="view-post-meta"></div>
+            <div id="viewContent" class="view-post-content"></div>
+            <div id="viewTags" class="view-post-tags"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="AdminApp.closeViewModal()">닫기</button>
+            <button class="btn btn-primary" id="viewEditBtn" onclick="">
+                <i class="fas fa-edit"></i> 수정
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     CONFIRM DIALOG
+     ============================================ -->
+<div id="confirmOverlay" class="confirm-overlay">
+    <div class="confirm-dialog">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>삭제 확인</h3>
+        <p id="confirmMessage">정말 삭제하시겠습니까?</p>
+        <div class="confirm-btns">
+            <button class="btn btn-outline" onclick="AdminApp.cancelDelete()">취소</button>
+            <button class="btn btn-danger" onclick="AdminApp.confirmDeleteAction()">삭제</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="/js/admin-unified.js"></script>
+</body>
+</html>

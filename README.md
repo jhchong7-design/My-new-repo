@@ -1,151 +1,365 @@
-# ✝ Bible Glocal — 성경 사랑방
+# 시온산교회 시온산제국 웹사이트
+# Mount Zion Church & Empire Website
 
-**Professor Jung Joong-Ho's Bible Study Website**
-정중호 교수의 성경 사랑방 — bibleglocal.org
+A comprehensive, fully functional website for Mount Zion Church & Empire with full admin capabilities, member system, and social media integration.
 
-A bilingual (Korean/English) academic Bible study website featuring Korean thought & Bible, world thought & Bible, publications, open forum, and a full admin CMS.
+## 🌟 Features
 
----
+### Public Features
+- **Responsive Design**: Works perfectly on desktop and mobile devices
+- **Bilingual Support**: Korean and English content
+- **Navigation Menu**: 6 main sections with sub-menus
+  - 운영자소개 (Administrator Introduction)
+  - 시온산교회 (Mount Zion Church)
+  - 시온산제국 (Mount Zion Empire)
+  - 책과논문 (Books & Papers)
+  - 열린마당 (Open Forum):
+    - 공지사항 (Notices)
+    - 게시판 (Discussion Board)
+    - 이미지&동영상 (Images & Videos)
 
-## 🚀 Quick Start
+### Social Media Integration
+- **Korean Platforms**: Naver, Daum, Kakao
+- **International Platforms**: Facebook, Twitter, LinkedIn
+- Share buttons on all pages
+
+### Member System
+- User registration with email/username
+- Login functionality
+- Member dashboard
+- Profile management
+- Password recovery
+
+### Admin Panel
+- Full content management system (CMS)
+- Page editor for all sections
+- Notice management
+- Post moderation
+- Image/video upload
+- User management
+- System settings
+- Complete admin privileges
+
+## 📋 Tech Stack
+
+### Frontend
+- HTML5, CSS3, JavaScript (Vanilla)
+- Responsive design with CSS Grid/Flexbox
+- No external frameworks for maximum compatibility
+
+### Backend
+- Node.js with Express.js
+- MongoDB for data storage
+- JWT authentication
+- Session management
+- RESTful API
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+- Node.js (v14 or higher)
+- MongoDB (v4.4 or higher)
+- npm or yarn
+
+### Step 1: Install Dependencies
 
 ```bash
-# 1. Install dependencies
+cd mzchurch
 npm install
-
-# 2. Start server
-node server.js
-
-# 3. Open browser
-# http://localhost:3000
 ```
 
-The server automatically creates the admin account and database on first run.
+### Step 2: Configure Environment Variables
 
----
+The `.env` file is already configured with:
+- PORT: 3000
+- MongoDB URI
+- JWT secrets
+- Email configuration
 
-## 🔐 Admin Access
+Note: Make sure MongoDB is running locally or update the `MONGODB_URI` in `.env` to your MongoDB connection string.
 
-| Field | Value |
-|-------|-------|
-| Email | `st805@naver.com` |
-| Password | `#9725` |
-| Display Name | (청산) 정중호 |
+### Step 3: Initialize Database
 
-After login, click the **✏️ button** (bottom-right) to enter edit mode.
+```bash
+node server/utils/initDB.js
+```
 
----
+This will create:
+- Admin account with specified credentials
+- Initial content for all pages
+- Sample notices
+
+### Step 4: Start Development Server
+
+```bash
+npm run dev
+```
+
+Or for production:
+
+```bash
+npm start
+```
+
+## 🔐 Admin Credentials
+
+After running the initialization script, use these credentials to access the admin panel:
+
+- **Username**: 정중호
+- **Email**: st805@naver.com
+- **Password**: #9725
+
+Admin Panel URL: `http://localhost:3000/admin`
 
 ## 📁 Project Structure
 
 ```
-website/
-├── server.js          # Express backend (auth, CMS APIs, static files)
-├── package.json       # Dependencies & scripts
-├── Dockerfile         # Docker deployment
-├── railway.json       # Railway deployment config
-├── render.yaml        # Render deployment config
-├── .env.example       # Environment variables template
-└── public/            # Static frontend files
-    ├── index.html     # Homepage (Korean)
-    ├── about.html     # About the Professor
-    ├── korean-thought.html
-    ├── world-thought.html
-    ├── publications.html
-    ├── forum.html
-    ├── login.html
-    ├── register.html
-    ├── profile.html
-    ├── admin.html
-    ├── en/            # English versions (9 pages)
-    ├── css/
-    │   ├── style.css
-    │   ├── auth.css
-    │   ├── social.css
-    │   └── admin-editor.css
-    └── js/
-        ├── main.js
-        ├── auth.js
-        ├── social.js
-        └── admin-editor.js
+mzchurch/
+├── public/
+│   ├── css/
+│   │   └── styles.css          # Main stylesheet
+│   ├── js/
+│   │   └── app.js              # Frontend JavaScript
+│   ├── uploads/                # User uploads
+│   ├── index.html              # Homepage
+│   ├── admin.html              # Admin dashboard
+│   └── admin-login.html        # Admin login
+├── server/
+│   ├── config/
+│   │   └── database.js         # Database configuration
+│   ├── models/
+│   │   ├── User.js             # User model
+│   │   ├── Content.js          # Content model
+│   │   ├── Notice.js           # Notice model
+│   │   ├── Post.js             # Post model
+│   │   └── Media.js            # Media model
+│   ├── routes/
+│   │   ├── auth.js             # Authentication routes
+│   │   ├── content.js          # Content routes
+│   │   ├── notices.js          # Notice routes
+│   │   ├── posts.js            # Post routes
+│   │   ├── media.js            # Media routes
+│   │   └── users.js            # User routes
+│   ├── middleware/
+│   │   └── auth.js             # Authentication middleware
+│   ├── utils/
+│   │   └── initDB.js           # Database initialization
+│   └── index.js                # Main server file
+├── .env                        # Environment variables
+├── package.json
+└── README.md
 ```
 
----
+## 🌐 Access Points
 
-## ☁️ Deployment Options
+After starting the server, access the website at:
 
-### Option 1: Railway (Recommended — Free Tier)
+- **Public Website**: http://localhost:3000
+- **Admin Login**: http://localhost:3000/admin/login
+- **Admin Dashboard**: http://localhost:3000/admin
 
-1. Go to [railway.app](https://railway.app) and sign up
-2. Click **"New Project"** → **"Deploy from GitHub Repo"** or **"Upload"**
-3. Upload the project folder or connect your repo
-4. Railway auto-detects Node.js and deploys
-5. Set environment variable: `JWT_SECRET` = any random string
-6. Your site gets a public URL like `bibleglocal.up.railway.app`
+## 📱 Social Media Integration
 
-### Option 2: Render (Free Tier)
+The website includes share buttons for:
 
-1. Go to [render.com](https://render.com) and sign up
-2. Click **"New"** → **"Web Service"**
-3. Connect your GitHub repo or upload
-4. Settings auto-detected from `render.yaml`
-5. Click **"Create Web Service"**
-6. Public URL: `bibleglocal.onrender.com`
+### Korean Platforms
+- **Naver**: https://share.naver.com
+- **Daum**: KakaoTalk Share
+- **Kakao**: KakaoTalk Share
 
-### Option 3: Docker
+### International Platforms
+- **Facebook**: Facebook Share
+- **Twitter**: Twitter/X Share
+- **LinkedIn**: LinkedIn Share
+- **YouTube**: YouTube Channel link
 
-```bash
-# Build
-docker build -t bibleglocal .
+## 🛠️ Admin Panel Features
 
-# Run
-docker run -p 3000:3000 -v bibleglocal-data:/app/data bibleglocal
+### Dashboard
+- Overview statistics (users, posts, notices, media)
+- Recent activity feed
+- Quick links to common tasks
+
+### Content Management
+- Edit all page content
+- Add new sections
+- Reorder content
+- Toggle active/inactive status
+
+### Notice Management
+- Create, edit, delete notices
+- Pin important notices
+- Categorize notices
+- Track views
+
+### Post Management
+- Moderate all posts
+- Edit or delete posts
+- View post statistics
+- Manage comments
+
+### Media Management
+- Upload images and videos
+- Organize media by category
+- Add captions and descriptions
+- Delete unwanted media
+
+### User Management
+- View all registered members
+- Edit user profiles
+- Change user roles
+- Delete users (except admin)
+
+## 🔄 Development
+
+### Adding New Routes
+1. Create route file in `server/routes/`
+2. Create controller functions
+3. Add route to `server/index.js`
+
+### Modifying Styles
+- Edit `public/css/styles.css`
+- Uses CSS variables for easy theming
+- Already mobile-responsive
+
+### Adding Features
+- Follow existing patterns in routes and models
+- Use existing middleware for authentication
+- Maintain consistent code style
+
+## 📝 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login
+- `GET /api/auth/me` - Get current user
+- `POST /api/auth/logout` - Logout
+- `PUT /api/auth/password` - Change password
+
+### Content
+- `GET /api/content/page/:page` - Get page content
+- `GET /api/content` - Get all content (admin)
+- `POST /api/content` - Create content (admin)
+- `PUT /api/content/:id` - Update content (admin)
+- `DELETE /api/content/:id` - Delete content (admin)
+
+### Notices
+- `GET /api/notices` - Get all notices
+- `GET /api/notices/:id` - Get single notice
+- `POST /api/notices` - Create notice (admin)
+- `PUT /api/notices/:id` - Update notice (admin)
+- `DELETE /api/notices/:id` - Delete notice (admin)
+
+### Posts
+- `GET /api/posts` - Get all posts
+- `GET /api/posts/:id` - Get single post
+- `POST /api/posts` - Create post
+- `PUT /api/posts/:id` - Update post (author/admin)
+- `DELETE /api/posts/:id` - Delete post (author/admin)
+- `POST /api/posts/:id/comments` - Add comment
+- `POST /api/posts/:id/like` - Like/unlike post
+
+### Media
+- `GET /api/media` - Get all media
+- `GET /api/media/:id` - Get single media
+- `POST /api/media` - Create media (admin)
+- `PUT /api/media/:id` - Update media (admin)
+- `DELETE /api/media/:id` - Delete media (admin)
+
+### Users
+- `GET /api/users` - Get all users (admin)
+- `GET /api/users/profile` - Get profile
+- `PUT /api/users/profile` - Update profile
+- `PUT /api/users/:id` - Update user (admin)
+- `DELETE /api/users/:id` - Delete user (admin)
+
+## 🔒 Security Features
+
+- Password hashing with bcrypt
+- JWT authentication
+- Session management
+- Protected admin routes
+- CORS configuration
+- Helmet.js for security headers
+- Input validation
+
+## 📱 Responsive Design
+
+The website is fully responsive and works on:
+- Desktop (1200px+)
+- Laptop (992px - 1199px)
+- Tablet (768px - 991px)
+- Mobile (< 768px)
+
+## 🚢 Deployment
+
+### Deploy to VPS/Cloud
+
+1. Set up a VPS (e.g., AWS, DigitalOcean, Heroku)
+2. Install Node.js and MongoDB
+3. Clone the repository
+4. Install dependencies
+5. Configure environment variables
+6. Run initialization script
+7. Start server with PM2:
+   ```bash
+   npm install -g pm2
+   pm2 start server/index.js --name "mzchurch"
+   pm2 startup
+   pm2 save
+   ```
+
+### Using Docker (Optional)
+
+Create a `Dockerfile`:
+```dockerfile
+FROM node:18
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["node", "server/index.js"]
 ```
 
-### Option 4: VPS (DigitalOcean, AWS, etc.)
+### Using Process Managers
+- PM2: For production Node.js applications
+- Forever: Simple process manager
+- Systemd: Native Linux process manager
 
-```bash
-# On your server
-git clone <your-repo> && cd website
-npm install
-export JWT_SECRET="your-secret-key"
-export PORT=80
-node server.js
+## 🐛 Troubleshooting
 
-# Or with PM2 for auto-restart:
-npm install -g pm2
-pm2 start server.js --name bibleglocal
-pm2 save
-pm2 startup
-```
+### MongoDB Connection Issues
+- Ensure MongoDB is running
+- Check connection string in `.env`
+- Verify MongoDB credentials
 
----
+### Port Already in Use
+- Change PORT in `.env` file
+- Kill process using port 3000
 
-## ⚙️ Tech Stack
+### Session Issues
+- Clear browser cookies
+- Restart server
+- Check SESSION_SECRET in `.env`
 
-- **Backend:** Node.js 20, Express 5
-- **Database:** SQLite (better-sqlite3) — zero config
-- **Auth:** JWT + bcrypt + httpOnly cookies
-- **Frontend:** Vanilla HTML/CSS/JS (no framework)
-- **CMS:** Custom inline editor (contentEditable API)
-- **Social:** Kakao SDK, Naver, Daum, Facebook, X, LINE, TikTok, Band, Brunch
-- **i18n:** Korean + English (19 pages total)
+## 📞 Support
 
----
+For issues or questions:
+- Email: st805@naver.com
+- Admin: 정중호
 
-## 📋 Features
+## 📄 License
 
-- ✅ 19 bilingual pages (10 Korean + 9 English)
-- ✅ Admin CMS with inline text editing (200+ elements per page)
-- ✅ Image upload & replacement
-- ✅ Section reordering & visibility toggle
-- ✅ User authentication (login, register, profile)
-- ✅ Social media sharing (12 platforms)
-- ✅ Responsive mobile design
-- ✅ Open Graph & Twitter Card meta tags
-- ✅ Keyboard shortcuts (Ctrl+S, Esc)
-- ✅ Auto-save content to SQLite
+This project is proprietary software for Mount Zion Church & Empire.
+
+## 🙏 Credits
+
+Developed for 시온산교회 시온산제국 (Mount Zion Church & Empire)
 
 ---
 
-© 2025 정중호 교수의 성경 사랑방 — Bible Glocal
+**시온산교회 시온산제국 | Mount Zion Church & Empire**
+
+하나님의 말씀을 전파하고, 그리스도의 사랑을 실천합니다.
+Spreading God's word and practicing Christ's love.

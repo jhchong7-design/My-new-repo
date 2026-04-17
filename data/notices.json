@@ -1,0 +1,38 @@
+[
+  {
+    "_id": "notice001",
+    "title": "시온산교회 시온산제국 웹사이트 개설",
+    "content": "<p>하나님 감사합니다! 시온산교회 시온산제국의 웹사이트가 개설되었습니다.</p>",
+    "author": "admin001",
+    "category": "general",
+    "isPinned": true,
+    "isActive": true,
+    "views": 0,
+    "createdAt": "2026-04-02T04:19:51.266Z",
+    "updatedAt": "2026-04-02T04:19:51.266Z"
+  },
+  {
+    "_id": "notice002",
+    "title": "Welcome to Mount Zion Church & Empire",
+    "content": "<p>Welcome to our website!</p>",
+    "author": "admin001",
+    "category": "event",
+    "isPinned": false,
+    "isActive": true,
+    "views": 0,
+    "createdAt": "2026-04-02T04:19:51.266Z",
+    "updatedAt": "2026-04-02T04:19:51.266Z"
+  },
+  {
+    "_id": "notice1775103986193",
+    "title": "Test Notice",
+    "content": "This is a test notice from admin",
+    "category": "general",
+    "author": "admin001",
+    "isActive": true,
+    "isPinned": false,
+    "views": 0,
+    "createdAt": "2026-04-02T04:26:26.193Z",
+    "updatedAt": "2026-04-02T04:26:26.193Z"
+  }
+]

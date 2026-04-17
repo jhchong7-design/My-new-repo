@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>멤버 대시보드 - 시온산교회</title>
+    <link rel="stylesheet" href="/css/modern-styles.css">
+    <link rel="stylesheet" href="/css/premium-animations.css">
+    <link rel="stylesheet" href="/css/imagery.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body class="dashboard-page">
+    <!-- Vanta Background -->
+    <div id="vanta-bg"></div>
+
+    <!-- Dashboard Sidebar -->
+    <aside class="dashboard-sidebar glass">
+        <div class="sidebar-header">
+            <div class="sidebar-brand">
+                <i class="fas fa-church"></i>
+                <span>시온산교회</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li>
+                    <a href="#overview" class="nav-link active" data-tab="overview">
+                        <i class="fas fa-home"></i>
+                        <span>개요</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#sermons" class="nav-link" data-tab="sermons">
+                        <i class="fas fa-bible"></i>
+                        <span>설교</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#events" class="nav-link" data-tab="events">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>행사</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#community" class="nav-link" data-tab="community">
+                        <i class="fas fa-users"></i>
+                        <span>공동체</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#giving" class="nav-link" data-tab="giving">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <span>헌금</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#profile" class="nav-link" data-tab="profile">
+                        <i class="fas fa-user"></i>
+                        <span>프로필</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="/" class="btn btn-secondary btn-sm">
+                <i class="fas fa-sign-out-alt"></i>
+                로그아웃
+            </a>
+        </div>
+    </aside>
+
+    <!-- Dashboard Main Content -->
+    <main class="dashboard-main" style="background-image: url('images/church-sanctuary.png'); background-size: cover; background-position: center; background-attachment: fixed;">
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(26, 35, 126, 0.92) 0%, rgba(15, 23, 42, 0.88) 100%); pointer-events: none;"></div>
+        <!-- Dashboard Header -->
+        <header class="dashboard-header glass">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="header-menu-toggle" aria-label="메뉴">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="header-title">멤버 대시보드</h1>
+                </div>
+                <div class="header-right">
+                    <button class="header-icon-btn" title="알림">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="header-icon-btn" title="메시지">
+                        <i class="fas fa-envelope"></i>
+                        <span class="badge">5</span>
+                    </button>
+                    <div class="header-user">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80" alt="프로필" class="user-avatar">
+                        <div class="user-info">
+                            <span class="user-name">김철수</span>
+                            <span class="user-role">구역장</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <!-- Welcome Card -->
+                <div class="welcome-card glass-premium reveal-on-scroll">
+                    <div class="welcome-content">
+                        <h2>환영합니다, 김철수 님!</h2>
+                        <p>시온산교회의 영적 성장 여정에 함께 하게 되어 기쁩니다. 이번 주 설교와 행사를 확인해보세요.</p>
+                        <a href="#sermons" class="btn btn-gold btn-magnetic">
+                            <i class="fas fa-play-circle"></i>
+                            최신 설교 보기
+                        </a>
+                    </div>
+                    <div class="welcome-image">
+                        <img src="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=400&q=80" alt="교회" loading="lazy">
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card glass-card reveal-scale stagger-1">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number" data-target="24">0</span>
+                            <span class="stat-label">예배 출석</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card reveal-scale stagger-2">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number" data-target="156">0</span>
+                            <span class="stat-label">설교 시청</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card reveal-scale stagger-3">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number" data-target="12">0</span>
+                            <span class="stat-label">봉사 참여</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card reveal-scale stagger-4">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number" data-target="8">0</span>
+                            <span class="stat-label">구역원</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Upcoming Events -->
+                    <div class="dashboard-card glass-card reveal-on-scroll">
+                        <div class="card-header">
+                            <h3><i class="fas fa-calendar-alt"></i> 다가오는 행사</h3>
+                            <a href="#events" class="card-link">더 보기</a>
+                        </div>
+                        <div class="event-list">
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="date-day">15</span>
+                                    <span class="date-month">1월</span>
+                                </div>
+                                <div class="event-details">
+                                    <h4>특별수양회</h4>
+                                    <p><i class="fas fa-clock"></i> 오전 9시 - 오후 5시</p>
+                                    <button class="btn btn-sm btn-primary">신청하기</button>
+                                </div>
+                            </div>
+
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="date-day">20</span>
+                                    <span class="date-month">1월</span>
+                                </div>
+                                <div class="event-details">
+                                    <h4>청년부 월례회</h4>
+                                    <p><i class="fas fa-clock"></i> 오후 2시 - 4시</p>
+                                    <button class="btn btn-sm btn-primary">신청하기</button>
+                                </div>
+                            </div>
+
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="date-day">28</span>
+                                    <span class="date-month">1월</span>
+                                </div>
+                                <div class="event-details">
+                                    <h4>구장자 리더십 세미나</h4>
+                                    <p><i class="fas fa-clock"></i> 오후 7시 - 9시</p>
+                                    <button class="btn btn-sm btn-primary">신청하기</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Sermons -->
+                    <div class="dashboard-card glass-card reveal-on-scroll">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bible"></i> 최신 설교</h3>
+                            <a href="#sermons" class="card-link">더 보기</a>
+                        </div>
+                        <div class="sermon-list">
+                            <div class="sermon-item">
+                                <div class="sermon-thumbnail">
+                                    <img src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=200&q=80" alt="설교" loading="lazy">
+                                    <div class="play-icon">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                                <div class="sermon-info">
+                                    <h4>믿음의 용사가 되는 길</h4>
+                                    <p class="sermon-preacher">김목사 님</p>
+                                    <p class="sermon-date">2024.01.07</p>
+                                </div>
+                                <button class="btn-play">
+                                    <i class="fas fa-headphones"></i>
+                                </button>
+                            </div>
+
+                            <div class="sermon-item">
+                                <div class="sermon-thumbnail">
+                                    <img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=200&q=80" alt="설교" loading="lazy">
+                                    <div class="play-icon">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                                <div class="sermon-info">
+                                    <h4>새해의 비전</h4>
+                                    <p class="sermon-preacher">김목사 님</p>
+                                    <p class="sermon-date">2024.01.01</p>
+                                </div>
+                                <button class="btn-play">
+                                    <i class="fas fa-headphones"></i>
+                                </button>
+                            </div>
+
+                            <div class="sermon-item">
+                                <div class="sermon-thumbnail">
+                                    <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=200&q=80" alt="설교" loading="lazy">
+                                    <div class="play-icon">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                                <div class="sermon-info">
+                                    <h4>성탄절의 의미</h4>
+                                    <p class="sermon-preacher">이부목사 님</p>
+                                    <p class="sermon-date">2023.12.25</p>
+                                </div>
+                                <button class="btn-play">
+                                    <i class="fas fa-headphones"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Giving Summary -->
+                <div class="dashboard-card glass-card reveal-on-scroll">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> 이번 달 헌금 현황</h3>
+                        <a href="#giving" class="card-link">더 보기</a>
+                    </div>
+                    <div class="giving-summary">
+                        <div class="giving-total">
+                            <span class="giving-label">총 헌금금액</span>
+                            <span class="giving-amount">₩ 250,000</span>
+                        </div>
+                        <div class="giving-breakdown">
+                            <div class="giving-item">
+                                <div class="giving-type">
+                                    <i class="fas fa-church"></i>
+                                    <span>십일조</span>
+                                </div>
+                                <span class="giving-value">₩ 150,000</span>
+                            </div>
+                            <div class="giving-item">
+                                <div class="giving-type">
+                                    <i class="fas fa-hand-holding-heart"></i>
+                                    <span>선교헌금</span>
+                                </div>
+                                <span class="giving-value">₩ 50,000</span>
+                            </div>
+                            <div class="giving-item">
+                                <div class="giving-type">
+                                    <i class="fas fa-building"></i>
+                                    <span>건축헌금</span>
+                                </div>
+                                <span class="giving-value">₩ 30,000</span>
+                            </div>
+                            <div class="giving-item">
+                                <div class="giving-type">
+                                    <i class="fas fa-heart"></i>
+                                    <span>감사헌금</span>
+                                </div>
+                                <span class="giving-value">₩ 20,000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sermons Tab -->
+            <div class="tab-content" id="sermons">
+                <div class="page-section reveal-on-scroll">
+                    <h2><i class="fas fa-bible"></i> 설교 보관</h2>
+                    <p class="text-muted">지금까지 선포된 말씀을 다시 보고 들을 수 있습니다</p>
+                </div>
+
+                <div class="sermon-filters">
+                    <button class="filter-btn active">전체</button>
+                    <button class="filter-btn">주일예배</button>
+                    <button class="filter-btn">수요예배</button>
+                    <button class="filter-btn">새벽기도</button>
+                    <button class="filter-btn">특별예배</button>
+                </div>
+
+                <div class="sermon-grid">
+                    <!-- Sermon items will be dynamically loaded -->
+                </div>
+            </div>
+
+            <!-- Events Tab -->
+            <div class="tab-content" id="events">
+                <div class="page-section reveal-on-scroll">
+                    <h2><i class="fas fa-calendar-alt"></i> 행사 및 일정</h2>
+                    <p class="text-muted">교회의 다양한 행사에 참여하세요</p>
+                </div>
+
+                <div class="event-calendar">
+                    <!-- Calendar will be dynamically loaded -->
+                </div>
+            </div>
+
+            <!-- Community Tab -->
+            <div class="tab-content" id="community">
+                <div class="page-section reveal-on-scroll">
+                    <h2><i class="fas fa-users"></i> 내 공동체</h2>
+                    <p class="text-muted">소속된 공동체 정보를 확인하세요</p>
+                </div>
+
+                <div class="community-info glass-card">
+                    <div class="community-header">
+                        <div class="community-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div>
+                            <h3>제1구역</h3>
+                            <p>구역장: 김철수</p>
+                        </div>
+                    </div>
+                    <div class="community-members">
+                        <h4>구역원 (8명)</h4>
+                        <div class="member-avatars">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="회원" loading="lazy" title="이영희">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="회원" loading="lazy" title="박민수">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="회원" loading="lazy" title="최수현">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80" alt="회원" loading="lazy" title="정지원">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80" alt="회원" loading="lazy" title="강유나">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&q=80" alt="회원" loading="lazy" title="조준혁">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80" alt="회원" loading="lazy" title="임재은">
+                            <div class="avatar-more">+1</div>
+                        </div>
+                    </div>
+                    <div class="community-schedule">
+                        <h4>정기 모임</h4>
+                        <p><i class="fas fa-calendar"></i> 매주 토요일 오후 7시</p>
+                        <p><i class="fas fa-map-marker-alt"></i> 구역장 집</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Giving Tab -->
+            <div class="tab-content" id="giving">
+                <div class="page-section reveal-on-scroll">
+                    <h2><i class="fas fa-hand-holding-heart"></i> 헌금 내역</h2>
+                    <p class="text-muted">헌금 기록을 확인하고 헌금신고서를 출력하세요</p>
+                </div>
+
+                <div class="giving-history glass-card">
+                    <div class="giving-filters">
+                        <select class="form-select">
+                            <option>2024년 1월</option>
+                            <option>2023년 12월</option>
+                            <option>2023년 11월</option>
+                            <option>2023년 10월</option>
+                        </select>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-download"></i>
+                            헌금신고서 다운로드
+                        </button>
+                    </div>
+
+                    <div class="giving-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>날짜</th>
+                                    <th>구분</th>
+                                    <th>금액</th>
+                                    <th>상태</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024.01.07</td>
+                                    <td><i class="fas fa-church"></i> 십일조</td>
+                                    <td>₩ 150,000</td>
+                                    <td><span class="badge badge-success">완료</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024.01.07</td>
+                                    <td><i class="fas fa-hand-holding-heart"></i> 선교헌금</td>
+                                    <td>₩ 50,000</td>
+                                    <td><span class="badge badge-success">완료</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024.01.03</td>
+                                    <td><i class="fas fa-building"></i> 건축헌금</td>
+                                    <td>₩ 30,000</td>
+                                    <td><span class="badge badge-success">완료</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024.01.01</td>
+                                    <td><i class="fas fa-heart"></i> 감사헌금</td>
+                                    <td>₩ 20,000</td>
+                                    <td><span class="badge badge-success">완료</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div class="tab-content" id="profile">
+                <div class="page-section reveal-on-scroll">
+                    <h2><i class="fas fa-user"></i> 내 프로필</h2>
+                    <p class="text-muted">개인 정보를 관리하세요</p>
+                </div>
+
+                <div class="profile-container">
+                    <div class="profile-card glass-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar-large">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80" alt="프로필" loading="lazy">
+                            </div>
+                            <div class="profile-info">
+                                <h3>김철수</h3>
+                                <p>구역장 | 청년부</p>
+                                <button class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-camera"></i>
+                                    사진 변경
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-form glass-card">
+                        <form>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>이름</label>
+                                    <input type="text" class="form-control" value="김철수">
+                                </div>
+                                <div class="form-group">
+                                    <label>생年月日</label>
+                                    <input type="date" class="form-control" value="1985-03-15">
+                                </div>
+                                <div class="form-group">
+                                    <label>연락처</label>
+                                    <input type="tel" class="form-control" value="010-1234-5678">
+                                </div>
+                                <div class="form-group">
+                                    <label>이메일</label>
+                                    <input type="email" class="form-control" value="cheolsu@email.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>주소</label>
+                                    <input type="text" class="form-control" value="경기도 성남시 분당구...">
+                                </div>
+                                <div class="form-group">
+                                    <label>직분</label>
+                                    <input type="text" class="form-control" value="구역장" disabled>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-gold btn-magnetic">
+                                    <i class="fas fa-save"></i>
+                                    저장하기
+                                </button>
+                                <button type="button" class="btn btn-secondary">
+                                    취소
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/js/premium-interactions.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar Navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active state
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Show corresponding tab
+                    const tabId = this.dataset.tab;
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            // Mobile Menu Toggle
+            const menuToggle = document.querySelector('.header-menu-toggle');
+            const sidebar = document.querySelector('.dashboard-sidebar');
+
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+
+            // Counter Animation
+            const counterElements = document.querySelectorAll('.stat-number');
+            
+            function animateCounters() {
+                counterElements.forEach(counter => {
+                    const target = parseInt(counter.dataset.target);
+                    const duration = 2000;
+                    const step = target / (duration / 16);
+                    let current = 0;
+
+                    const updateCounter = () => {
+                        current += step;
+                        if (current < target) {
+                            counter.textContent = Math.floor(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target;
+                        }
+                    };
+
+                    updateCounter();
+                });
+            }
+
+            // Trigger counter animation when in view
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            const statsGrid = document.querySelector('.stats-grid');
+            if (statsGrid) {
+                observer.observe(statsGrid);
+            }
+
+            // Event Registration
+            const eventButtons = document.querySelectorAll('.event-item .btn-primary');
+            eventButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.innerHTML = '<i class="fas fa-check"></i> 신청 완료';
+                    this.classList.remove('btn-primary');
+                    this.classList.add('btn-success');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

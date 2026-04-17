@@ -1,659 +1,775 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>정중호 교수의 성경 사랑방 | Bible Glocal</title>
-  <meta name="description" content="정중호 계명대 명예교수의 성경 연구 사이트 - 한국사상과 성경, 세계사상과 성경, 책과 논문, 열린마당">
-  <meta name="keywords" content="정중호, 성경, 구약, 성경사랑방, 계명대, Bible, Old Testament, Korean Thought, bibleglocal">
-  <!-- Open Graph Meta Tags -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="정중호 교수의 성경 사랑방 | Bible Glocal">
-  <meta property="og:description" content="정중호 계명대 명예교수의 성경 연구 사이트 - 한국사상과 성경, 세계사상과 성경, 책과 논문, 열린마당">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
-  <meta property="og:url" content="https://bibleglocal.org/index.html">
-  <meta property="og:site_name" content="Bible Glocal">
-  <meta property="og:locale" content="ko_KR">
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="정중호 교수의 성경 사랑방 | Bible Glocal">
-  <meta name="twitter:description" content="정중호 계명대 명예교수의 성경 연구 사이트 - 한국사상과 성경, 세계사상과 성경, 책과 논문, 열린마당">
-  <meta name="twitter:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/auth.css">
-  <link rel="stylesheet" href="css/social.css">
-  <link rel="stylesheet" href="css/admin-editor.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✝</text></svg>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시온산교회 | Zion Mountain Church</title>
+    <meta name="description" content="시온산교회에 오신 것을 환영합니다. 믿음과 사랑의 공동체에서 함께 주님을 섬기세요.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/modern-styles.css">
+    <link rel="stylesheet" href="/css/premium-animations.css">
+    <link rel="stylesheet" href="/css/imagery.css">
+    <link rel="stylesheet" href="/css/pro-editor.css">
+    <link rel="stylesheet" href="/css/recent-posts.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js & Vanta.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    
+    <!-- Inline Editor -->
+    <script src="/js/pro-editor.js"></script>
+    <script>
+        // Initialize Pro Editor for inline editing
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ProEditor !== 'undefined') {
+                const editor = new ProEditor({
+                    apiUrl: '/api/editor',
+                    saveEndpoint: '/api/content',
+                    autoSave: true,
+                    autoSaveInterval: 5000,
+                    enabled: true
+                });
+                
+                // Initialize editor on all editable elements
+                editor.init();
+            }
+            
+            // Load recent posts
+            loadRecentPosts();
+        });
+
+        async function loadRecentPosts() {
+            try {
+                const response = await fetch('/api/posts/recent');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayRecentPosts(data.recentPosts);
+                    displayRecentMedia(data.recentMedia || []);
+                }
+            } catch (error) {
+                console.error('Error loading recent posts:', error);
+                // Load demo data if API fails
+                loadDemoData();
+            }
+        }
+
+        function displayRecentPosts(recentPosts) {
+            const boards = [
+                { type: 'notice', elementId: 'recent-notices' },
+                { type: 'korean_bible', elementId: 'recent-korean-bible' },
+                { type: 'world_bible', elementId: 'recent-world-bible' },
+                { type: 'books_papers', elementId: 'recent-books-papers' },
+                { type: 'openforum', elementId: 'recent-openforum' },
+                { type: 'board', elementId: 'recent-board' }
+            ];
+
+            boards.forEach(board => {
+                const container = document.getElementById(board.elementId);
+                if (container) {
+                    const posts = recentPosts[board.type] || [];
+                    
+                    if (posts.length === 0) {
+                        container.innerHTML = '<div class="no-posts">게시글이 없습니다</div>';
+                    } else {
+                        container.innerHTML = posts.map(post => `
+                            <div class="recent-post-item">
+                                ${post.isPinned ? '<div class="pinned-indicator"><i class="fas fa-thumbtack"></i> 상단고정</div>' : ''}
+                                <div class="recent-post-title" onclick="viewPost('${post._id}', '${board.type}')">${post.title}</div>
+                                <div class="recent-post-meta">
+                                    <div class="recent-post-author">
+                                        <i class="fas fa-user"></i>
+                                        <span>${post.author}</span>
+                                    </div>
+                                    <div class="recent-post-date">
+                                        <i class="fas fa-clock"></i>
+                                        ${formatDate(post.createdAt)}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            });
+        }
+
+        function displayRecentMedia(mediaList) {
+            const container = document.getElementById('recent-media');
+            if (container) {
+                if (mediaList.length === 0) {
+                    container.innerHTML = '<div class="no-posts">미디어가 없습니다</div>';
+                } else {
+                    container.innerHTML = mediaList.slice(0, 4).map(media => `
+                        <div class="recent-media-item" onclick="viewMedia('${media._id}')">
+                            ${media.mediaType === 'image' 
+                                ? `<img src="${media.url}" alt="${media.title}" loading="lazy">`
+                                : '<div class="media-icon"><i class="fas fa-play-circle"></i></div>'
+                            }
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            // Less than 1 day
+            if (diff < 24 * 60 * 60 * 1000) {
+                const hours = Math.floor(diff / (60 * 60 * 1000));
+                if (hours < 1) return '방금 전';
+                return `${hours}시간 전`;
+            }
+            
+            // Less than 1 week
+            if (diff < 7 * 24 * 60 * 60 * 1000) {
+                const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+                return `${days}일 전`;
+            }
+            
+            // Otherwise show date
+            return date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+        }
+
+        function viewPost(postId, boardType) {
+            // Navigate to board page with post ID
+            window.location.href = `board.html?type=${boardType}&post=${postId}`;
+        }
+
+        function viewMedia(mediaId) {
+            window.location.href = `gallery.html?media=${mediaId}`;
+        }
+
+        function loadDemoData() {
+            // Display demo data when API is not available
+            const demoData = {
+                notice: [
+                    { _id: '1', title: '시온산교회 주일예배 시간 안내', author: '관리자', createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), isPinned: true },
+                    { _id: '2', title: '새해 맞이 특별 기도회 안내', author: '관리자', createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), isPinned: false }
+                ],
+                korean_bible: [
+                    { _id: '3', title: '한국 사상과 성경의 만남 1부', author: '강성열', createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), isPinned: false }
+                ],
+                world_bible: [
+                    { _id: '4', title: '플라톤의 이데아와 창세기', author: '강성열', createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000), isPinned: false }
+                ],
+                books_papers: [
+                    { _id: '5', title: '한국철학과 성경학의 대화', author: '강성열', createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), isPinned: false }
+                ],
+                openforum: [
+                    { _id: '6', title: '이번 주 구역모임 공지사항', author: '구역장', createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), isPinned: false }
+                ],
+                board: [
+                    { _id: '7', title: '자유 게시판에 오신 것을 환영합니다', author: '관리자', createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), isPinned: false }
+                ]
+            };
+
+            displayRecentPosts(demoData);
+            
+            // Demo media
+            const demoMedia = [
+                { _id: '1', mediaType: 'image', url: 'images/worship-service.png', title: '주일예배' },
+                { _id: '2', mediaType: 'image', url: 'images/community-fellowship.png', title: '공동체' }
+            ];
+            displayRecentMedia(demoMedia);
+        }
+    </script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
-
-  <!-- Preloader -->
-  <div id="preloader">
-    <div class="preloader-cross"></div>
-  </div>
-
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <div class="container">
-      <div class="top-bar-left">
-        <span>📖 bibleglocal.org</span>
-        <span>|</span>
-        <span>계명대학교 명예교수 정중호</span>
-      </div>
-      <div class="top-bar-right">
-        <div class="lang-switch">
-          <a href="index.html" class="active">한국어</a>
-          <a href="en/index.html">ENG</a>
-        </div>
-      </div>
+    <!-- Vanta.js Background -->
+    <div id="vanta-bg"></div>
+    
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <div class="loader-cross"></div>
     </div>
-  </div>
+    
+    <!-- Navigation -->
+    <nav class="nav glass-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/" class="brand-link">
+                    <span class="brand-icon"><i class="fas fa-church"></i></span>
+                    <span class="brand-text">시온산교회</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="/about" class="nav-link">교회소개</a>
+                <a href="/empire" class="nav-link">시온산제국</a>
+                <a href="/books" class="nav-link">도서출판</a>
+                <a href="/notices" class="nav-link">공지사항</a>
+                <a href="/gallery" class="nav-link">갤러리</a>
+                <a href="/operator" class="nav-link">리더십</a>
+                <a href="/board" class="nav-link">게시판</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="btn btn-primary btn-sm btn-magnetic" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>로그인</span>
+                </button>
+                <button class="nav-toggle" id="navToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-  <!-- Header -->
-  <header>
-    <div class="container">
-      <div class="header-inner">
-        <a href="index.html" class="logo">
-          <div class="logo-icon">BG</div>
-          <div class="logo-text">
-            <h1>성경 사랑방</h1>
-            <span>Bible Glocal</span>
-          </div>
-        </a>
+    <!-- Hero Section -->
+    <section class="hero" data-editable="true" data-id="hero">
+        <div class="hero-background" style="background-image: url('images/worship-service.png'); background-size: cover; background-position: center;">
+            <div class="hero-gradient"></div>
+            <div class="hero-overlay"></div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="container">
+                <div class="hero-text reveal-on-scroll">
+                    <h1 class="hero-title text-reveal" data-editable="true" data-type="text">
+                        시온산교회에<br>
+                        <span class="gradient-text-animated">오신 것을 환영합니다</span>
+                    </h1>
+                    <p class="hero-subtitle" data-editable="true" data-type="text">
+                        믿음과 사랑이 넘치는 공동체에서<br>
+                        함께 주님을 섬기며 하나님 나라를 확장해 나갑니다.
+                    </p>
+                    <div class="hero-actions stagger-1">
+                        <a href="/about" class="btn btn-gold btn-lg btn-magnetic shimmer-effect">
+                            <i class="fas fa-arrow-right"></i>
+                            교회소개
+                        </a>
+                        <button class="btn btn-outline-white btn-lg btn-magnetic" id="videoBtn">
+                            <i class="fas fa-play"></i>
+                            비디오 보기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-scroll animate-float">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
 
-        <!-- Desktop Nav -->
-        <nav class="main-nav">
-          <ul>
-            <li><a href="index.html" class="active">홈</a></li>
-            <li><a href="about.html">운영자소개</a></li>
-            <li>
-              <a href="korean-thought.html">한국사상과 성경</a>
-              <ul class="dropdown">
-                <li><a href="korean-thought.html#history">한국 성경 수용사</a></li>
-                <li><a href="korean-thought.html#interpretation">한국적 성경 해석</a></li>
-                <li><a href="korean-thought.html#culture">한국문화와 성경</a></li>
-              </ul>
-            </li>
-            <li>
-              <a href="world-thought.html">세계사상과 성경</a>
-              <ul class="dropdown">
-                <li><a href="world-thought.html#ancient">고대 근동과 성경</a></li>
-                <li><a href="world-thought.html#modern">현대사상과 성경</a></li>
-                <li><a href="world-thought.html#comparative">비교 연구</a></li>
-              </ul>
-            </li>
-            <li><a href="publications.html">책과 논문</a></li>
-            <li>
-              <a href="forum.html">열린마당</a>
-              <ul class="dropdown">
-                <li><a href="forum.html#notices">공지사항</a></li>
-                <li><a href="forum.html#board">게시판</a></li>
-                <li><a href="forum.html#media">이미지 & 동영상</a></li>
-              </ul>
-            </li>
-          </ul>
-        </nav>
+    <!-- Quick Features -->
+    <section class="section section-features">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">FEATURES</span>
+                <h2 class="section-title">그리스도의 몸으로서의 공동체</h2>
+                <p class="section-subtitle">시온산교회는 사랑과 봉사로 하나님을 섬기는 교회입니다</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="glass-card feature-card card-3d shimmer-effect reveal-on-scroll stagger-1" data-editable="true" data-id="feature-1">
+                    <div class="feature-icon icon-ripple">
+                        <i class="fas fa-bible"></i>
+                    </div>
+                    <h3 class="card-title">말씀 사역</h3>
+                    <p class="card-description">성경 중심의 생명의 말씀을 전파하여 영적 성장을 돕습니다</p>
+                </div>
+                
+                <div class="glass-card feature-card card-3d shimmer-effect reveal-on-scroll stagger-2" data-editable="true" data-id="feature-2">
+                    <div class="feature-icon feature-icon-gold icon-ripple">
+                        <i class="fas fa-hands-praying"></i>
+                    </div>
+                    <h3 class="card-title">기도 사역</h3>
+                    <p class="card-description">중보기도와 기도 모임을 통해 영적 각성과 부흥을 추구합니다</p>
+                </div>
+                
+                <div class="glass-card feature-card card-3d shimmer-effect reveal-on-scroll stagger-3" data-editable="true" data-id="feature-3">
+                    <div class="feature-icon icon-ripple">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="card-title">공동체 사역</h3>
+                    <p class="card-description">구역과 소그룹을 통해 사랑의 교류와 섬김을 실천합니다</p>
+                </div>
+                
+                <div class="glass-card feature-card card-3d shimmer-effect reveal-on-scroll stagger-4" data-editable="true" data-id="feature-4">
+                    <div class="feature-icon feature-icon-gold icon-ripple">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="card-title">선교 사역</h3>
+                    <p class="card-description">국내외 선교를 통해 복음을 전파하고 하나님 나라를 확장합니다</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <!-- Mobile Menu Toggle -->
-        <div class="auth-area"></div>
+    <!-- Community Image Banner -->
+    <section class="section" style="position: relative; min-height: 400px; background-image: url('images/community-fellowship.png'); background-size: cover; background-position: center; background-attachment: fixed; margin: var(--space-12) 0; border-radius: var(--radius-xl);">
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(26, 35, 126, 0.5) 100%); border-radius: var(--radius-xl);"></div>
+        <div class="container" style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; min-height: 400px;">
+            <div style="text-align: center; color: white;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">함께하는 공동체</h2>
+                <p style="font-size: 1.2rem; opacity: 0.9; max-width: 600px;">시온산교회에서 따뜻한 교제와 사랑을 나누세요</p>
+            </div>
+        </div>
+    </section>
 
-        <button class="menu-toggle" aria-label="메뉴 열기">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
+    <!-- Recent Posts Section (New) -->
+    <section class="section glass-premium" style="background: linear-gradient(135deg, rgba(26, 35, 126, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);">
+        <div class="container">
+            <div class="section-header reveal-on-scroll" style="text-align: center; margin-bottom: 2rem;">
+                <h2 class="section-title" style="color: #ffd700;">최신 소식</h2>
+                <p class="section-subtitle" style="color: rgba(255, 255, 255, 0.8);">시온산교회의 다양한 활동과 소식을 확인하세요</p>
+            </div>
+            
+            <div class="recent-posts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                
+                <!-- 공지사항 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-1">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-bell" style="color: #ffd700;"></i>
+                        <h3>공지사항</h3>
+                    </div>
+                    <div id="recent-notices" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=notice" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 한국사상과성경 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-2">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-book" style="color: #ffd700;"></i>
+                        <h3>한국사상과성경</h3>
+                    </div>
+                    <div id="recent-korean-bible" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=korean_bible" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 세계사상과성경 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-3">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-globe" style="color: #ffd700;"></i>
+                        <h3>세계사상과성경</h3>
+                    </div>
+                    <div id="recent-world-bible" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=world_bible" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 책과논문 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-4">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-file-alt" style="color: #ffd700;"></i>
+                        <h3>책과논문</h3>
+                    </div>
+                    <div id="recent-books-papers" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=books_papers" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 열린마당 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-5">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-comments" style="color: #ffd700;"></i>
+                        <h3>열린마당</h3>
+                    </div>
+                    <div id="recent-openforum" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=openforum" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 게시판 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-6">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-list" style="color: #ffd700;"></i>
+                        <h3>게시판</h3>
+                    </div>
+                    <div id="recent-board" class="recent-posts-list">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="board.html?type=board" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 이미지&동영상 -->
+                <div class="recent-posts-card glass-card reveal-on-scroll stagger-7" style="grid-column: span 1;">
+                    <div class="recent-posts-header">
+                        <i class="fas fa-photo-video" style="color: #ffd700;"></i>
+                        <h3>이미지&동영상</h3>
+                    </div>
+                    <div id="recent-media" class="recent-media-grid">
+                        <div class="loading-spinner">로딩 중...</div>
+                    </div>
+                    <a href="gallery.html" class="view-all-link">더보기 <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section (New) -->
+    <section class="section section-stats glass-premium">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item reveal-left">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-counter="1500" data-duration="2000">0</div>
+                        <div class="stat-label">성도 수</div>
+                    </div>
+                </div>
+                
+                <div class="stat-item reveal-scale stagger-1">
+                    <div class="stat-icon">
+                        <i class="fas fa-pray"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-counter="25" data-duration="2000">0</div>
+                        <div class="stat-label">구역 수</div>
+                    </div>
+                </div>
+                
+                <div class="stat-item reveal-scale stagger-2">
+                    <div class="stat-icon">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-counter="12" data-duration="2000">0</div>
+                        <div class="stat-label">선교지</div>
+                    </div>
+                </div>
+                
+                <div class="stat-item reveal-right">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number" data-counter="35" data-duration="2000">0</div>
+                        <div class="stat-label">역사</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Worship Times -->
+    <section class="section section-worship">
+        <div class="container">
+            <div class="worship-grid">
+                <div class="worship-image reveal-left">
+                    <div class="image-placeholder">
+                        <div class="morphing-shape"></div>
+                        <i class="fas fa-church fa-3x"></i>
+                    </div>
+                </div>
+                
+                <div class="worship-content reveal-right">
+                    <span class="section-badge">WORSHIP</span>
+                    <h2 class="section-title">주일 예배 안내</h2>
+                    <p class="section-subtitle">주님께 예배드리며 은혜에 참여하세요</p>
+                    
+                    <div class="worship-schedule">
+                        <div class="schedule-item glass-card" data-parallax="0.5">
+                            <div class="schedule-time">
+                                <i class="fas fa-clock"></i>
+                                <span>1부 예배</span>
+                            </div>
+                            <div class="schedule-detail">오전 7:30</div>
+                        </div>
+                        
+                        <div class="schedule-item glass-card shimmer-effect" data-parallax="0.6">
+                            <div class="schedule-time">
+                                <i class="fas fa-clock"></i>
+                                <span>2부 예배</span>
+                            </div>
+                            <div class="schedule-detail">오전 10:00</div>
+                        </div>
+                        
+                        <div class="schedule-item glass-card" data-parallax="0.7">
+                            <div class="schedule-time">
+                                <i class="fas fa-clock"></i>
+                                <span>3부 예배</span>
+                            </div>
+                            <div class="schedule-detail">오후 2:00</div>
+                        </div>
+                    </div>
+                    
+                    <a href="/about" class="btn btn-primary btn-magnetic">
+                        <i class="fas fa-info-circle"></i>
+                        더 알아보기
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest News -->
+    <section class="section section-news">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">LATEST</span>
+                <h2 class="section-title">최신 소식</h2>
+                <p class="section-subtitle">시온산교회의 새로운 소식을 전해드립니다</p>
+            </div>
+            
+            <div class="news-grid">
+                <div class="glass-card news-card card-3d shimmer-effect reveal-on-scroll stagger-1">
+                    <div class="news-image">
+                        <div class="image-placeholder img-parallax">
+                            <i class="fas fa-image fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="news-content">
+                        <span class="news-category">공지사항</span>
+                        <h3 class="news-title">2024년도 하계 수련회 안내</h3>
+                        <p class="news-excerpt">올 여름, 하나님의 풍성한 은혜를 체험하는 특별한 시간...</p>
+                        <div class="news-meta">
+                            <span class="news-date"><i class="far fa-calendar"></i> 2024.06.15</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card news-card card-3d shimmer-effect reveal-on-scroll stagger-2">
+                    <div class="news-image">
+                        <div class="image-placeholder img-parallax">
+                            <i class="fas fa-image fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="news-content">
+                        <span class="news-category">행사</span>
+                        <h3 class="news-title">주일학교 가정의 달 예배</h3>
+                        <p class="news-excerpt">가정의 달을 맞이하여 가족들이 함께 참여하는 특별한 예배...</p>
+                        <div class="news-meta">
+                            <span class="news-date"><i class="far fa-calendar"></i> 2024.05.15</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card news-card card-3d shimmer-effect reveal-on-scroll stagger-3">
+                    <div class="news-image">
+                        <div class="image-placeholder img-parallax">
+                            <i class="fas fa-image fa-2x"></i>
+                        </div>
+                    </div>
+                    <div class="news-content">
+                        <span class="news-category">선교</span>
+                        <h3 class="news-title">해외 선교지 후원 안내</h3>
+                        <p class="news-excerpt">세계 곳곳에서 복음을 전하는 선교사님들을 위해...</p>
+                        <div class="news-meta">
+                            <span class="news-date"><i class="far fa-calendar"></i> 2024.05.01</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-footer reveal-on-scroll">
+                <a href="/notices" class="btn btn-outline-primary btn-magnetic">
+                    <i class="fas fa-arrow-right"></i>
+                    모든 소식 보기
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section section-cta">
+        <div class="container">
+            <div class="glass-card cta-card glass-gold animate-glow reveal-scale">
+                <h2 class="cta-title">함께 예배드리세요</h2>
+                <p class="cta-subtitle">시온산교회 가족이 되어주셔서 감사합니다</p>
+                <div class="cta-actions">
+                    <button class="btn btn-gold btn-lg btn-magnetic shimmer-effect" id="joinBtn">
+                        <i class="fas fa-user-plus"></i>
+                        교적 등록
+                    </button>
+                    <a href="/contact" class="btn btn-outline-primary btn-lg btn-magnetic">
+                        <i class="fas fa-envelope"></i>
+                        연락처
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand reveal-left">
+                    <div class="brand-link">
+                        <span class="brand-icon animate-float"><i class="fas fa-church"></i></span>
+                        <span class="brand-text">시온산교회</span>
+                    </div>
+                    <p class="footer-description">
+                        믿음과 사랑으로 하나님을 섬기는 공동체
+                    </p>
+                </div>
+                
+                <div class="footer-links reveal-right">
+                    <div class="footer-link-group">
+                        <h4>바로가기</h4>
+                        <a href="/about">교회소개</a>
+                        <a href="/empire">시온산제국</a>
+                        <a href="/books">도서출판</a>
+                    </div>
+                    
+                    <div class="footer-link-group">
+                        <h4>소식</h4>
+                        <a href="/notices">공지사항</a>
+                        <a href="/gallery">갤러리</a>
+                        <a href="/board">게시판</a>
+                    </div>
+                    
+                    <div class="footer-link-group">
+                        <h4>연락처</h4>
+                        <a href="/contact">연락하기</a>
+                        <a href="/operator">리더십</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="footer-copyright">
+                    &copy; 2024 시온산교회. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Login Modal -->
+    <div class="modal modal-login" id="loginModal">
+        <div class="modal-content glass-card glass-premium">
+            <button class="modal-close" id="closeLoginModal">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-header">
+                <h2 class="modal-title">로그인</h2>
+                <p class="modal-subtitle">시온산교회 회원으로 로그인하세요</p>
+            </div>
+            
+            <form class="form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">이메일</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-envelope form-input-icon"></i>
+                        <input type="email" class="form-input" placeholder="이메일을 입력하세요" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">비밀번호</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-lock form-input-icon"></i>
+                        <input type="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <label class="checkbox">
+                        <input type="checkbox" checked>
+                        <span>로그인 상태 유지</span>
+                    </label>
+                    <a href="#" class="form-forgot">비밀번호 찾기</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-magnetic">
+                    <i class="fas fa-sign-in-alt"></i>
+                    로그인
+                </button>
+            </form>
+            
+            <div class="modal-footer">
+                <p class="modal-footer-text">
+                    아직 회원이 아니신가요?
+                    <a href="#" class="link-primary" id="showRegisterModal">회원가입</a>
+                </p>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <!-- Mobile Navigation -->
-  <div class="mobile-nav-overlay"></div>
-  <nav class="mobile-nav">
-    <div class="mobile-nav-header">
-      <h3>성경 사랑방</h3>
-      <p>Bible Glocal — bibleglocal.org</p>
+    <!-- Register Modal -->
+    <div class="modal modal-register" id="registerModal">
+        <div class="modal-content glass-card glass-premium">
+            <button class="modal-close" id="closeRegisterModal">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-header">
+                <h2 class="modal-title">회원가입</h2>
+                <p class="modal-subtitle">시온산교회 회원으로 가입하세요</p>
+            </div>
+            
+            <form class="form" id="registerForm">
+                <div class="form-group">
+                    <label class="form-label">이름</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-user form-input-icon"></i>
+                        <input type="text" class="form-input" placeholder="이름을 입력하세요" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">이메일</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-envelope form-input-icon"></i>
+                        <input type="email" class="form-input" placeholder="이메일을 입력하세요" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">비밀번호</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-lock form-input-icon"></i>
+                        <input type="password" class="form-input" placeholder="비밀번호를 입력하세요" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">비밀번호 확인</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-lock form-input-icon"></i>
+                        <input type="password" class="form-input" placeholder="비밀번호를 다시 입력하세요" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-magnetic">
+                    <i class="fas fa-user-plus"></i>
+                    회원가입
+                </button>
+            </form>
+            
+            <div class="modal-footer">
+                <p class="modal-footer-text">
+                    이미 회원이신가요?
+                    <a href="#" class="link-primary" id="showLoginModal">로그인</a>
+                </p>
+            </div>
+        </div>
     </div>
-    <ul>
-      <li><a href="index.html">🏠 홈</a></li>
-      <li><a href="about.html">👤 운영자소개</a></li>
-      <li class="has-submenu">
-        <a href="korean-thought.html">🇰🇷 한국사상과 성경 ▾</a>
-        <ul class="sub-menu">
-          <li><a href="korean-thought.html#history">한국 성경 수용사</a></li>
-          <li><a href="korean-thought.html#interpretation">한국적 성경 해석</a></li>
-          <li><a href="korean-thought.html#culture">한국문화와 성경</a></li>
-        </ul>
-      </li>
-      <li class="has-submenu">
-        <a href="world-thought.html">🌍 세계사상과 성경 ▾</a>
-        <ul class="sub-menu">
-          <li><a href="world-thought.html#ancient">고대 근동과 성경</a></li>
-          <li><a href="world-thought.html#modern">현대사상과 성경</a></li>
-          <li><a href="world-thought.html#comparative">비교 연구</a></li>
-        </ul>
-      </li>
-      <li><a href="publications.html">📚 책과 논문</a></li>
-      <li class="has-submenu">
-        <a href="forum.html">💬 열린마당 ▾</a>
-        <ul class="sub-menu">
-          <li><a href="forum.html#notices">공지사항</a></li>
-          <li><a href="forum.html#board">게시판</a></li>
-          <li><a href="forum.html#media">이미지 & 동영상</a></li>
-        </ul>
-      </li>
-    </ul>
-    <div class="mobile-auth-area"></div>
-    <div class="lang-mobile">
-      <a href="index.html" class="active">한국어</a>
-      <a href="en/index.html">English</a>
-    </div>
-  </nav>
 
-  <!-- ============================================
-       HERO SECTION
-       ============================================ -->
-  <section class="hero">
-    <div class="hero-pattern"></div>
-    <div class="container">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        계명대학교 명예교수 · 구약학 연구
-      </div>
-      <h2>Professor <strong>Jung Joong-Ho's</strong></h2>
-      <div class="hero-kr-title">정중호 교수의 성경 사랑방</div>
-      <p class="hero-description">
-        한국과 세계의 사상 속에서 성경을 연구하고, 구약학의 깊이를 탐구하는 학문의 공간입니다. 
-        300여 년의 한국 성경 번역과 해석의 역사를 추적하며, 동서양 문화 속 성경의 의미를 재조명합니다.
-      </p>
-      <div class="hero-verse">
-        <p>"네 말씀은 내 발에 등이요 내 길에 빛이니이다"</p>
-        <cite>— 시편 119:105 / Psalm 119:105</cite>
-      </div>
-      <div class="hero-buttons">
-        <a href="about.html" class="btn btn-primary">운영자 소개 →</a>
-        <a href="publications.html" class="btn btn-outline">📚 책과 논문</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       ABOUT PREVIEW SECTION
-       ============================================ -->
-  <section class="about-section section" id="about-preview">
-    <div class="container">
-      <div class="section-title">About the Professor</div>
-      <div class="section-title-kr">운영자 소개</div>
-      <div class="section-divider"></div>
-
-      <div class="about-grid">
-        <div class="about-image">
-          <div class="about-image-frame">
-            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=500&fit=crop&crop=center" alt="학문과 연구의 공간">
-          </div>
-        </div>
-        <div class="about-content">
-          <h3>정중호 (鄭重鎬)</h3>
-          <div class="subtitle">계명대학교 기독교학과 명예교수 · 대한예수교 장로회 목사</div>
-          <p>
-            계명대학교 구약학 교수로서 평생을 성경 연구에 헌신하였습니다. 장로회신학대학원을 졸업하고, 
-            미국 Columbia 신학대학원에서 수학한 후 Emory 대학원에서 박사학위를 취득하였으며, 
-            Princeton 신학대학원과 미국 버클리 연합신학대학원(GTU)에서 연구 활동을 하였습니다.
-          </p>
-          <p>
-            한국성서학회 회장, 한국구약학회 회장, 하나님말씀연구소 소장, 구약논단 편집위원장, 
-            아시아기독교연구소 소장을 역임하였으며, 55편 이상의 연구논문과 다수의 저서를 출간하였습니다.
-          </p>
-          <div class="credentials">
-            <div class="credential-item">
-              <span class="icon">🎓</span>
-              <span>Emory 대학원 박사학위 (Ph.D.)</span>
-            </div>
-            <div class="credential-item">
-              <span class="icon">📖</span>
-              <span>한국구약학회 회장 역임</span>
-            </div>
-            <div class="credential-item">
-              <span class="icon">✍️</span>
-              <span>55편+ 학술논문 발표</span>
-            </div>
-            <div class="credential-item">
-              <span class="icon">🏛️</span>
-              <span>계명대 교목실장·연합신학대학원장</span>
-            </div>
-          </div>
-          <div style="margin-top: 1.5rem;">
-            <a href="about.html" class="card-link">자세히 보기 →</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       RESEARCH CATEGORIES SECTION
-       ============================================ -->
-  <section class="categories-section section" id="categories">
-    <div class="container">
-      <div class="section-title">Research Areas</div>
-      <div class="section-title-kr">연구 분야</div>
-      <div class="section-divider"></div>
-
-      <div class="categories-grid">
-        <!-- Card 1: Korean Thought & Bible -->
-        <div class="category-card">
-          <div class="category-icon">🇰🇷</div>
-          <div class="card-subtitle">Korean Thought & Bible</div>
-          <h3>한국사상과 성경</h3>
-          <p>
-            1600년대부터 조선에 유입된 서학서와 천주교 교리서를 통해 성경이 한국에 수용된 300여 년의 역사를 추적합니다. 
-            한국인이 선교사 이전에 이미 성경을 읽고 있었던 독특한 역사를 탐구합니다.
-          </p>
-          <a href="korean-thought.html" class="card-link">자세히 보기 →</a>
-        </div>
-
-        <!-- Card 2: World Thought & Bible -->
-        <div class="category-card">
-          <div class="category-icon">🌍</div>
-          <div class="card-subtitle">World Thought & Bible</div>
-          <h3>세계사상과 성경</h3>
-          <p>
-            고대 근동 문명, 이스라엘 역사와 종교, 그리고 현대 세계사상 속에서 성경의 위치와 의미를 비교 연구합니다. 
-            동서양 문화와 성경의 대화를 통해 보편적 메시지를 탐색합니다.
-          </p>
-          <a href="world-thought.html" class="card-link">자세히 보기 →</a>
-        </div>
-
-        <!-- Card 3: Books & Papers -->
-        <div class="category-card">
-          <div class="category-icon">📚</div>
-          <div class="card-subtitle">Books & Papers</div>
-          <h3>책과 논문</h3>
-          <p>
-            『한국 성경 300년: 번역과 해석의 역사』, 『이스라엘 역사』, 『구약개론』, 『성서와 과학의 대화』 등 
-            다수의 저서와 55편 이상의 학술 논문을 소개합니다.
-          </p>
-          <a href="publications.html" class="card-link">자세히 보기 →</a>
-        </div>
-
-        <!-- Card 4: Open Forum -->
-        <div class="category-card">
-          <div class="category-icon">💬</div>
-          <div class="card-subtitle">Open Forum</div>
-          <h3>열린마당</h3>
-          <p>
-            공지사항, 자유 게시판, 이미지 및 동영상 자료를 통해 성경 연구의 최신 소식과 
-            다양한 학술 자료를 공유하는 열린 공간입니다. 함께 소통하는 성경 학문의 장.
-          </p>
-          <a href="forum.html" class="card-link">자세히 보기 →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       RECENT POSTS BY CATEGORY
-       ============================================ -->
-  <section class="recent-posts-section section">
-    <div class="container">
-      <div class="section-title">Recent Posts</div>
-      <div class="section-title-kr">최신 게시물</div>
-      <div class="section-divider"></div>
-
-      <div class="recent-posts-grid">
-        <!-- Korean Thought & Bible -->
-        <div class="recent-posts-column">
-          <h3><span class="category-label">🇰🇷</span> 한국사상과성경</h3>
-          <div id="korean-thought-posts" class="posts-list">
-            <!-- Posts will be loaded dynamically -->
-            <div class="loading">로딩 중...</div>
-          </div>
-          <a href="korean-thought.html" class="view-all-link">모두 보기 →</a>
-        </div>
-
-        <!-- World Thought & Bible -->
-        <div class="recent-posts-column">
-          <h3><span class="category-label">🌍</span> 세계사상과성경</h3>
-          <div id="world-thought-posts" class="posts-list">
-            <!-- Posts will be loaded dynamically -->
-            <div class="loading">로딩 중...</div>
-          </div>
-          <a href="world-thought.html" class="view-all-link">모두 보기 →</a>
-        </div>
-
-        <!-- Books & Papers -->
-        <div class="recent-posts-column">
-          <h3><span class="category-label">📚</span> 책과논문</h3>
-          <div id="publications-posts" class="posts-list">
-            <!-- Posts will be loaded dynamically -->
-            <div class="loading">로딩 중...</div>
-          </div>
-          <a href="publications.html" class="view-all-link">모두 보기 →</a>
-        </div>
-
-        <!-- Open Forum -->
-        <div class="recent-posts-column">
-          <h3><span class="category-label">💬</span> 열린마당</h3>
-          <div id="forum-posts" class="posts-list">
-            <!-- Posts will be loaded dynamically -->
-            <div class="loading">로딩 중...</div>
-          </div>
-          <a href="forum.html" class="view-all-link">모두 보기 →</a>
-        </div>
-      </div>
-
-      <div class="recent-posts-grid" style="margin-top: 3rem;">
-        <!-- Notices -->
-        <div class="recent-posts-column">
-          <h3><span class="category-label">📢</span> 공지사항</h3>
-          <div id="notices-posts" class="posts-list">
-            <!-- Posts will be loaded dynamically -->
-            <div class="loading">로딩 중...</div>
-          </div>
-          <a href="forum.html#notices" class="view-all-link">모두 보기 →</a>
-        </div>
-
-        <!-- Discussion Board -->
-        <div class="recent-posts-column">
-          <h3><span class="category-label">📋</span> 게시판</h3>
-          <div id="board-posts" class="posts-list">
-            <!-- Posts will be loaded dynamically -->
-            <div class="loading">로딩 중...</div>
-          </div>
-          <a href="forum.html#board" class="view-all-link">모두 보기 →</a>
-        </div>
-
-        <!-- Images & Videos -->
-        <div class="recent-posts-column">
-          <h3><span class="category-label">🎬</span> 이미지&동영상</h3>
-          <div id="media-posts" class="posts-list">
-            <!-- Posts will be loaded dynamically -->
-            <div class="loading">로딩 중...</div>
-          </div>
-          <a href="forum.html#media" class="view-all-link">모두 보기 →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       STATS BAR
-       ============================================ -->
-  <section class="stats-bar">
-    <div class="container">
-      <div class="stats-grid">
-        <div class="stat-item">
-          <h4><span class="stat-number" data-count="300" data-suffix="년+">0</span></h4>
-          <p>한국 성경 번역 역사</p>
-        </div>
-        <div class="stat-item">
-          <h4><span class="stat-number" data-count="55" data-suffix="편+">0</span></h4>
-          <p>학술 연구 논문</p>
-        </div>
-        <div class="stat-item">
-          <h4><span class="stat-number" data-count="15" data-suffix="권+">0</span></h4>
-          <p>저서 및 역서</p>
-        </div>
-        <div class="stat-item">
-          <h4><span class="stat-number" data-count="40" data-suffix="년+">0</span></h4>
-          <p>성경 연구 경력</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       FEATURED PUBLICATIONS
-       ============================================ -->
-  <section class="publications-section section" id="featured-publications">
-    <div class="container">
-      <div class="section-title">Featured Publications</div>
-      <div class="section-title-kr">주요 저서</div>
-      <div class="section-divider"></div>
-
-      <div class="publications-list">
-        <div class="publication-item">
-          <div class="pub-year">2022</div>
-          <div class="pub-content">
-            <div class="pub-type">저서 · Book</div>
-            <h4>한국 성경 300년: 번역과 해석의 역사</h4>
-            <p>한국인이 성경을 사랑한 이면에 숨어있는 300여 년(1600~1900년)의 성경 번역과 해석의 역사를 추적한 역작. 계명대학교출판부, 528페이지.</p>
-          </div>
-        </div>
-
-        <div class="publication-item">
-          <div class="pub-year">저서</div>
-          <div class="pub-content">
-            <div class="pub-type">저서 · Book</div>
-            <h4>이스라엘 역사</h4>
-            <p>이스라엘의 역사를 구약 성경의 관점에서 체계적으로 정리한 학술서.</p>
-          </div>
-        </div>
-
-        <div class="publication-item">
-          <div class="pub-year">저서</div>
-          <div class="pub-content">
-            <div class="pub-type">저서 · Book</div>
-            <h4>노비 해방, 채무 면제, 희년: 한국적 성경 해석</h4>
-            <p>구약 성경의 희년 사상을 한국의 노비 해방과 채무 면제 역사와 연결하여 해석한 독창적 연구서.</p>
-          </div>
-        </div>
-
-        <div class="publication-item">
-          <div class="pub-year">저서</div>
-          <div class="pub-content">
-            <div class="pub-type">저서 · Book</div>
-            <h4>성서와 과학의 대화</h4>
-            <p>성경과 과학의 관계를 탐구하며 신앙과 이성의 조화를 모색한 저서.</p>
-          </div>
-        </div>
-
-        <div class="publication-item">
-          <div class="pub-year">저서</div>
-          <div class="pub-content">
-            <div class="pub-type">주석서 · Commentary</div>
-            <h4>열왕기하: 성서주석 11 / 이사야 2: 성서주석 22</h4>
-            <p>대한기독교서회의 성서주석 시리즈에 집필한 열왕기하와 이사야서 주석.</p>
-          </div>
-        </div>
-
-        <div class="publication-item">
-          <div class="pub-year">논문</div>
-          <div class="pub-content">
-            <div class="pub-type">논문 · Paper</div>
-            <h4>"Were There Yahwistic Sanctuaries in Babylon?"</h4>
-            <p>Asia Journal of Theology 게재. 바빌론에 야훼 성소가 있었는지에 대한 학술 연구.</p>
-          </div>
-        </div>
-      </div>
-
-      <div style="text-align: center; margin-top: 2rem;">
-        <a href="publications.html" class="btn btn-primary">전체 저서 목록 보기 →</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       OPEN FORUM PREVIEW
-       ============================================ -->
-  <section class="forum-section section" id="forum-preview">
-    <div class="container">
-      <div class="section-title">Open Forum</div>
-      <div class="section-title-kr">열린마당</div>
-      <div class="section-divider"></div>
-
-      <div class="forum-grid">
-        <!-- Notices -->
-        <div class="forum-card">
-          <div class="forum-card-header">
-            <h3>📢 공지사항</h3>
-            <a href="forum.html#notices" class="more-link">더보기 →</a>
-          </div>
-          <div class="forum-list">
-            <div class="forum-list-item">
-              <span class="tag">공지</span>
-              <a href="forum.html">성경 사랑방 웹사이트가 새롭게 오픈되었습니다</a>
-              <span class="date">2025.06</span>
-            </div>
-            <div class="forum-list-item">
-              <span class="tag">안내</span>
-              <a href="forum.html">모바일 앱 개발 계획 안내</a>
-              <span class="date">2025.06</span>
-            </div>
-            <div class="forum-list-item">
-              <a href="forum.html">『한국 성경 300년』 개정판 출간 예정 소식</a>
-              <span class="date">2025.05</span>
-            </div>
-            <div class="forum-list-item">
-              <a href="forum.html">아시아 기독교 학술 세미나 참가 안내</a>
-              <span class="date">2025.04</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Board -->
-        <div class="forum-card">
-          <div class="forum-card-header">
-            <h3>📝 게시판</h3>
-            <a href="forum.html#board" class="more-link">더보기 →</a>
-          </div>
-          <div class="forum-list">
-            <div class="forum-list-item">
-              <a href="forum.html">구약성경에서 본 사회정의의 메시지</a>
-              <span class="date">2025.06</span>
-            </div>
-            <div class="forum-list-item">
-              <a href="forum.html">한국 천주교의 성경 번역 역사와 그 의미</a>
-              <span class="date">2025.05</span>
-            </div>
-            <div class="forum-list-item">
-              <a href="forum.html">이스라엘 고대 종교와 예언자 전통</a>
-              <span class="date">2025.05</span>
-            </div>
-            <div class="forum-list-item">
-              <a href="forum.html">성경 해석학의 최신 동향</a>
-              <span class="date">2025.04</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Media -->
-        <div class="forum-card">
-          <div class="forum-card-header">
-            <h3>🎬 이미지 & 동영상</h3>
-            <a href="forum.html#media" class="more-link">더보기 →</a>
-          </div>
-          <div class="media-grid">
-            <div class="media-item">
-              <img src="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=300&h=200&fit=crop" alt="성경 연구">
-              <div class="play-icon">▶</div>
-            </div>
-            <div class="media-item">
-              <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=300&h=200&fit=crop" alt="학술 자료">
-            </div>
-            <div class="media-item">
-              <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=300&h=200&fit=crop" alt="이스라엘 역사">
-              <div class="play-icon">▶</div>
-            </div>
-            <div class="media-item">
-              <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=200&fit=crop" alt="출판물">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       APP TEASER
-       ============================================ -->
-  <section class="section">
-    <div class="container">
-      <div class="app-teaser">
-        <h3>📱 성경 사랑방 앱 개발 예정</h3>
-        <p>정중호 교수의 성경 연구 자료를 언제 어디서나 모바일로 만나보세요.<br>
-        한국사상과 성경, 연구 자료, 강의 영상을 한 곳에서 — 앱 출시를 기대해 주세요!</p>
-        <a href="forum.html" class="btn btn-outline">📬 소식 받기</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       FOOTER
-       ============================================ -->
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <h3>✝ 정중호 교수의 성경 사랑방</h3>
-          <p>
-            한국과 세계의 사상 속에서 성경을 연구하고, 구약학의 깊이를 탐구하는 학문의 공간. 
-            300여 년의 성경 번역과 해석의 역사를 추적하며 동서양 문화 속 성경의 의미를 재조명합니다.
-          </p>
-          <p style="margin-top: 1rem; font-size: 0.78rem;">
-            <a href="en/index.html" style="color: var(--accent-light);">🌐 English Version</a>
-          </p>
-        </div>
-
-        <div class="footer-links">
-          <h4>연구 분야</h4>
-          <ul>
-            <li><a href="korean-thought.html">한국사상과 성경</a></li>
-            <li><a href="world-thought.html">세계사상과 성경</a></li>
-            <li><a href="publications.html">책과 논문</a></li>
-            <li><a href="about.html">운영자소개</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-links">
-          <h4>열린마당</h4>
-          <ul>
-            <li><a href="forum.html#notices">공지사항</a></li>
-            <li><a href="forum.html#board">게시판</a></li>
-            <li><a href="forum.html#media">이미지 & 동영상</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-links">
-          <h4>참고 사이트</h4>
-          <ul class="footer-contact">
-            <li>
-              <span class="icon">🔗</span>
-              <span><a href="http://bibleglocal.org" target="_blank" rel="noopener">bibleglocal.org</a></span>
-            </li>
-            <li>
-              <span class="icon">🔗</span>
-              <span><a href="http://iloveoti.com" target="_blank" rel="noopener">iloveoti.com (구약사랑)</a></span>
-            </li>
-            <li>
-              <span class="icon">🏫</span>
-              <span>계명대학교 기독교학과</span>
-            </li>
-            <li>
-              <span class="icon">📧</span>
-              <span>bibleglocal@gmail.com</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <p>&copy; 2025 정중호 교수의 성경 사랑방 — Bible Glocal. All rights reserved.</p>
-        <p class="footer-note">본 사이트의 모든 학술 자료와 콘텐츠의 저작권은 정중호 교수에게 있습니다.</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Scroll to Top -->
-  <button class="scroll-top" aria-label="맨 위로">↑</button>
-
-    <script src="js/config.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/social.js"></script>
-  <script src="js/admin-editor.js"></script>
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/premium-interactions.js"></script>
 </body>
 </html>

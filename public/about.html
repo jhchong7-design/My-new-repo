@@ -1,315 +1,269 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>운영자소개 | 정중호 교수의 성경 사랑방</title>
-  <meta name="description" content="정중호 계명대학교 기독교학과 명예교수 소개 - 학력, 경력, 연구 활동">
-  <!-- Open Graph Meta Tags -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="운영자 소개 | Bible Glocal">
-  <meta property="og:description" content="정중호 계명대 명예교수 소개 - 구약학, 성경연구, 한국사상과 성경">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
-  <meta property="og:url" content="https://bibleglocal.org/about.html">
-  <meta property="og:site_name" content="Bible Glocal">
-  <meta property="og:locale" content="ko_KR">
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="운영자 소개 | Bible Glocal">
-  <meta name="twitter:description" content="정중호 계명대 명예교수 소개 - 구약학, 성경연구, 한국사상과 성경">
-  <meta name="twitter:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/auth.css">
-  <link rel="stylesheet" href="css/social.css">
-  <link rel="stylesheet" href="css/admin-editor.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✝</text></svg>">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교회 소개 | 시온산교회</title>
+    <meta name="description" content="시온산교회의 비전, 사명, 그리고 역사를 소개합니다.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/modern-styles.css">
+    <link rel="stylesheet" href="/css/premium-animations.css">
+    <link rel="stylesheet" href="/css/imagery.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js & Vanta.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
-
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <div class="container">
-      <div class="top-bar-left">
-        <span>📖 bibleglocal.org</span>
-        <span>|</span>
-        <span>계명대학교 명예교수 정중호</span>
-      </div>
-      <div class="top-bar-right">
-        <div class="lang-switch">
-          <a href="about.html" class="active">한국어</a>
-          <a href="en/about.html">ENG</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Header -->
-  <header>
-    <div class="container">
-      <div class="header-inner">
-        <a href="index.html" class="logo">
-          <div class="logo-icon">BG</div>
-          <div class="logo-text">
-            <h1>성경 사랑방</h1>
-            <span>Bible Glocal</span>
-          </div>
-        </a>
-        <nav class="main-nav">
-          <ul>
-            <li><a href="index.html">홈</a></li>
-            <li><a href="about.html" class="active">운영자소개</a></li>
-            <li><a href="korean-thought.html">한국사상과 성경</a></li>
-            <li><a href="world-thought.html">세계사상과 성경</a></li>
-            <li><a href="publications.html">책과 논문</a></li>
-            <li><a href="forum.html">열린마당</a></li>
-          </ul>
-        </nav>
-        <div class="auth-area"></div>
-
-        <button class="menu-toggle" aria-label="메뉴 열기">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Mobile Nav -->
-  <div class="mobile-nav-overlay"></div>
-  <nav class="mobile-nav">
-    <div class="mobile-nav-header"><h3>성경 사랑방</h3><p>Bible Glocal</p></div>
-    <ul>
-      <li><a href="index.html">🏠 홈</a></li>
-      <li><a href="about.html">👤 운영자소개</a></li>
-      <li><a href="korean-thought.html">🇰🇷 한국사상과 성경</a></li>
-      <li><a href="world-thought.html">🌍 세계사상과 성경</a></li>
-      <li><a href="publications.html">📚 책과 논문</a></li>
-      <li><a href="forum.html">💬 열린마당</a></li>
-    </ul>
-    <div class="mobile-auth-area"></div>
-    <div class="lang-mobile">
-      <a href="about.html" class="active">한국어</a>
-      <a href="en/about.html">English</a>
-    </div>
-  </nav>
-
-  <!-- Page Hero -->
-  <section class="page-hero">
-    <div class="container">
-      <h2>About the Professor</h2>
-      <p class="breadcrumb"><a href="index.html">홈</a> &nbsp;/&nbsp; 운영자소개</p>
-    </div>
-  </section>
-
-  <!-- Page Content -->
-  <section class="page-content">
-    <div class="container">
-      <div class="content-block">
-
-        <div class="about-grid" style="margin-bottom: 3rem;">
-          <div class="about-image">
-            <div class="about-image-frame">
-              <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=500&fit=crop&crop=center" alt="정중호 교수 연구 공간">
+    <!-- Vanta.js Background -->
+    <div id="vanta-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="nav glass-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/" class="brand-link">
+                    <span class="brand-icon"><i class="fas fa-church"></i></span>
+                    <span class="brand-text">시온산교회</span>
+                </a>
             </div>
-          </div>
-          <div class="about-content">
-            <h3>정중호 (鄭重鎬) 교수</h3>
-            <div class="subtitle">Professor Emeritus Jung Joong-Ho</div>
-            <p>
-              계명대학교 기독교학과 명예교수이며, 대한예수교 장로회 목사입니다. 평생을 구약학 연구와 
-              교육에 헌신하며, 한국 성경 번역과 해석의 역사를 조명하는 데 선구적 역할을 해왔습니다.
-            </p>
-            <p>
-              특히, 한국의 기독교 선교 역사가 다른 나라와는 달리, 선교사가 오기 이전에 한국인들이 
-              스스로 성경을 구해 읽고, 공동체를 조직하고 세례까지 베푼 독특한 역사를 밝히는 데 
-              학문적 기여를 하였습니다.
-            </p>
-          </div>
-        </div>
-
-        <h3>🎓 학력</h3>
-        <div class="timeline">
-          <div class="timeline-item">
-            <h4>Emory 대학원 박사학위(Ph.D.) 취득</h4>
-            <span class="year">구약학 전공</span>
-            <p>미국 에모리 대학교 대학원에서 구약학으로 박사학위를 취득하였습니다.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>Columbia 신학대학원 수학</h4>
-            <span class="year">미국 컬럼비아</span>
-            <p>Columbia 신학대학원에서 신학 과정을 이수하였습니다.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>장로회신학대학원 졸업</h4>
-            <span class="year">한국</span>
-            <p>장로회신학대학원에서 신학 석사 과정을 졸업하였습니다.</p>
-          </div>
-        </div>
-
-        <h3 style="margin-top: 2.5rem;">🏛️ 경력 및 활동</h3>
-        <div class="timeline">
-          <div class="timeline-item">
-            <h4>계명대학교 기독교학과 명예교수</h4>
-            <span class="year">현재</span>
-            <p>계명대학교에서 구약학을 강의하며 교목실장, 연합신학대학원장을 역임하였습니다.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>한국성서학회 회장</h4>
-            <span class="year">학회 활동</span>
-            <p>한국성서학회 회장을 역임하며 한국 성서학 발전에 기여하였습니다.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>한국구약학회 회장</h4>
-            <span class="year">학회 활동</span>
-            <p>한국구약학회 회장으로서 구약학 연구의 발전을 이끌었습니다.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>하나님말씀연구소 소장</h4>
-            <span class="year">연구소</span>
-            <p>하나님말씀연구소의 소장을 맡아 성경 연구를 주도하였습니다.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>구약논단 편집위원장</h4>
-            <span class="year">학술 편집</span>
-            <p>구약논단의 편집위원장으로 학술지 편집을 담당하였습니다.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>아시아기독교연구소 소장</h4>
-            <span class="year">국제 활동</span>
-            <p>아시아기독교연구소의 소장을 맡아 국제적 연구 활동을 수행하였습니다.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>Princeton 신학대학원 연구</h4>
-            <span class="year">해외 연구</span>
-            <p>Princeton 신학대학원에서 연구 활동을 수행하였습니다.</p>
-          </div>
-          <div class="timeline-item">
-            <h4>버클리 연합신학대학원(GTU) 연구</h4>
-            <span class="year">해외 연구</span>
-            <p>미국 버클리 연합신학대학원(Graduate Theological Union)에서 연구하였습니다.</p>
-          </div>
-        </div>
-
-        <h3 style="margin-top: 2.5rem;">📖 연구 분야</h3>
-        <div class="highlight-box">
-          <p>
-            구약학(Old Testament Studies)을 전공으로 하며, 특히 이스라엘 역사, 구약 예언서, 
-            한국 성경 번역과 해석의 역사, 한국사상과 성경, 성서와 과학의 대화, 
-            아시아 기독교 연구 등 폭넓은 학문 영역을 아우르고 있습니다.
-          </p>
-        </div>
-
-        <h3 style="margin-top: 2.5rem;">✍️ 주요 저서</h3>
-        <div class="publications-list" style="margin-top: 1rem;">
-          <div class="publication-item">
-            <div class="pub-year">2022</div>
-            <div class="pub-content">
-              <h4>한국 성경 300년: 번역과 해석의 역사</h4>
-              <p>계명대학교출판부, 528쪽</p>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="/about" class="nav-link active">교회소개</a>
+                <a href="/empire" class="nav-link">시온산제국</a>
+                <a href="/books" class="nav-link">도서출판</a>
+                <a href="/notices" class="nav-link">공지사항</a>
+                <a href="/gallery" class="nav-link">갤러리</a>
+                <a href="/operator" class="nav-link">리더십</a>
+                <a href="/board" class="nav-link">게시판</a>
             </div>
-          </div>
-          <div class="publication-item">
-            <div class="pub-year">저서</div>
-            <div class="pub-content">
-              <h4>이스라엘 역사 / 이스라엘 종교와 성전</h4>
-              <p>이스라엘의 역사와 종교 문화를 체계적으로 정리</p>
+            
+            <div class="nav-actions">
+                <button class="btn btn-primary btn-sm btn-magnetic" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>로그인</span>
+                </button>
+                <button class="nav-toggle" id="navToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-          </div>
-          <div class="publication-item">
-            <div class="pub-year">저서</div>
-            <div class="pub-content">
-              <h4>구약개론 / 구약성경해설: 시가서</h4>
-              <p>구약 성경 입문서 및 시가서 해설</p>
-            </div>
-          </div>
-          <div class="publication-item">
-            <div class="pub-year">주석</div>
-            <div class="pub-content">
-              <h4>열왕기하: 성서주석11 / 이사야2: 성서주석22</h4>
-              <p>대한기독교서회 성서주석 시리즈</p>
-            </div>
-          </div>
-          <div class="publication-item">
-            <div class="pub-year">저서</div>
-            <div class="pub-content">
-              <h4>성서와 과학의 대화 / 의미있는 삶을 찾아서</h4>
-              <p>성경과 현대 사회의 접점을 탐구</p>
-            </div>
-          </div>
-          <div class="publication-item">
-            <div class="pub-year">저서</div>
-            <div class="pub-content">
-              <h4>레위기: 만남과 나눔의 장 / 이스라엘의 국제관계와 예언자</h4>
-              <p>구약의 율법서와 예언서에 대한 심층 연구</p>
-            </div>
-          </div>
-          <div class="publication-item">
-            <div class="pub-year">역서</div>
-            <div class="pub-content">
-              <h4>이스라엘과 유다역사 (역서)</h4>
-              <p>해외 학술서의 번역을 통한 학문적 교류</p>
-            </div>
-          </div>
         </div>
+    </nav>
 
-        <div class="highlight-box" style="margin-top: 2rem;">
-          <p>
-            "한국의 기독교 선교 역사는 독특합니다. 선교사가 성경을 전해준 것이 아니라, 
-            선교사가 한국 땅을 밟기 이전에 한국인들이 이미 성경을 먼저 입수해 읽고 있었으며, 
-            공동체를 조직하고 세례까지 베푼 역사가 있었습니다." — 정중호 교수
-          </p>
+    <!-- Page Header -->
+    <section class="page-header" style="background-image: url('images/church-exterior.png'); background-size: cover; background-position: center; background-attachment: fixed; position: relative;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(26, 35, 126, 0.85) 0%, rgba(15, 23, 42, 0.8) 100%);"></div>
+        <div class="container" style="position: relative; z-index: 2;">
+            <h1 class="page-title reveal-on-scroll" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">교회 소개</h1>
+            <p class="page-subtitle reveal-on-scroll stagger-1" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.5);">믿음과 사랑으로 하나님을 섬기는 공동체</p>
         </div>
+    </section>
 
-      </div>
-    </div>
-  </section>
+    <!-- Vision Section -->
+    <section class="section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content reveal-left" data-editable="true" data-id="vision">
+                    <span class="section-badge">VISION</span>
+                    <h2 class="section-title">우리의 비전</h2>
+                    <p class="about-text">
+                        시온산교회는 하나님의 말씀 중심의 건강한 교회 공동체를 지향합니다. 
+                        우리는 예수 그리스도의 사랑을 실천하며, 지역 사회와 세계에 복음을 전파하는 
+                        선교적 사명을 감당하고 있습니다.
+                    </p>
+                    <ul class="about-list">
+                        <li><i class="fas fa-check-circle text-gold"></i> 말씀 중심의 예배</li>
+                        <li><i class="fas fa-check-circle text-gold"></i> 사랑의 공동체</li>
+                        <li><i class="fas fa-check-circle text-gold"></i> 선교적 사명</li>
+                        <li><i class="fas fa-check-circle text-gold"></i> 다음 세대 양육</li>
+                    </ul>
+                </div>
+                <div class="about-image reveal-right">
+                    <div class="image-placeholder">
+                        <i class="fas fa-bible fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <h3>✝ 정중호 교수의 성경 사랑방</h3>
-          <p>한국과 세계의 사상 속에서 성경을 연구하고, 구약학의 깊이를 탐구하는 학문의 공간.</p>
+    <!-- Mission Section -->
+    <section class="section glass-premium">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">MISSION</span>
+                <h2 class="section-title">우리의 사명</h2>
+                <p class="section-subtitle">하나님 나라를 확장하는 사명</p>
+            </div>
+            
+            <div class="mission-grid">
+                <div class="glass-card mission-card reveal-scale stagger-1">
+                    <div class="mission-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>말씀 전파</h3>
+                    <p>성경 중심의 생명의 말씀을 전파하여 영적 성장을 돕습니다</p>
+                </div>
+                
+                <div class="glass-card mission-card reveal-scale stagger-2">
+                    <div class="mission-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>봉사와 섬김</h3>
+                    <p>이웃을 사랑하며 섬기는 봉사의 삶을 실천합니다</p>
+                </div>
+                
+                <div class="glass-card mission-card reveal-scale stagger-3">
+                    <div class="mission-icon">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <h3>세계 선교</h3>
+                    <p>세계 곳곳에 복음을 전파하여 하나님 나라를 확장합니다</p>
+                </div>
+            </div>
         </div>
-        <div class="footer-links">
-          <h4>연구 분야</h4>
-          <ul>
-            <li><a href="korean-thought.html">한국사상과 성경</a></li>
-            <li><a href="world-thought.html">세계사상과 성경</a></li>
-            <li><a href="publications.html">책과 논문</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>열린마당</h4>
-          <ul>
-            <li><a href="forum.html#notices">공지사항</a></li>
-            <li><a href="forum.html#board">게시판</a></li>
-            <li><a href="forum.html#media">이미지 & 동영상</a></li>
-          </ul>
-        </div>
-        <div class="footer-links">
-          <h4>참고 사이트</h4>
-          <ul class="footer-contact">
-            <li><span class="icon">🔗</span><span><a href="http://bibleglocal.org" target="_blank">bibleglocal.org</a></span></li>
-            <li><span class="icon">📧</span><span>bibleglocal@gmail.com</span></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 정중호 교수의 성경 사랑방 — Bible Glocal. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+    </section>
 
-  <button class="scroll-top" aria-label="맨 위로">↑</button>
-    <script src="js/config.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/social.js"></script>
-  <script src="js/admin-editor.js"></script>
+    <!-- History Timeline -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">HISTORY</span>
+                <h2 class="section-title">교회 역사</h2>
+                <p class="section-subtitle">하나님의 은혜로 걸어온 길</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item reveal-on-scroll">
+                    <div class="timeline-year">1989</div>
+                    <div class="timeline-content glass-card">
+                        <h3>교회 창립</h3>
+                        <p>시온산교회가 설립되었습니다. 소수의 성도들과 함께 시작된 사역이었습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item reveal-on-scroll">
+                    <div class="timeline-year">1995</div>
+                    <div class="timeline-content glass-card">
+                        <h3>선교 사역 시작</h3>
+                        <p>해외 선교 사역을 시작하여 첫 선교사를 파송하였습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item reveal-on-scroll">
+                    <div class="timeline-year">2005</div>
+                    <div class="timeline-content glass-card">
+                        <h3>교당 이전 및 확장</h3>
+                        <p>현재의 교당으로 이전하고 예배 공간을 확장하였습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item reveal-on-scroll">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-content glass-card">
+                        <h3>35주년</h3>
+                        <p>하나님의 은혜로 35주년을 맞이했습니다. 더 큰 비전을 향해 나아갑니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Values -->
+    <section class="section glass-gold">
+        <div class="container">
+            <div class="section-header reveal-on-scroll">
+                <span class="section-badge">VALUES</span>
+                <h2 class="section-title">핵심 가치</h2>
+                <p class="section-subtitle">우리가 삶의 원칙으로 삼는 가치들</p>
+            </div>
+            
+            <div class="values-grid">
+                <div class="value-item reveal-left">
+                    <div class="value-number text-gold">01</div>
+                    <h3>성경 중심</h3>
+                    <p>하나님의 말씀을 최우선 가치로 삼습니다</p>
+                </div>
+                
+                <div class="value-item reveal-scale stagger-1">
+                    <div class="value-number text-gold">02</div>
+                    <h3>기도 중심</h3>
+                    <p>모든 사역을 기도로 시작하고 마칩니다</p>
+                </div>
+                
+                <div class="value-item reveal-scale stagger-2">
+                    <div class="value-number text-gold">03</div>
+                    <h3>사랑 중심</h3>
+                    <p>예수님의 사랑을 실천하는 공동체입니다</p>
+                </div>
+                
+                <div class="value-item reveal-right">
+                    <div class="value-number text-gold">04</div>
+                    <h3>성숙 중심</h3>
+                    <p>영적으로 성숙한 제자를 양성합니다</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand-link">
+                        <span class="brand-icon"><i class="fas fa-church"></i></span>
+                        <span class="brand-text">시온산교회</span>
+                    </div>
+                    <p class="footer-description">
+                        믿음과 사랑으로 하나님을 섬기는 공동체
+                    </p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-link-group">
+                        <h4>바로가기</h4>
+                        <a href="/about">교회소개</a>
+                        <a href="/empire">시온산제국</a>
+                        <a href="/books">도서출판</a>
+                    </div>
+                    
+                    <div class="footer-link-group">
+                        <h4>소식</h4>
+                        <a href="/notices">공지사항</a>
+                        <a href="/gallery">갤러리</a>
+                        <a href="/board">게시판</a>
+                    </div>
+                    
+                    <div class="footer-link-group">
+                        <h4>연락처</h4>
+                        <a href="/contact">연락하기</a>
+                        <a href="/operator">리더십</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="footer-copyright">
+                    &copy; 2024 시온산교회. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/premium-interactions.js"></script>
 </body>
 </html>
