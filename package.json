@@ -1,37 +1,35 @@
 {
-  "name": "mz-church-website",
-  "version": "1.0.0",
-  "description": "시온산교회 시온산제국 - Mount Zion Church & Empire Website",
-  "main": "server/index.js",
+  "name": "bibleglocal",
+  "version": "2.0.0",
+  "description": "Bible Glocal — Professor Jung Joong-Ho's Bible Study Website (정중호 교수의 성경 사랑방)",
+  "main": "server.js",
   "scripts": {
-    "start": "node server/index.js",
-    "dev": "nodemon server/index.js",
-    "test": "jest"
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "keywords": [
-    "church",
+    "bible",
     "korean",
-    "presbyterian"
+    "theology",
+    "glocal"
   ],
-  "author": "정중호",
-  "license": "MIT",
+  "author": "Bible Glocal",
+  "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "compression": "^1.7.4",
-    "connect-mongo": "^5.1.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "express-session": "^1.17.3",
-    "express-validator": "^7.0.1",
-    "helmet": "^7.1.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.8.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.23.0",
-    "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.7"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
+    "multer": "^2.1.1",
+    "uuid": "^13.0.0"
   }
 }

@@ -2,960 +2,446 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>관리자 대시보드 | 시온산교회 시온산제국</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <meta name="description" content="관리자 대시보드 - 정중호 교수의 성경 사랑방 | Admin Dashboard - Bible Glocal">
+  <title>관리자 대시보드 | 성경 사랑방 — Bible Glocal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    .admin-container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    
-    .admin-sidebar {
-      background: #2d3748;
-      color: white;
-      padding: 1.5rem 0;
-      width: 100%;
-      order: 2;
-    }
-    
-    .admin-sidebar-header {
-      padding: 0 1.5rem;
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .admin-sidebar-header h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-    
-    .admin-sidebar-menu {
-      list-style: none;
-      padding: 0 0.5rem;
-    }
-    
-    .admin-sidebar-menu li {
-      margin-bottom: 0.25rem;
-    }
-    
-    .admin-sidebar-link {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      color: #a0aec0;
-      text-decoration: none;
-      transition: all 0.2s;
-      border-left: 3px solid transparent;
-      cursor: pointer;
-      border-radius: 0 8px 8px 0;
-      font-size: 0.95rem;
-    }
-    
-    .admin-sidebar-link:hover,
-    .admin-sidebar-link.active {
-      background: #4a5568;
-      color: white;
-      border-left-color: var(--accent-color);
-    }
-    
-    .admin-sidebar-link .icon {
-      margin-right: 0.75rem;
-      font-size: 1.1rem;
-    }
-    
-    .admin-main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      order: 1;
-      width: 100%;
-    }
-    
-    .admin-header {
-      background: white;
-      border-bottom: 1px solid #e2e8f0;
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    
-    .admin-header h1 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--primary-color);
-    }
-    
-    .admin-header-actions {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    
-    .admin-header-user {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--secondary-color);
-      font-size: 0.9rem;
-    }
-    
-    .admin-content {
-      flex: 1;
-      padding: 1.5rem;
-      background: #f7fafc;
-      overflow-y: auto;
-    }
-    
-    .admin-dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    
-    .stat-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .stat-card h3 {
-      font-size: 0.9rem;
-      color: var(--secondary-color);
-      margin-bottom: 0.5rem;
-    }
-    
-    .stat-card .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--primary-color);
-    }
-    
-    .admin-section {
-      display: none;
-    }
-    
-    .admin-section.active {
-      display: block;
-    }
-    
-    .admin-toolbar {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    
-    .admin-toolbar h2 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--dark-color);
-    }
-    
-    .admin-toolbar-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    
-    .admin-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      font-size: 0.9rem;
-    }
-    
-    .admin-table thead {
-      background: #f7fafc;
-    }
-    
-    .admin-table th {
-      padding: 1rem;
-      text-align: left;
-      font-weight: 600;
-      color: var(--dark-color);
-      border-bottom: 2px solid #e2e8f0;
-      white-space: nowrap;
-    }
-    
-    .admin-table td {
-      padding: 1rem;
-      border-bottom: 1px solid #e2e8f0;
-      vertical-align: middle;
-    }
-    
-    .admin-table tbody tr:hover {
-      background: #f7fafc;
-    }
-    
-    .admin-table-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.25rem;
-    }
-    
-    .status-badge {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    
-    .status-badge.active {
-      background: #c6f6d5;
-      color: #22543d;
-    }
-    
-    .status-badge.inactive {
-      background: #fed7d7;
-      color: #742a2a;
-    }
-    
-    .admin-sidebar-footer {
-      margin-top: auto;
-      padding: 1rem 0.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Tablet and up */
-    @media (min-width: 768px) {
-      .admin-container {
-        flex-direction: row;
-      }
-      
-      .admin-sidebar {
-        width: 250px;
-        min-height: 100vh;
-        position: sticky;
-        top: 0;
-        order: 1;
-        padding: 2rem 0;
-      }
-      
-      .admin-sidebar-menu {
-        padding: 0;
-      }
-      
-      .admin-main {
-        order: 2;
-      }
-      
-      .admin-dashboard-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .admin-toolbar {
-        flex-direction: row;
-        align-items: center;
-      }
-      
-      .admin-content {
-        padding: 2rem;
-      }
-    }
-    
-    /* Laptop and up */
-    @media (min-width: 1024px) {
-      .admin-dashboard-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-      
-      .admin-content {
-        padding: 2rem 3rem;
-      }
-    }
-    
-    /* Small mobile */
-    @media (max-width: 479px) {
-      .admin-header {
-        padding: 0.75rem 1rem;
-      }
-      
-      .admin-header h1 {
-        font-size: 1rem;
-        order: 2;
-        width: 100%;
-        text-align: center;
-      }
-      
-      .admin-header-actions {
-        order: 1;
-        width: 100%;
-        justify-content: center;
-      }
-      
-      .admin-content {
-        padding: 1rem;
-      }
-      
-      .admin-toolbar h2 {
-        font-size: 1rem;
-      }
-      
-      .admin-table {
-        font-size: 0.8rem;
-      }
-      
-      .admin-table th,
-      .admin-table td {
-        padding: 0.5rem;
-      }
-      
-      .stat-card .stat-value {
-        font-size: 1.5rem;
-      }
-    }
-  </style>
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/social.css">
+  <link rel="stylesheet" href="css/admin-editor.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✝</text></svg>">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="관리자 대시보드 | Bible Glocal">
+  <meta property="og:description" content="사이트 관리 대시보드">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
+  <meta property="og:url" content="https://bibleglocal.org/admin.html">
+  <meta property="og:site_name" content="Bible Glocal">
+  <meta property="og:locale" content="ko_KR">
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="관리자 대시보드 | Bible Glocal">
+  <meta name="twitter:description" content="사이트 관리 대시보드">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1200&h=630&fit=crop">
 </head>
 <body>
-  <div class="admin-container">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <div class="admin-sidebar-header">
-        <h2>👑 관리자</h2>
-        <p style="font-size: 0.75rem; color: #a0aec0; margin-top: 0.25rem;">시온산교회 시온산제국</p>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span>📖 bibleglocal.org</span>
+        <span>|</span>
+        <span>⭐ 관리자 모드</span>
       </div>
-      
-      <ul class="admin-sidebar-menu">
-        <li>
-          <a href="#" class="admin-sidebar-link active" data-section="dashboard">
-            <span class="icon">📊</span>
-            <span>대시보드</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="admin-sidebar-link" data-section="content">
-            <span class="icon">📝</span>
-            <span>콘텐츠 관리</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="admin-sidebar-link" data-section="notices">
-            <span class="icon">📢</span>
-            <span>공지사항</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="admin-sidebar-link" data-section="posts">
-            <span class="icon">💬</span>
-            <span>게시판</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="admin-sidebar-link" data-section="media">
-            <span class="icon">🖼️</span>
-            <span>이미지/동영상</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="admin-sidebar-link" data-section="users">
-            <span class="icon">👥</span>
-            <span>회원 관리</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="admin-sidebar-link" data-section="settings">
-            <span class="icon">⚙️</span>
-            <span>설정</span>
-          </a>
-        </li>
-      </ul>
-      
-      <div class="admin-sidebar-footer">
-        <a href="/" class="admin-sidebar-link" style="background: #1a202c;">
-          <span class="icon">🏠</span>
-          <span>웹사이트 보기</span>
+      <div class="top-bar-right">
+        <div class="lang-switch">
+          <a href="admin.html" class="active">한국어</a>
+          <a href="en/index.html">ENG</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">BG</div>
+          <div class="logo-text">
+            <h1>성경 사랑방</h1>
+            <span>Bible Glocal</span>
+          </div>
         </a>
-        <button id="logoutBtn" class="admin-sidebar-link" style="width: 100%; background: none; border: none; color: #fc8181; cursor: pointer; text-align: left;">
-          <span class="icon">🚪</span>
-          <span>로그아웃</span>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="index.html">홈</a></li>
+            <li><a href="about.html">운영자소개</a></li>
+            <li><a href="korean-thought.html">한국사상과 성경</a></li>
+            <li><a href="world-thought.html">세계사상과 성경</a></li>
+            <li><a href="publications.html">책과 논문</a></li>
+            <li><a href="forum.html">열린마당</a></li>
+          </ul>
+        </nav>
+        <div class="auth-area"></div>
+        <button class="menu-toggle" aria-label="메뉴 열기">
+          <span></span><span></span><span></span>
         </button>
       </div>
-    </aside>
+    </div>
+  </header>
 
-    <!-- Main Content -->
-    <div class="admin-main">
-      <!-- Header -->
-      <header class="admin-header">
-        <h1 id="pageTitle">대시보드</h1>
-        <div class="admin-header-actions">
-          <div class="admin-header-user">
-            <span id="adminUsername">정중호</span>
-            <span class="status-badge active">관리자</span>
+  <div class="mobile-nav-overlay"></div>
+  <nav class="mobile-nav">
+    <div class="mobile-nav-header">
+      <h3>성경 사랑방</h3>
+      <p>관리자 대시보드</p>
+    </div>
+    <ul>
+      <li><a href="index.html">🏠 홈</a></li>
+      <li><a href="about.html">👤 운영자소개</a></li>
+      <li><a href="korean-thought.html">🇰🇷 한국사상과 성경</a></li>
+      <li><a href="world-thought.html">🌍 세계사상과 성경</a></li>
+      <li><a href="publications.html">📚 책과 논문</a></li>
+      <li><a href="forum.html">💬 열린마당</a></li>
+    </ul>
+    <div class="mobile-auth-area"></div>
+    <div class="lang-mobile">
+      <a href="admin.html" class="active">한국어</a>
+      <a href="en/index.html">English</a>
+    </div>
+  </nav>
+
+  <!-- Admin Dashboard -->
+  <section class="admin-dashboard">
+    <div class="container">
+      <div class="admin-header">
+        <h2>⭐ 관리자 대시보드</h2>
+        <p>성경 사랑방 사이트 관리</p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="admin-stats" id="adminStats">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <span class="stat-number" id="totalUsers">-</span>
+            <span class="stat-label">전체 회원</span>
           </div>
         </div>
-      </header>
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <span class="stat-number" id="activeUsers">-</span>
+            <span class="stat-label">활성 회원</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🛡</div>
+          <div class="stat-info">
+            <span class="stat-number" id="adminCount">-</span>
+            <span class="stat-label">관리자</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <span class="stat-number" id="todayLogins">-</span>
+            <span class="stat-label">오늘 로그인</span>
+          </div>
+        </div>
+      </div>
 
-      <!-- Content -->
-      <div class="admin-content">
-        <!-- Dashboard Section -->
-        <section id="dashboard" class="admin-section active">
-          <div class="admin-dashboard-grid">
-            <div class="stat-card">
-              <h3>총 회원 수</h3>
-              <div class="stat-value" id="totalUsers">0</div>
-            </div>
-            <div class="stat-card">
-              <h3>총 공지사항</h3>
-              <div class="stat-value" id="totalNotices">0</div>
-            </div>
-            <div class="stat-card">
-              <h3>총 게시물</h3>
-              <div class="stat-value" id="totalPosts">0</div>
-            </div>
-            <div class="stat-card">
-              <h3>총 미디어</h3>
-              <div class="stat-value" id="totalMedia">0</div>
-            </div>
+      <!-- Admin Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('users')">👥 회원 관리</button>
+        <button class="admin-tab" onclick="switchTab('settings')">⚙️ 사이트 설정</button>
+      </div>
+
+      <!-- Users Panel -->
+      <div class="admin-panel" id="usersPanel">
+        <div class="panel-header">
+          <h3>회원 목록</h3>
+          <div class="panel-actions">
+            <input type="text" id="userSearch" placeholder="이름 또는 이메일 검색..." oninput="filterUsers(this.value)" class="panel-search">
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table" id="usersTable">
+            <thead>
+              <tr>
+                <th>이름</th>
+                <th>이메일</th>
+                <th>역할</th>
+                <th>가입방식</th>
+                <th>가입일</th>
+                <th>상태</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody">
+              <tr><td colspan="7" style="text-align:center; padding: 2rem;">로딩 중...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Settings Panel -->
+      <div class="admin-panel" id="settingsPanel" style="display:none;">
+        <div class="panel-header">
+          <h3>사이트 설정</h3>
+        </div>
+        <form id="settingsForm" class="settings-form" onsubmit="handleSettingsSave(event)">
+          <div class="settings-group">
+            <label>사이트 이름</label>
+            <input type="text" id="siteName" value="정중호 교수의 성경 사랑방">
+          </div>
+          <div class="settings-group">
+            <label>사이트 설명</label>
+            <textarea id="siteDescription" rows="3">한국과 세계의 사상 속에서 성경을 연구하고, 구약학의 깊이를 탐구하는 학문의 공간입니다.</textarea>
+          </div>
+          <div class="settings-group">
+            <label>관리자 이메일</label>
+            <input type="email" id="adminEmail" value="st805@naver.com" readonly style="opacity:0.7;">
+          </div>
+          <div class="settings-group">
+            <label>회원가입 허용</label>
+            <select id="allowRegistration">
+              <option value="true">허용</option>
+              <option value="false">비허용</option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label>유지보수 모드</label>
+            <select id="maintenanceMode">
+              <option value="false">비활성</option>
+              <option value="true">활성</option>
+            </select>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
-            <div class="card">
-              <div class="card-header">최근 활동</div>
-              <div id="recentActivity">
-                <p style="color: #a0aec0;">로딩 중...</p>
-              </div>
-            </div>
-            
-            <div class="card">
-              <div class="card-header">빠른 링크</div>
-              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <a href="#" class="btn btn-outline" data-section="content">➕ 새 콘텐츠 추가</a>
-                <a href="#" class="btn btn-outline" data-section="notices">➕ 새 공지사항</a>
-                <a href="#" class="btn btn-outline" data-section="media">➕ 이미지/동영상 추가</a>
-              </div>
-            </div>
-          </div>
-        </section>
+          <div id="settingsError" class="auth-error" style="display:none;"></div>
+          <div id="settingsSuccess" class="auth-success" style="display:none;"></div>
 
-        <!-- Content Management Section -->
-        <section id="content" class="admin-section">
-          <div class="admin-toolbar">
-            <h2>콘텐츠 관리</h2>
-            <div class="admin-toolbar-actions">
-              <select id="contentPageFilter" class="form-control" style="width: auto;">
-                <option value="">모든 페이지</option>
-                <option value="home">홈페이지</option>
-                <option value="operator">운영자소개</option>
-                <option value="church">시온산교회</option>
-                <option value="empire">시온산제국</option>
-                <option value="books">책과논문</option>
-              </select>
-              <button class="btn btn-primary" id="addContentBtn">➕ 새 콘텐츠</button>
-            </div>
-          </div>
-          <div id="contentTableContainer">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>순서</th>
-                  <th>제목</th>
-                  <th>페이지</th>
-                  <th>작성자</th>
-                  <th>상태</th>
-                  <th>작업</th>
-                </tr>
-              </thead>
-              <tbody id="contentTableBody">
-                <tr>
-                  <td colspan="6" style="text-align: center; color: #a0aec0;">로딩 중...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
+          <button type="submit" class="auth-submit-btn" style="max-width: 300px;">
+            <span class="btn-text">설정 저장</span>
+          </button>
+        </form>
+      </div>
 
-        <!-- Notices Section -->
-        <section id="notices" class="admin-section">
-          <div class="admin-toolbar">
-            <h2>공지사항 관리</h2>
-            <button class="btn btn-primary" id="addNoticeBtn">➕ 새 공지사항</button>
-          </div>
-          <div id="noticesTableContainer">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>제목</th>
-                  <th>카테고리</th>
-                  <th>작성자</th>
-                  <th>조회수</th>
-                  <th>상태</th>
-                  <th>작업</th>
-                </tr>
-              </thead>
-              <tbody id="noticesTableBody">
-                <tr>
-                  <td colspan="6" style="text-align: center; color: #a0aec0;">로딩 중...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
+    </div>
+  </section>
 
-        <!-- Posts Section -->
-        <section id="posts" class="admin-section">
-          <div class="admin-toolbar">
-            <h2>게시판 관리</h2>
-            <div class="admin-toolbar-actions">
-              <select id="postCategoryFilter" class="form-control" style="width: auto;">
-                <option value="">모든 카테고리</option>
-                <option value="free">자유게시판</option>
-                <option value="prayer">기도제목</option>
-                <option value="testimony">간증</option>
-                <option value="qna">Q&A</option>
-              </select>
-            </div>
-          </div>
-          <div id="postsTableContainer">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>제목</th>
-                  <th>작성자</th>
-                  <th>카테고리</th>
-                  <th>조회수</th>
-                  <th>댓글</th>
-                  <th>작업</th>
-                </tr>
-              </thead>
-              <tbody id="postsTableBody">
-                <tr>
-                  <td colspan="6" style="text-align: center; color: #a0aec0;">로딩 중...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <!-- Media Section -->
-        <section id="media" class="admin-section">
-          <div class="admin-toolbar">
-            <h2>이미지/동영상 관리</h2>
-            <button class="btn btn-primary" id="addMediaBtn">➕ 새 미디어</button>
-          </div>
-          <div id="mediaGridContainer">
-            <div id="mediaGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;">
-              <div style="text-align: center; color: #a0aec0; grid-column: 1/-1; padding: 2rem;">로딩 중...</div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Users Section -->
-        <section id="users" class="admin-section">
-          <div class="admin-toolbar">
-            <h2>회원 관리</h2>
-          </div>
-          <div id="usersTableContainer">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>아이디</th>
-                  <th>이메일</th>
-                  <th>이름</th>
-                  <th>역할</th>
-                  <th>가입일</th>
-                  <th>작업</th>
-                </tr>
-              </thead>
-              <tbody id="usersTableBody">
-                <tr>
-                  <td colspan="6" style="text-align: center; color: #a0aec0;">로딩 중...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <!-- Settings Section -->
-        <section id="settings" class="admin-section">
-          <div class="card">
-            <div class="card-header">시스템 설정</div>
-            <form id="settingsForm">
-              <div class="form-group">
-                <label class="form-label">웹사이트 제목</label>
-                <input type="text" class="form-control" value="시온산교회 시온산제국">
-              </div>
-              <div class="form-group">
-                <label class="form-label">영문 제목</label>
-                <input type="text" class="form-control" value="Mount Zion Church & Empire">
-              </div>
-              <div class="form-group">
-                <label class="form-label">연락처 이메일</label>
-                <input type="email" class="form-control" value="st805@naver.com">
-              </div>
-              <button type="submit" class="btn btn-primary">저장</button>
-            </form>
-          </div>
-        </section>
+  <footer>
+    <div class="container">
+      <div class="footer-bottom" style="padding-top: 2rem;">
+        <p>&copy; 2025 정중호 교수의 성경 사랑방 — Bible Glocal. All rights reserved.</p>
       </div>
     </div>
-  </div>
+  </footer>
 
-  <!-- Edit Modal -->
-  <div id="editModal" class="modal">
-    <div class="modal-content" style="max-width: 700px;">
-      <div class="modal-header">
-        <h2 id="modalTitle">수정</h2>
-        <button class="modal-close">&times;</button>
-      </div>
-      <div id="modalBody"></div>
-    </div>
-  </div>
-
-  <script src="/js/app.js"></script>
+    <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/social.js"></script>
+  <script src="js/admin-editor.js"></script>
   <script>
-    // Admin Dashboard JavaScript
-    const API_BASE = '/api';
-    const token = localStorage.getItem('token');
+    let allUsers = [];
 
-    // Check authentication
-    if (!token) {
-      window.location.href = '/admin/login';
-    }
-
-    // Sidebar navigation
-    document.querySelectorAll('.admin-sidebar-link[data-section]').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const section = link.dataset.section;
-        
-        // Update active state
-        document.querySelectorAll('.admin-sidebar-link').forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-        
-        // Show section
-        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-        document.getElementById(section).classList.add('active');
-        
-        // Update page title
-        const titles = {
-          dashboard: '대시보드',
-          content: '콘텐츠 관리',
-          notices: '공지사항',
-          posts: '게시판',
-          media: '이미지/동영상',
-          users: '회원 관리',
-          settings: '설정'
-        };
-        document.getElementById('pageTitle').textContent = titles[section] || '관리자';
-        
-        // Load data
-        loadSectionData(section);
-      });
+    document.addEventListener('DOMContentLoaded', async () => {
+      await BG_AUTH.init();
+      if (!BG_AUTH.user || BG_AUTH.user.role !== 'admin') {
+        alert('관리자 권한이 필요합니다.');
+        window.location.href = 'index.html';
+        return;
+      }
+      loadStats();
+      loadUsers();
     });
 
-    // Logout
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      localStorage.removeItem('token');
-      localStorage.removeItem('adminUser');
-      window.location.href = '/admin/login';
-    });
-
-    // API Helper
-    async function fetchAPI(endpoint, options = {}) {
-      const headers = {
-        'Content-Type': 'application/json',
-        ...options.headers
-      };
-      
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-      
-      const response = await fetch(API_BASE + endpoint, { ...options, headers });
-      return response;
-    }
-
-    // Load section data
-    async function loadSectionData(section) {
-      switch(section) {
-        case 'dashboard':
-          loadDashboardStats();
-          break;
-        case 'content':
-          loadContent();
-          break;
-        case 'notices':
-          loadNotices();
-          break;
-        case 'posts':
-          loadPosts();
-          break;
-        case 'media':
-          loadMedia();
-          break;
-        case 'users':
-          loadUsers();
-          break;
-      }
-    }
-
-    // Load Dashboard Stats
-    async function loadDashboardStats() {
+    async function loadStats() {
       try {
-        const [usersRes, noticesRes, postsRes, mediaRes] = await Promise.all([
-          fetchAPI('/users'),
-          fetchAPI('/notices'),
-          fetchAPI('/posts'),
-          fetchAPI('/media')
-        ]);
-        
-        if (usersRes.ok) {
-          const users = await usersRes.json();
-          document.getElementById('totalUsers').textContent = users.length;
+        const res = await fetch('/api/admin/stats', { credentials: 'include' });
+        const data = await res.json();
+        console.log('Stats response:', data);
+        if (data && data.success && data.stats) {
+          const s = data.stats;
+          document.getElementById('totalUsers').textContent = (s.totalUsers != null) ? s.totalUsers : 0;
+          document.getElementById('activeUsers').textContent = (s.activeUsers != null) ? s.activeUsers : 0;
+          document.getElementById('todayLogins').textContent = (s.todayLogins != null) ? s.todayLogins : 0;
         }
-        
-        if (noticesRes.ok) {
-          const notices = await noticesRes.json();
-          document.getElementById('totalNotices').textContent = notices.length;
+      } catch (e) { 
+        console.error('Stats load error', e);
+        document.getElementById('totalUsers').textContent = 0;
+        document.getElementById('activeUsers').textContent = 0;
+        document.getElementById('todayLogins').textContent = 0;
+      }
+      // Admin count from users endpoint
+      try {
+        const res2 = await fetch('/api/admin/users', { credentials: 'include' });
+        const data2 = await res2.json();
+        if (data2 && data2.success && data2.stats) {
+          document.getElementById('adminCount').textContent = (data2.stats.admins != null) ? data2.stats.admins : 0;
         }
-        
-        if (postsRes.ok) {
-          const posts = await postsRes.json();
-          document.getElementById('totalPosts').textContent = posts.length;
-        }
-        
-        if (mediaRes.ok) {
-          const media = await mediaRes.json();
-          document.getElementById('totalMedia').textContent = media.length;
-        }
-      } catch (error) {
-        console.error('Error loading stats:', error);
+      } catch (e) {
+        document.getElementById('adminCount').textContent = 0;
       }
     }
 
-    // Load Content
-    async function loadContent() {
-      const tbody = document.getElementById('contentTableBody');
-      
+    async function loadUsers() {
       try {
-        const response = await fetchAPI('/content');
-        if (response.ok) {
-          const content = await response.json();
-          
-          if (content.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #a0aec0;">콘텐츠가 없습니다.</td></tr>';
-            return;
+        const res = await fetch('/api/admin/users', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            allUsers = data.users;
+            renderUsers(allUsers);
           }
-          
-          tbody.innerHTML = content.map(item => `
-            <tr>
-              <td>${item.order}</td>
-              <td>${item.title}</td>
-              <td>${item.page}</td>
-              <td>${item.author?.username || 'Unknown'}</td>
-              <td>
-                <span class="status-badge ${item.isActive ? 'active' : 'inactive'}">
-                  ${item.isActive ? '활성' : '비활성'}
-                </span>
-              </td>
-              <td>
-                <div class="admin-table-actions">
-                  <button class="btn btn-outline" onclick="editContent('${item._id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">수정</button>
-                  <button class="btn btn-danger" onclick="deleteContent('${item._id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">삭제</button>
-                </div>
-              </td>
-            </tr>
-          `).join('');
         }
-      } catch (error) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #fc8181;">데이터를 불러오는데 실패했습니다.</td></tr>';
-      }
+      } catch (e) { console.error('Users load error', e); }
     }
 
-    // Load Notices
-    async function loadNotices() {
-      const tbody = document.getElementById('noticesTableBody');
-      
-      try {
-        const response = await fetchAPI('/notices');
-        if (response.ok) {
-          const notices = await response.json();
-          
-          if (notices.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #a0aec0;">공지사항이 없습니다.</td></tr>';
-            return;
-          }
-          
-          tbody.innerHTML = notices.map(notice => `
-            <tr>
-              <td>${notice.title}</td>
-              <td><span class="notice-badge" style="background: #e2e8f0; color: #4a5568;">${notice.category}</span></td>
-              <td>${notice.author?.username || 'Unknown'}</td>
-              <td>${notice.views}</td>
-              <td>
-                <span class="status-badge ${notice.isActive ? 'active' : 'inactive'}">
-                  ${notice.isActive ? '활성' : '비활성'}
-                </span>
-              </td>
-              <td>
-                <div class="admin-table-actions">
-                  <button class="btn btn-outline" onclick="editNotice('${notice._id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">수정</button>
-                  <button class="btn btn-danger" onclick="deleteNotice('${notice._id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">삭제</button>
-                </div>
-              </td>
-            </tr>
-          `).join('');
-        }
-      } catch (error) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #fc8181;">데이터를 불러오는데 실패했습니다.</td></tr>';
+    function renderUsers(users) {
+      const tbody = document.getElementById('usersBody');
+      if (!users || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">회원이 없습니다.</td></tr>';
+        return;
       }
-    }
-
-    // Load Posts
-    async function loadPosts() {
-      const tbody = document.getElementById('postsTableBody');
-      
-      try {
-        const response = await fetchAPI('/posts');
-        if (response.ok) {
-          const posts = await response.json();
-          
-          if (posts.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #a0aec0;">게시물이 없습니다.</td></tr>';
-            return;
-          }
-          
-          tbody.innerHTML = posts.map(post => `
-            <tr>
-              <td>${post.title}</td>
-              <td>${post.author?.username || 'Unknown'}</td>
-              <td><span class="notice-badge" style="background: #e2e8f0; color: #4a5568;">${post.category}</span></td>
-              <td>${post.views}</td>
-              <td>${post.comments.length}</td>
-              <td>
-                <div class="admin-table-actions">
-                  <button class="btn btn-outline" onclick="editPost('${post._id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">수정</button>
-                  <button class="btn btn-danger" onclick="deletePost('${post._id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">삭제</button>
-                </div>
-              </td>
-            </tr>
-          `).join('');
-        }
-      } catch (error) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #fc8181;">데이터를 불러오는데 실패했습니다.</td></tr>';
-      }
-    }
-
-    // Load Media
-    async function loadMedia() {
-      const grid = document.getElementById('mediaGrid');
-      
-      try {
-        const response = await fetchAPI('/media');
-        if (response.ok) {
-          const media = await response.json();
-          
-          if (media.length === 0) {
-            grid.innerHTML = '<div style="text-align: center; color: #a0aec0; grid-column: 1/-1; padding: 2rem;">미디어가 없습니다.</div>';
-            return;
-          }
-          
-          grid.innerHTML = media.map(item => `
-            <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-              ${item.type === 'video'
-                ? `<video src="${item.url}" style="width: 100%; height: 150px; object-fit: cover;"></video>`
-                : `<img src="${item.url}" alt="${item.title}" style="width: 100%; height: 150px; object-fit: cover;">`
-              }
-              <div style="padding: 1rem;">
-                <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">${item.title}</h4>
-                <div class="admin-table-actions">
-                  <button class="btn btn-outline" onclick="editMedia('${item._id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; flex: 1;">수정</button>
-                  <button class="btn btn-danger" onclick="deleteMedia('${item._id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; flex: 1;">삭제</button>
-                </div>
+      tbody.innerHTML = users.map(u => `
+        <tr data-id="${u.id}">
+          <td>
+            <div class="user-cell">
+              <span class="user-avatar-sm">${(u.display_name || u.username || '?').charAt(0).toUpperCase()}</span>
+              <div>
+                <strong>${u.display_name || u.username}</strong>
+                <small style="display:block; color: var(--text-muted);">@${u.username}</small>
               </div>
             </div>
-          `).join('');
-        }
-      } catch (error) {
-        grid.innerHTML = '<div style="text-align: center; color: #fc8181; grid-column: 1/-1; padding: 2rem;">데이터를 불러오는데 실패했습니다.</div>';
-      }
+          </td>
+          <td>${u.email}</td>
+          <td>
+            <select onchange="changeRole('${u.id}', this.value)" ${u.role === 'admin' && u.email === 'st805@naver.com' ? 'disabled' : ''}>
+              <option value="member" ${u.role === 'member' ? 'selected' : ''}>회원</option>
+              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>관리자</option>
+            </select>
+          </td>
+          <td><span class="provider-badge provider-${u.provider}">${u.provider}</span></td>
+          <td>${u.created_at ? new Date(u.created_at).toLocaleDateString('ko-KR') : '-'}</td>
+          <td>
+            <span class="status-badge ${u.is_active ? 'status-active' : 'status-inactive'}">
+              ${u.is_active ? '활성' : '비활성'}
+            </span>
+          </td>
+          <td>
+            ${u.email !== 'st805@naver.com' ? `
+              <button class="admin-action-btn" onclick="toggleUserStatus('${u.id}', ${u.is_active})" title="${u.is_active ? '비활성화' : '활성화'}">
+                ${u.is_active ? '🚫' : '✅'}
+              </button>
+              <button class="admin-action-btn danger" onclick="deleteUser('${u.id}', '${u.display_name || u.username}')" title="삭제">
+                🗑
+              </button>
+            ` : '<span style="color: var(--accent); font-weight: 600;">소유자</span>'}
+          </td>
+        </tr>
+      `).join('');
     }
 
-    // Load Users
-    async function loadUsers() {
-      const tbody = document.getElementById('usersTableBody');
-      
-      try {
-        const response = await fetchAPI('/users');
-        if (response.ok) {
-          const users = await response.json();
-          
-          if (users.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #a0aec0;">회원이 없습니다.</td></tr>';
-            return;
-          }
-          
-          tbody.innerHTML = users.map(user => `
-            <tr>
-              <td>${user.username}</td>
-              <td>${user.email}</td>
-              <td>${user.profile?.fullName || '-'}</td>
-              <td>
-                <span class="status-badge ${user.role === 'admin' ? 'active' : 'inactive'}">
-                  ${user.role === 'admin' ? '관리자' : '회원'}
-                </span>
-              </td>
-              <td>${new Date(user.createdAt).toLocaleDateString('ko-KR')}</td>
-              <td>
-                <div class="admin-table-actions">
-                  <button class="btn btn-outline" onclick="editUser('${user._id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">수정</button>
-                  ${user.role !== 'admin' ? `<button class="btn btn-danger" onclick="deleteUser('${user._id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">삭제</button>` : ''}
-                </div>
-              </td>
-            </tr>
-          `).join('');
-        }
-      } catch (error) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #fc8181;">데이터를 불러오는데 실패했습니다.</td></tr>';
+    function filterUsers(query) {
+      if (!query) {
+        renderUsers(allUsers);
+        return;
       }
+      const q = query.toLowerCase();
+      const filtered = allUsers.filter(u =>
+        (u.username || '').toLowerCase().includes(q) ||
+        (u.display_name || '').toLowerCase().includes(q) ||
+        (u.email || '').toLowerCase().includes(q)
+      );
+      renderUsers(filtered);
     }
 
-    // Delete functions
-    async function deleteContent(id) {
-      if (!confirm('정말 삭제하시겠습니까?')) return;
-      
+    async function changeRole(userId, newRole) {
       try {
-        const response = await fetchAPI(`/content/${id}`, { method: 'DELETE' });
-        if (response.ok) {
-          alert('삭제되었습니다.');
-          loadContent();
+        const res = await fetch(`/api/admin/users/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ role: newRole })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadUsers();
+          loadStats();
         } else {
-          alert('삭제에 실패했습니다.');
+          alert(data.message || '역할 변경 실패');
+          loadUsers();
         }
-      } catch (error) {
-        alert('오류가 발생했습니다.');
+      } catch (e) { alert('서버 오류'); }
+    }
+
+    async function toggleUserStatus(userId, currentStatus) {
+      try {
+        const res = await fetch(`/api/admin/users/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ is_active: currentStatus ? 0 : 1 })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadUsers();
+          loadStats();
+        } else {
+          alert(data.message || '상태 변경 실패');
+        }
+      } catch (e) { alert('서버 오류'); }
+    }
+
+    async function deleteUser(userId, name) {
+      if (!confirm(`"${name}" 회원을 정말 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+      try {
+        const res = await fetch(`/api/admin/users/${userId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadUsers();
+          loadStats();
+        } else {
+          alert(data.message || '삭제 실패');
+        }
+      } catch (e) { alert('서버 오류'); }
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-panel').forEach(p => p.style.display = 'none');
+      if (tab === 'users') {
+        document.querySelector('.admin-tab:nth-child(1)').classList.add('active');
+        document.getElementById('usersPanel').style.display = 'block';
+      } else {
+        document.querySelector('.admin-tab:nth-child(2)').classList.add('active');
+        document.getElementById('settingsPanel').style.display = 'block';
       }
     }
 
-    // Initial load
-    loadDashboardStats();
-
-    // Close modals
-    document.querySelectorAll('.modal-close').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-      });
-    });
+    async function handleSettingsSave(e) {
+      e.preventDefault();
+      const errorDiv = document.getElementById('settingsError');
+      const successDiv = document.getElementById('settingsSuccess');
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      try {
+        const res = await fetch('/api/admin/settings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            site_name: document.getElementById('siteName').value,
+            site_description: document.getElementById('siteDescription').value,
+            allow_registration: document.getElementById('allowRegistration').value,
+            maintenance_mode: document.getElementById('maintenanceMode').value
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          successDiv.textContent = '설정이 저장되었습니다.';
+          successDiv.style.display = 'block';
+        } else {
+          errorDiv.textContent = data.message || '저장 실패';
+          errorDiv.style.display = 'block';
+        }
+      } catch (err) {
+        errorDiv.textContent = '서버 오류';
+        errorDiv.style.display = 'block';
+      }
+    }
   </script>
-  <script src="/js/pencil-editor.js"></script>
 </body>
 </html>

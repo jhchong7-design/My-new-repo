@@ -1,9 +1,0 @@
-/**
- * Pro Editor CSS
- * Complement to js/pro-editor.js dynamic styles
- */
-.pro-editor-fab { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-.pro-editor-fab:hover { filter: brightness(1.1); }
-@media print {
-  .pro-editor-toolbar, .pro-editor-fab, .block-toolbar, .editor-overlay { display: none !important; }
-}

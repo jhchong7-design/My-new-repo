@@ -1,772 +1,837 @@
 /**
- * Admin Frontend Editor System
- * Enables inline editing of website content for administrators
+ * Bible Glocal — Admin Content Editor v2.0
+ * Complete inline editing for ALL text, images, and layout
+ * Only activates for admin users
  */
+const ADMIN_EDITOR = (() => {
+  let isEditing = false;
+  let isDirty = false;
+  let currentUser = null;
+  let originalContents = {};
+  let originalImages = {};
+  let currentImgTarget = null;
+  let pendingImageUrl = null;
+  let editableCount = 0;
 
-class AdminEditor {
-  constructor() {
-    this.apiBase = '/api';
-    this.isEditMode = false;
-    this.currentEditElement = null;
-    this.editableElements = [];
-    this.init();
-  }
+  // Elements to NEVER make editable
+  const SKIP_SELECTORS = [
+    '.admin-toolbar', '.admin-toolbar *',
+    '.admin-edit-toggle',
+    '.img-upload-modal', '.img-upload-modal *',
+    '.save-indicator',
+    '.section-control', '.section-control *',
+    '.preloader-cross', '#preloader',
+    'script', 'style', 'link', 'meta', 'noscript',
+    'iframe', 'video', 'audio', 'canvas', 'svg',
+    'input', 'textarea', 'select', 'button',
+    '.menu-toggle', '.scroll-top',
+    '.social-sidebar', '.social-sidebar *',
+    '.kakao-chat-btn', '.kakao-chat-btn *',
+    '.bg-social-float', '.bg-social-float *'
+  ];
 
-  init() {
-    this.checkAdminStatus();
-    this.setupEditor();
-    this.observeContentChanges();
-  }
+  // Container elements whose children should be editable (not themselves)
+  const CONTAINER_TAGS = ['DIV', 'SECTION', 'MAIN', 'ARTICLE', 'ASIDE', 'NAV', 'HEADER', 'FOOTER', 'UL', 'OL', 'DL', 'TABLE', 'TBODY', 'THEAD', 'TR', 'FORM', 'FIELDSET'];
 
-  // Check if user is admin and enable edit mode
-  async checkAdminStatus() {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+  // Elements that should be directly editable (text-bearing)
+  const TEXT_TAGS = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'SPAN', 'A', 'LI', 'TD', 'TH', 'LABEL', 'STRONG', 'EM', 'B', 'I', 'SMALL', 'BLOCKQUOTE', 'FIGCAPTION', 'CITE', 'DT', 'DD', 'LEGEND', 'CAPTION'];
 
+  /* ── Check Admin Status ── */
+  async function checkAdmin() {
     try {
-      const response = await fetch(`${this.apiBase}/auth/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (response.ok) {
-        const user = await response.json();
-        if (user.role === 'admin') {
-          this.enableAdminMode();
-        }
+      const res = await fetch('/api/auth/me', { credentials: 'include' });
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (data.success && data.user && data.user.role === 'admin') {
+        currentUser = data.user;
+        return true;
       }
-    } catch (error) {
-      console.error('Admin check failed:', error);
-    }
+    } catch (e) {}
+    return false;
   }
 
-  // Enable admin mode features
-  enableAdminMode() {
-    this.createEditModeToggle();
-    this.setupInlineEditing();
-    this.addEditButtonsToSections();
-  }
+  /* ── Initialize ── */
+  async function init() {
+    const isAdmin = await checkAdmin();
+    if (!isAdmin) return;
 
-  // Create edit mode toggle button
-  createEditModeToggle() {
-    const toggle = document.createElement('div');
-    toggle.id = 'editModeToggle';
-    toggle.innerHTML = `
-      <button id="toggleEditMode" class="btn btn-primary edit-toggle-btn">
-        ✏️ 편집 모드
-      </button>
-      <div id="editorToolbar" class="editor-toolbar" style="display: none;">
-        <button class="editor-btn" data-action="save" title="저장">
-          💾 저장
-        </button>
-        <button class="editor-btn" data-action="cancel" title="취소">
-          ❌ 취소
-        </button>
-        <button class="editor-btn" data-action="preview" title="미리보기">
-          👁️ 미리보기
-        </button>
-      </div>
-    `;
+    createToggleButton();
+    createToolbar();
+    createImageModal();
+    createSaveIndicator();
+    loadSavedContent();
 
-    toggle.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 10000;
-      display: flex;
-      gap: 10px;
-      flex-direction: column;
-      align-items: flex-end;
-    `;
-
-    document.body.appendChild(toggle);
-
-    // Setup toggle button
-    document.getElementById('toggleEditMode')?.addEventListener('click', () => {
-      this.toggleEditMode();
-    });
-
-    // Setup toolbar buttons
-    document.querySelectorAll('.editor-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const action = btn.dataset.action;
-        this.handleEditorAction(action);
-      });
-    });
-  }
-
-  // Toggle edit mode on/off
-  toggleEditMode() {
-    this.isEditMode = !this.isEditMode;
-    const toggleBtn = document.getElementById('toggleEditMode');
-    const toolbar = document.getElementById('editorToolbar');
-
-    if (this.isEditMode) {
-      toggleBtn.innerHTML = '🚫 편집 종료';
-      toggleBtn.style.background = '#dc3545';
-      toolbar.style.display = 'flex';
-      this.makeContentEditable();
-      app.showAlert('success', '편집 모드가 활성화되었습니다. 콘텐츠를 클릭하여 편집하세요.');
-    } else {
-      toggleBtn.innerHTML = '✏️ 편집 모드';
-      toggleBtn.style.background = '';
-      toolbar.style.display = 'none';
-      this.disableContentEditable();
-      app.showAlert('info', '편집 모드가 비활성화되었습니다.');
-    }
-  }
-
-  // Make content elements editable
-  makeContentEditable() {
-    // Make titles editable
-    document.querySelectorAll('.section-title').forEach(el => {
-      el.setAttribute('contenteditable', 'true');
-      el.classList.add('editable');
-      this.setupElementEditor(el, 'title');
-    });
-
-    // Make content paragraphs editable
-    document.querySelectorAll('.content p, .content h3, .content h4').forEach(el => {
-      el.setAttribute('contenteditable', 'true');
-      el.classList.add('editable');
-      this.setupElementEditor(el, 'content');
-    });
-
-    // Make nav items editable
-    document.querySelectorAll('.nav-link').forEach(el => {
-      el.setAttribute('contenteditable', 'true');
-      el.classList.add('editable');
-      this.setupElementEditor(el, 'navigation');
-    });
-
-    // Add visual indicators
-    this.addEditIndicators();
-  }
-
-  // Disable content editing
-  disableContentEditable() {
-    document.querySelectorAll('[contenteditable]').forEach(el => {
-      el.removeAttribute('contenteditable');
-      el.classList.remove('editable');
-    });
-
-    // Remove edit indicators
-    document.querySelectorAll('.edit-indicator').forEach(el => el.remove());
-  }
-
-  // Setup rich text editor for an element
-  setupElementEditor(element, type) {
-    // Create floating toolbar
-    const toolbar = this.createRichTextToolbar(element);
-    
-    element.addEventListener('focus', () => {
-      if (this.isEditMode) {
-        toolbar.style.display = 'block';
-        this.positionToolbar(element, toolbar);
-      }
-    });
-
-    element.addEventListener('blur', (e) => {
-      // Check if we're clicking on the toolbar
-      if (!e.relatedTarget?.classList.contains('toolbar-btn')) {
-        setTimeout(() => {
-          toolbar.style.display = 'none';
-        }, 200);
-      }
-    });
-
-    element.addEventListener('input', () => {
-      // Track changes
-      element.dataset.hasChanges = 'true';
-    });
-
-    // Prevent default enter behavior for headings
-    if (element.tagName.match(/^H[1-6]$/)) {
-      element.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          e.target.blur();
-        }
-      });
-    }
-  }
-
-  // Create rich text toolbar
-  createRichTextToolbar(targetElement) {
-    const toolbar = document.createElement('div');
-    toolbar.className = 'rich-text-toolbar editor-toolbar';
-    toolbar.innerHTML = `
-      <button class="toolbar-btn" data-command="bold" title="굵게">
-        <strong>B</strong>
-      </button>
-      <button class="toolbar-btn" data-command="italic" title="기울임">
-        <em>I</em>
-      </button>
-      <button class="toolbar-btn" data-command="underline" title="밑줄">
-        <u>U</u>
-      </button>
-      <button class="toolbar-btn" data-command="createLink" title="링크">
-        🔗
-      </button>
-      <button class="toolbar-btn" data-command="insertUnorderedList" title="목록">
-        •
-      </button>
-      <button class="toolbar-btn" data-command="insertOrderedList" title="번호">
-        1.
-      </button>
-      <button class="toolbar-btn" data-command="removeFormat" title="서식 제거">
-        ✕
-      </button>
-    `;
-
-    toolbar.style.cssText = `
-      display: none;
-      position: fixed;
-      background: #2d3748;
-      border-radius: 8px;
-      padding: 8px;
-      gap: 4px;
-      z-index: 10001;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    `;
-
-    document.body.appendChild(toolbar);
-
-    // Setup toolbar buttons
-    toolbar.querySelectorAll('.toolbar-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 's' && isEditing) {
         e.preventDefault();
-        const command = btn.dataset.command;
-        this.executeCommand(command, targetElement);
-      });
-    });
-
-    return toolbar;
-  }
-
-  // Execute rich text command
-  executeCommand(command, element) {
-    if (command === 'createLink') {
-      const url = prompt('URL을 입력하세요:', 'https://');
-      if (url) {
-        document.execCommand(command, false, url);
+        saveAll();
       }
-    } else if (command === 'insertImage') {
-      const url = prompt('이미지 URL을 입력하세요:', 'https://');
-      if (url) {
-        document.execCommand(command, false, url);
-      }
-    } else {
-      document.execCommand(command, false, null);
-    }
-    element.focus();
-  }
-
-  // Position toolbar near element
-  positionToolbar(element, toolbar) {
-    const rect = element.getBoundingClientRect();
-    toolbar.style.top = `${rect.top - 50}px`;
-    toolbar.style.left = `${rect.left}px`;
-  }
-
-  // Add visual edit indicators
-  addEditIndicators() {
-    document.querySelectorAll('.editable').forEach(el => {
-      const indicator = document.createElement('div');
-      indicator.className = 'edit-indicator';
-      indicator.innerHTML = '✎';
-      indicator.style.cssText = `
-        position: absolute;
-        top: -10px;
-        right: -10px;
-        background: var(--accent-color);
-        color: white;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        cursor: pointer;
-        z-index: 1000;
-      `;
-
-      el.style.position = 'relative';
-      el.appendChild(indicator);
-    });
-  }
-
-  // Add edit buttons to sections
-  addEditButtonsToSections() {
-    document.querySelectorAll('.section').forEach(section => {
-      const editBtn = document.createElement('button');
-      editBtn.className = 'section-edit-btn';
-      editBtn.innerHTML = '✏️ 편집';
-      editBtn.style.cssText = `
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        z-index: 100;
-        opacity: 0;
-        transition: opacity 0.2s;
-        display: none;
-      `;
-
-      section.style.position = 'relative';
-      section.appendChild(editBtn);
-
-      section.addEventListener('mouseenter', () => {
-        if (this.isEditMode) {
-          editBtn.style.opacity = '1';
-        }
-      });
-
-      section.addEventListener('mouseleave', () => {
-        editBtn.style.opacity = '0';
-      });
-
-      editBtn.addEventListener('click', () => {
-        this.editSection(section);
-      });
-    });
-  }
-
-  // Edit entire section
-  editSection(section) {
-    const content = section.querySelector('.content');
-    if (content) {
-      content.setAttribute('contenteditable', 'true');
-      content.focus();
-      app.showAlert('info', '섹션 편집 모드입니다. 편집을 마치면 저장을 누르세요.');
-    }
-  }
-
-  // Setup inline editing
-  setupInlineEditing() {
-    // Image editing
-    document.querySelectorAll('img').forEach(img => {
-      this.setupImageEditor(img);
-    });
-
-    // Link editing
-    document.querySelectorAll('a').forEach(link => {
-      this.setupLinkEditor(link);
-    });
-  }
-
-  // Setup image editor
-  setupImageEditor(img) {
-    img.addEventListener('click', (e) => {
-      if (this.isEditMode) {
-        e.preventDefault();
-        this.editImage(img);
+      if (e.key === 'Escape' && isEditing) {
+        cancelEditing();
       }
     });
+
+    console.log('[AdminEditor] Initialized for admin user:', currentUser.email);
   }
 
-  // Edit image
-  editImage(img) {
-    const modal = this.createImageEditModal(img);
-    document.body.appendChild(modal);
-    modal.classList.add('active');
-  }
-
-  // Create image edit modal
-  createImageEditModal(img) {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>이미지 편집</h2>
-          <button class="modal-close">&times;</button>
-        </div>
-        <form id="imageEditForm">
-          <div class="form-group">
-            <label class="form-label">이미지 URL</label>
-            <input type="url" class="form-control" id="imageUrl" value="${img.src}" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">대체 텍스트</label>
-            <input type="text" class="form-control" id="imageAlt" value="${img.alt}">
-          </div>
-          <div class="form-group">
-            <label class="form-label">너비</label>
-            <input type="number" class="form-control" id="imageWidth" value="${img.naturalWidth}">
-          </div>
-          <div class="form-group">
-            <label class="form-label">높이</label>
-            <input type="number" class="form-control" id="imageHeight" value="${img.naturalHeight}">
-          </div>
-          <div style="display: flex; gap: 10px;">
-            <button type="submit" class="btn btn-primary">적용</button>
-            <button type="button" class="btn btn-outline" id="uploadImage">이미지 업로드</button>
-          </div>
-        </form>
-      </div>
-    `;
-
-    // Setup form
-    modal.querySelector('#imageEditForm').addEventListener('submit', (e) => {
+  /* ── Create Toggle Button ── */
+  function createToggleButton() {
+    const btn = document.createElement('button');
+    btn.className = 'admin-edit-toggle visible';
+    btn.title = '편집 모드 시작';
+    btn.innerHTML = '✏️';
+    btn.onclick = (e) => {
       e.preventDefault();
-      img.src = document.getElementById('imageUrl').value;
-      img.alt = document.getElementById('imageAlt').value;
-      img.style.width = `${document.getElementById('imageWidth').value}px`;
-      img.style.height = `${document.getElementById('imageHeight').value}px`;
-      this.closeModal(modal);
-    });
-
-    // Setup upload button
-    modal.querySelector('#uploadImage').addEventListener('click', () => {
-      this.uploadImage(img);
-    });
-
-    // Setup close button
-    modal.querySelector('.modal-close').addEventListener('click', () => {
-      this.closeModal(modal);
-    });
-
-    return modal;
-  }
-
-  // Upload image
-  async uploadImage(imgElement) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    
-    input.onchange = async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append('image', file);
-      formData.append('title', 'Uploaded image');
-
-      try {
-        app.showLoading(true);
-        const response = await fetch(`${this.apiBase}/media/upload`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: formData
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          imgElement.src = data.url;
-          app.showAlert('success', '이미지가 업로드되었습니다.');
-        } else {
-          app.showAlert('error', '이미지 업로드 실패');
-        }
-      } catch (error) {
-        app.showAlert('error', '이미지 업로드 중 오류 발생');
-      } finally {
-        app.showLoading(false);
-        this.closeModal(document.querySelector('.modal:last-child'));
-      }
+      e.stopPropagation();
+      isEditing ? cancelEditing() : startEditing();
     };
-
-    input.click();
+    document.body.appendChild(btn);
   }
 
-  // Setup link editor
-  setupLinkEditor(link) {
-    // Links are handled by the rich text toolbar
+  /* ── Create Toolbar ── */
+  function createToolbar() {
+    const tb = document.createElement('div');
+    tb.className = 'admin-toolbar';
+    tb.id = 'adminToolbar';
+    tb.innerHTML = `
+      <div class="admin-toolbar-inner">
+        <div class="admin-toolbar-brand">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>관리자 편집 모드</span>
+          <span class="admin-toolbar-status" id="editStatus">준비됨</span>
+        </div>
+        <div class="admin-toolbar-actions">
+          <span class="admin-toolbar-counter" id="editCounter"></span>
+          <button class="atb" onclick="ADMIN_EDITOR.uploadImage()" title="이미지 업로드">📷 <span class="atb-label">이미지</span></button>
+          <button class="atb atb-success" onclick="ADMIN_EDITOR.saveAll()" title="저장 (Ctrl+S)">💾 <span class="atb-label">저장</span></button>
+          <button class="atb atb-warning" onclick="ADMIN_EDITOR.resetContent()" title="원본 복원">↩️ <span class="atb-label">복원</span></button>
+          <button class="atb atb-danger" onclick="ADMIN_EDITOR.cancelEditing()" title="편집 종료 (Esc)">✕ <span class="atb-label">종료</span></button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(tb);
   }
 
-  // Handle editor toolbar actions
-  async handleEditorAction(action) {
-    switch (action) {
-      case 'save':
-        await this.saveChanges();
-        break;
-      case 'cancel':
-        this.cancelChanges();
-        break;
-      case 'preview':
-        this.previewChanges();
-        break;
+  /* ── Create Image Upload Modal ── */
+  function createImageModal() {
+    const modal = document.createElement('div');
+    modal.className = 'img-upload-modal';
+    modal.id = 'imgUploadModal';
+    modal.innerHTML = `
+      <div class="img-upload-box">
+        <div class="img-upload-header">
+          <h3>📷 이미지 업로드 / 변경</h3>
+          <button class="img-upload-close" onclick="ADMIN_EDITOR.closeImageModal()">✕</button>
+        </div>
+        <div class="img-upload-body">
+          <div class="img-drop-zone" id="imgDropZone">
+            <div class="drop-icon">📁</div>
+            <p>이미지를 드래그하여 놓거나 클릭하세요</p>
+            <p class="drop-hint">JPG, PNG, GIF, WebP, SVG (최대 10MB)</p>
+            <input type="file" id="imgFileInput" accept="image/*" style="display:none">
+          </div>
+          <div class="img-url-section">
+            <label>또는 이미지 URL 입력:</label>
+            <div class="img-url-row">
+              <input type="text" id="imgUrlInput" placeholder="https://example.com/image.jpg">
+              <button class="atb atb-primary" onclick="ADMIN_EDITOR.applyImageUrl()">적용</button>
+            </div>
+          </div>
+          <div class="img-preview-area" id="imgPreviewArea">
+            <img id="imgPreview" src="" alt="Preview">
+            <p class="img-preview-info" id="imgPreviewInfo"></p>
+          </div>
+          <div class="img-gallery-section" id="imgGallerySection">
+            <h4>📂 업로드된 이미지</h4>
+            <div class="img-gallery-grid" id="imgGalleryGrid"></div>
+          </div>
+        </div>
+        <div class="img-upload-footer">
+          <button class="atb" onclick="ADMIN_EDITOR.closeImageModal()">취소</button>
+          <button class="atb atb-primary" onclick="ADMIN_EDITOR.confirmImage()" id="imgConfirmBtn" disabled>이미지 적용</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Drop zone events
+    const dropZone = document.getElementById('imgDropZone');
+    const fileInput = document.getElementById('imgFileInput');
+
+    dropZone.onclick = () => fileInput.click();
+    fileInput.onchange = (e) => handleFileSelect(e.target.files[0]);
+
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
+    dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+    dropZone.ondrop = (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFileSelect(e.dataTransfer.files[0]);
+    };
+  }
+
+  /* ── Create Save Indicator ── */
+  function createSaveIndicator() {
+    const ind = document.createElement('div');
+    ind.className = 'save-indicator';
+    ind.id = 'saveIndicator';
+    document.body.appendChild(ind);
+  }
+
+  /* ── Should Skip Element ── */
+  function shouldSkip(el) {
+    if (!el || !el.tagName) return true;
+    // Check if inside any skip container
+    for (const sel of SKIP_SELECTORS) {
+      try {
+        if (el.matches(sel) || el.closest(sel.replace(' *', ''))) return true;
+      } catch (e) {}
     }
+    return false;
   }
 
-  // Save all changes
-  async saveChanges() {
-    try {
-      app.showLoading(true);
+  /* ── Check if element has direct text content ── */
+  function hasDirectText(el) {
+    for (const node of el.childNodes) {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-      // Collect all changes
-      const changes = this.collectChanges();
+  /* ── Get a stable selector path for an element ── */
+  function getElementPath(el) {
+    const parts = [];
+    let current = el;
+    while (current && current !== document.body) {
+      let tag = current.tagName.toLowerCase();
+      if (current.id) {
+        parts.unshift(`#${current.id}`);
+        break;
+      }
+      // Use class names for stability
+      let cls = '';
+      if (current.className && typeof current.className === 'string') {
+        const classes = current.className.split(/\s+/).filter(c =>
+          c && !c.startsWith('admin-') && c !== 'visible' && c !== 'active' &&
+          c !== 'show' && c !== 'editing' && c !== 'dragover' &&
+          !c.startsWith('data-')
+        );
+        if (classes.length) cls = '.' + classes.join('.');
+      }
+      // Index among siblings
+      let idx = 0;
+      let sib = current;
+      while (sib = sib.previousElementSibling) {
+        if (sib.tagName === current.tagName) idx++;
+      }
+      parts.unshift(tag + cls + (idx > 0 ? `:nth(${idx})` : ''));
+      current = current.parentElement;
+    }
+    return parts.join(' > ');
+  }
 
-      if (changes.length === 0) {
-        app.showAlert('info', '변경사항이 없습니다.');
+  /* ── Mark ALL Editable Elements ── */
+  function markEditableElements() {
+    editableCount = 0;
+
+    // Strategy: Walk the entire DOM and find all text-bearing elements
+    const allElements = document.body.querySelectorAll('*');
+
+    allElements.forEach(el => {
+      if (shouldSkip(el)) return;
+      if (el.hasAttribute('data-editable') || el.hasAttribute('data-editable-img')) return;
+
+      const tag = el.tagName;
+
+      // Mark images
+      if (tag === 'IMG') {
+        if (el.closest('.admin-toolbar') || el.closest('.img-upload-modal') || el.closest('.social-sidebar') || el.closest('.bg-social-float')) return;
+        if (el.width < 20 || el.height < 20) return; // Skip tiny icons
+        const imgId = `img-${editableCount++}`;
+        el.setAttribute('data-editable-img', imgId);
         return;
       }
 
-      // Save changes to server
-      const promises = changes.map(change => this.saveChange(change));
-      await Promise.all(promises);
+      // Check if it's a text-bearing element
+      if (TEXT_TAGS.includes(tag)) {
+        // Must have some visible text
+        const text = el.textContent.trim();
+        if (text.length === 0) return;
+        // Skip if only contains whitespace
+        if (!text.replace(/\s/g, '')) return;
+        // Skip very tiny elements (icons, etc.)
+        if (text.length <= 1 && !el.querySelector('*')) return;
 
-      app.showAlert('success', '모든 변경사항이 저장되었습니다.');
-      
-      // Clear change markers
-      document.querySelectorAll('[data-has-changes]').forEach(el => {
-        el.removeAttribute('data-has-changes');
-      });
+        const id = `edit-${editableCount++}`;
+        el.setAttribute('data-editable', id);
 
-    } catch (error) {
-      console.error('Save error:', error);
-      app.showAlert('error', '저장 중 오류가 발생했습니다.');
-    } finally {
-      app.showLoading(false);
-    }
-  }
+        // Generate a descriptive label
+        let label = getEditLabel(el);
+        el.setAttribute('data-editable-label', label);
+        return;
+      }
 
-  // Collect all changes
-  collectChanges() {
-    const changes = [];
-    
-    // Collect changed content
-    document.querySelectorAll('[data-has-changes="true"]').forEach(el => {
-      changes.push({
-        element: el,
-        type: el.dataset.editType || 'content',
-        content: el.innerHTML,
-        page: this.getCurrentPage()
-      });
+      // For container-like elements (divs, etc.) that have direct text
+      if (CONTAINER_TAGS.includes(tag) || tag === 'FIGURE') return;
+
+      // Other elements with direct text content
+      if (hasDirectText(el)) {
+        const text = el.textContent.trim();
+        if (text.length > 0 && text.length < 5000) {
+          const id = `edit-${editableCount++}`;
+          el.setAttribute('data-editable', id);
+          el.setAttribute('data-editable-label', getEditLabel(el));
+        }
+      }
     });
 
-    return changes;
+    // Mark sections for reordering
+    let sectionIdx = 0;
+    document.querySelectorAll('section, .section, main > div, .page-content > div').forEach(sec => {
+      if (shouldSkip(sec)) return;
+      if (sec.closest('.admin-toolbar') || sec.closest('.img-upload-modal')) return;
+      sec.setAttribute('data-section', `section-${sectionIdx++}`);
+    });
+
+    console.log(`[AdminEditor] Marked ${editableCount} editable elements`);
   }
 
-  // Save individual change
-  async saveChange(change) {
-    const token = localStorage.getItem('token');
+  /* ── Generate label for editable element ── */
+  function getEditLabel(el) {
+    const tag = el.tagName;
+    const cls = el.className && typeof el.className === 'string' ? el.className : '';
+    const parent = el.parentElement;
+    const parentCls = parent && parent.className && typeof parent.className === 'string' ? parent.className : '';
 
-    // Determine the content ID based on element
-    const section = change.element.closest('.section');
-    const contentId = section?.dataset.contentId;
+    // Try class-based labels first
+    if (cls.includes('hero-title') || cls.includes('hero-kr-title')) return '히어로 제목';
+    if (cls.includes('hero-description') || cls.includes('hero-desc')) return '히어로 설명';
+    if (cls.includes('hero-badge')) return '히어로 배지';
+    if (cls.includes('hero-verse')) return '성경 구절';
+    if (cls.includes('section-title-kr') || cls.includes('section-title')) return '섹션 제목';
+    if (cls.includes('subtitle')) return '부제목';
+    if (cls.includes('card-title')) return '카드 제목';
+    if (cls.includes('card-text') || cls.includes('card-subtitle')) return '카드 내용';
+    if (cls.includes('pub-type')) return '출판 유형';
+    if (cls.includes('pub-year')) return '출판 연도';
+    if (cls.includes('pub-content')) return '출판 내용';
+    if (cls.includes('stat-number')) return '통계 숫자';
+    if (cls.includes('stat-label') || cls.includes('stat-item')) return '통계 라벨';
+    if (cls.includes('footer-brand')) return '푸터 브랜드';
+    if (cls.includes('footer-links')) return '푸터 링크';
+    if (cls.includes('footer-contact')) return '푸터 연락처';
+    if (cls.includes('footer-note') || cls.includes('footer-bottom')) return '푸터 하단';
+    if (cls.includes('timeline')) return '타임라인';
+    if (cls.includes('breadcrumb')) return '경로';
+    if (cls.includes('content-block')) return '콘텐츠 블록';
+    if (cls.includes('highlight-box')) return '하이라이트';
+    if (cls.includes('notice') || cls.includes('board')) return '게시물';
+    if (cls.includes('social-connect')) return '소셜 연결';
+    if (cls.includes('app-teaser')) return '앱 안내';
+    if (cls.includes('credential')) return '자격/경력';
+    if (cls.includes('logo-text')) return '로고 텍스트';
+    if (cls.includes('top-bar')) return '상단 바';
+    if (cls.includes('more-link')) return '더보기 링크';
+    if (cls.includes('category')) return '카테고리';
+    if (cls.includes('forum')) return '포럼';
+    if (cls.includes('date')) return '날짜';
 
-    if (contentId) {
-      // Update existing content
-      await fetch(`${this.apiBase}/content/${contentId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          content: change.content
-        })
-      });
+    // Tag-based labels
+    if (tag === 'H1') return '대제목 (H1)';
+    if (tag === 'H2') return '제목 (H2)';
+    if (tag === 'H3') return '소제목 (H3)';
+    if (tag === 'H4') return '소제목 (H4)';
+    if (tag === 'H5' || tag === 'H6') return '소제목';
+    if (tag === 'P') return '본문';
+    if (tag === 'LI') return '목록 항목';
+    if (tag === 'A') return '링크';
+    if (tag === 'SPAN') return '텍스트';
+    if (tag === 'BLOCKQUOTE') return '인용구';
+    if (tag === 'FIGCAPTION') return '캡션';
+    if (tag === 'LABEL') return '라벨';
+    if (tag === 'SMALL') return '작은 텍스트';
+    if (tag === 'STRONG' || tag === 'B') return '강조';
+    if (tag === 'EM' || tag === 'I') return '이탤릭';
+    if (tag === 'TD' || tag === 'TH') return '테이블 셀';
+
+    return '텍스트';
+  }
+
+  /* ── Clear All Editable Marks ── */
+  function clearEditableMarks() {
+    document.querySelectorAll('[data-editable]').forEach(el => {
+      el.removeAttribute('data-editable');
+      el.removeAttribute('data-editable-label');
+      el.contentEditable = 'false';
+      el.removeEventListener('input', onContentChange);
+      el.removeEventListener('paste', onPaste);
+      el.removeEventListener('focus', onElementFocus);
+      el.removeEventListener('blur', onElementBlur);
+    });
+    document.querySelectorAll('[data-editable-img]').forEach(img => {
+      img.removeAttribute('data-editable-img');
+      if (img._editClick) {
+        img.removeEventListener('click', img._editClick);
+        delete img._editClick;
+      }
+    });
+    document.querySelectorAll('[data-section]').forEach(sec => {
+      sec.removeAttribute('data-section');
+    });
+    document.querySelectorAll('.section-control').forEach(c => c.remove());
+  }
+
+  /* ── Start Editing Mode ── */
+  function startEditing() {
+    isEditing = true;
+
+    // First mark elements
+    markEditableElements();
+
+    document.body.classList.add('admin-editing');
+    document.getElementById('adminToolbar').classList.add('visible');
+
+    // Store original contents and make editable
+    originalContents = {};
+    originalImages = {};
+
+    document.querySelectorAll('[data-editable]').forEach(el => {
+      const id = el.getAttribute('data-editable');
+      originalContents[id] = el.innerHTML;
+      el.contentEditable = 'true';
+      el.addEventListener('input', onContentChange);
+      el.addEventListener('paste', onPaste);
+      el.addEventListener('focus', onElementFocus);
+      el.addEventListener('blur', onElementBlur);
+    });
+
+    // Image click handlers
+    document.querySelectorAll('[data-editable-img]').forEach(img => {
+      const imgId = img.getAttribute('data-editable-img');
+      originalImages[imgId] = img.src;
+      img._editClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openImageModal(img);
+      };
+      img.addEventListener('click', img._editClick);
+    });
+
+    // Section controls
+    addSectionControls();
+
+    // Update toggle button
+    const toggle = document.querySelector('.admin-edit-toggle');
+    if (toggle) { toggle.innerHTML = '✕'; toggle.title = '편집 종료'; }
+
+    updateStatus(`편집 모드 활성화 — ${editableCount}개 요소`);
+    updateCounter();
+  }
+
+  /* ── Cancel Editing ── */
+  function cancelEditing() {
+    if (isDirty && !confirm('저장하지 않은 변경사항이 있습니다. 정말 종료하시겠습니까?')) return;
+
+    isEditing = false;
+    isDirty = false;
+    document.body.classList.remove('admin-editing');
+    document.getElementById('adminToolbar').classList.remove('visible');
+
+    // Clear all marks and handlers
+    clearEditableMarks();
+
+    // Update toggle
+    const toggle = document.querySelector('.admin-edit-toggle');
+    if (toggle) { toggle.innerHTML = '✏️'; toggle.title = '편집 모드 시작'; }
+  }
+
+  /* ── Focus/Blur handlers for better UX ── */
+  function onElementFocus(e) {
+    const label = e.target.getAttribute('data-editable-label') || '텍스트';
+    updateStatus(`편집 중: ${label}`);
+  }
+
+  function onElementBlur() {
+    if (isDirty) {
+      updateStatus('변경사항 있음 (저장 필요)');
     } else {
-      // Create new content
-      await fetch(`${this.apiBase}/content`, {
+      updateStatus('편집 모드 활성화');
+    }
+  }
+
+  /* ── Content Change Handler ── */
+  function onContentChange() {
+    isDirty = true;
+    updateStatus('변경사항 있음 (Ctrl+S로 저장)');
+    updateCounter();
+  }
+
+  /* ── Clean Paste ── */
+  function onPaste(e) {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+    document.execCommand('insertText', false, text);
+  }
+
+  /* ── Count changes ── */
+  function updateCounter() {
+    let changes = 0;
+    document.querySelectorAll('[data-editable]').forEach(el => {
+      const id = el.getAttribute('data-editable');
+      if (originalContents[id] !== undefined && el.innerHTML !== originalContents[id]) {
+        changes++;
+      }
+    });
+    document.querySelectorAll('[data-editable-img]').forEach(img => {
+      const imgId = img.getAttribute('data-editable-img');
+      if (originalImages[imgId] && img.src !== originalImages[imgId]) {
+        changes++;
+      }
+    });
+    const counter = document.getElementById('editCounter');
+    if (counter) {
+      counter.textContent = changes > 0 ? `${changes}개 변경` : '';
+      counter.style.display = changes > 0 ? '' : 'none';
+    }
+  }
+
+  /* ── Save All Changes ── */
+  async function saveAll() {
+    const pagePath = window.location.pathname;
+    const contents = [];
+
+    // Collect text changes
+    document.querySelectorAll('[data-editable]').forEach(el => {
+      const id = el.getAttribute('data-editable');
+      const path = getElementPath(el);
+      const original = originalContents[id];
+      if (el.innerHTML !== original) {
+        contents.push({
+          selector: id,
+          content: el.innerHTML,
+          type: 'html',
+          path: path
+        });
+      }
+    });
+
+    // Collect image changes
+    document.querySelectorAll('[data-editable-img]').forEach(img => {
+      const imgId = img.getAttribute('data-editable-img');
+      if (originalImages[imgId] && img.src !== originalImages[imgId]) {
+        contents.push({
+          selector: imgId,
+          content: img.src,
+          type: 'image',
+          path: getElementPath(img)
+        });
+      }
+    });
+
+    if (contents.length === 0) {
+      showSaveIndicator('변경사항이 없습니다', '');
+      return;
+    }
+
+    updateStatus('저장 중...');
+
+    try {
+      const res = await fetch('/api/admin/content', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          title: section?.querySelector('.section-title')?.textContent || 'Untitled',
-          content: change.content,
-          page: change.page,
-        })
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ page_path: pagePath, contents })
       });
+      const data = await res.json();
+
+      if (data.success) {
+        isDirty = false;
+        // Update originals to current state
+        document.querySelectorAll('[data-editable]').forEach(el => {
+          originalContents[el.getAttribute('data-editable')] = el.innerHTML;
+        });
+        document.querySelectorAll('[data-editable-img]').forEach(img => {
+          originalImages[img.getAttribute('data-editable-img')] = img.src;
+        });
+        showSaveIndicator(`✅ ${contents.length}개 항목 저장 완료`, 'success');
+        updateStatus('저장 완료');
+        updateCounter();
+      } else {
+        showSaveIndicator('❌ 저장 실패: ' + (data.message || '알 수 없는 오류'), 'error');
+        updateStatus('저장 실패');
+      }
+    } catch (e) {
+      showSaveIndicator('❌ 서버 연결 오류', 'error');
+      updateStatus('연결 오류');
     }
   }
 
-  // Cancel changes
-  cancelChanges() {
-    if (confirm('모든 변경사항을 취소하시겠습니까?')) {
-      location.reload();
-    }
-  }
+  /* ── Load Saved Content ── */
+  async function loadSavedContent() {
+    const pagePath = window.location.pathname;
+    try {
+      const res = await fetch(`/api/admin/content/${encodeURIComponent(pagePath)}`, { credentials: 'include' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.success || !data.contents || data.contents.length === 0) return;
 
-  // Preview changes
-  previewChanges() {
-    // Save local preview
-    localStorage.setItem('previewChanges', JSON.stringify(this.collectChanges()));
-    
-    // Open preview in new tab
-    const previewWindow = window.open(window.location.href + '?preview=true', '_blank');
-    
-    app.showAlert('success', '미리보기가 새 창에서 열립니다.');
-  }
+      // We need to mark elements first to find them, then apply saved content
+      markEditableElements();
 
-  // Get current page name
-  getCurrentPage() {
-    const path = window.location.pathname;
-    
-    if (path === '/') return 'home';
-    if (path.includes('/operator')) return 'operator';
-    if (path.includes('/church')) return 'church';
-    if (path.includes('/empire')) return 'empire';
-    if (path.includes('/books')) return 'books';
-    if (path.includes('/notices')) return 'notices';
-    if (path.includes('/board')) return 'board';
-    if (path.includes('/gallery')) return 'gallery';
-    
-    return 'home';
-  }
-
-  // Close modal
-  closeModal(modal) {
-    modal.classList.remove('active');
-    setTimeout(() => modal.remove(), 300);
-  }
-
-  // Observe content changes (for dynamic content)
-  observeContentChanges() {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'childList') {
-          // New content added
-          mutation.addedNodes.forEach((node) => {
-            if (node.nodeType === 1) { // Element node
-              if (this.isEditMode) {
-                this.makeElementEditable(node);
-              }
-            }
-          });
+      let applied = 0;
+      data.contents.forEach(item => {
+        if (item.content_type === 'image' || item.selector.startsWith('img-')) {
+          // Find image by data attribute
+          const img = document.querySelector(`[data-editable-img="${item.selector}"]`);
+          if (img && item.content) {
+            img.src = item.content;
+            applied++;
+          }
+        } else {
+          // Find text element by data attribute
+          const el = document.querySelector(`[data-editable="${item.selector}"]`);
+          if (el && item.content) {
+            el.innerHTML = item.content;
+            applied++;
+          }
         }
       });
-    });
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
+      // Clear marks since we're not in editing mode
+      clearEditableMarks();
 
-  // Make element editable
-  makeElementEditable(element) {
-    if (element.classList.contains('section-title') || 
-        element.classList.contains('content')) {
-      element.classList.add('editable');
-      this.addEditIndicator(element);
+      if (applied > 0) {
+        console.log(`[AdminEditor] Applied ${applied} saved edits`);
+      }
+    } catch (e) {
+      // Silent fail — show original content
     }
   }
 
-  // Add edit indicator to element
-  addEditIndicator(element) {
-    const indicator = document.createElement('div');
-    indicator.className = 'edit-indicator';
-    indicator.innerHTML = '✎';
-    element.appendChild(indicator);
+  /* ── Reset Content ── */
+  function resetContent() {
+    if (!confirm('모든 변경사항을 원본으로 복원하시겠습니까?')) return;
+
+    document.querySelectorAll('[data-editable]').forEach(el => {
+      const id = el.getAttribute('data-editable');
+      if (originalContents[id] !== undefined) {
+        el.innerHTML = originalContents[id];
+      }
+    });
+    document.querySelectorAll('[data-editable-img]').forEach(img => {
+      const imgId = img.getAttribute('data-editable-img');
+      if (originalImages[imgId]) {
+        img.src = originalImages[imgId];
+      }
+    });
+
+    isDirty = false;
+    updateStatus('원본 복원됨');
+    updateCounter();
+    showSaveIndicator('↩️ 원본으로 복원됨', '');
   }
 
-  // Setup editor
-  setupEditor() {
-    // Add editor styles
-    this.addEditorStyles();
+  /* ── Section Controls ── */
+  function addSectionControls() {
+    document.querySelectorAll('[data-section]').forEach(sec => {
+      if (sec.querySelector(':scope > .section-control')) return;
+      const ctrl = document.createElement('div');
+      ctrl.className = 'section-control';
+      ctrl.innerHTML = `
+        <button class="section-ctrl-btn" onclick="event.stopPropagation(); ADMIN_EDITOR.moveSection(this, -1)" title="위로 이동">↑</button>
+        <button class="section-ctrl-btn" onclick="event.stopPropagation(); ADMIN_EDITOR.moveSection(this, 1)" title="아래로 이동">↓</button>
+        <button class="section-ctrl-btn section-ctrl-danger" onclick="event.stopPropagation(); ADMIN_EDITOR.toggleSection(this)" title="숨기기/보이기">👁</button>
+      `;
+      sec.style.position = 'relative';
+      sec.appendChild(ctrl);
+    });
   }
 
-  // Add editor styles to page
-  addEditorStyles() {
-    const styles = document.createElement('style');
-    styles.textContent = `
-      /* Editor Styles */
-      .editable {
-        border: 2px dashed transparent;
-        transition: border-color 0.2s;
-      }
-      
-      .editable:hover,
-      .editable:focus {
-        border-color: var(--accent-color);
-        outline: none;
-      }
-      
-      .editable:focus::before {
-        content: '편집 중...';
-        position: absolute;
-        top: -20px;
-        left: 0;
-        background: var(--accent-color);
-        color: white;
-        padding: 2px 8px;
-        font-size: 12px;
-        border-radius: 4px;
-      }
-      
-      .toolbar-btn {
-        background: #4a5568;
-        color: white;
-        border: none;
-        padding: 4px 8px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-        transition: background 0.2s;
-      }
-      
-      .toolbar-btn:hover {
-        background: var(--accent-color);
-      }
-      
-      .rich-text-toolbar {
-        display: flex;
-        gap: 4px;
-      }
-      
-      .editor-toolbar {
-        display: flex;
-        gap: 8px;
-        padding: 8px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      }
-      
-      .edit-toggle-btn {
-        padding: 12px 20px;
-        font-size: 16px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      }
-      
-      .section-edit-btn:hover {
-        background: var(--accent-color);
-        transform: scale(1.05);
-      }
-      
-      @keyframes slideIn {
-        from {
-          transform: translateY(20px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-      
-      @keyframes slideOut {
-        from {
-          transform: translateY(0);
-          opacity: 1;
-        }
-        to {
-          transform: translateY(20px);
-          opacity: 0;
-        }
-      }
-    `;
-
-    document.head.appendChild(styles);
+  function moveSection(btn, direction) {
+    const section = btn.closest('[data-section]');
+    if (!section) return;
+    const sibling = direction === -1 ? section.previousElementSibling : section.nextElementSibling;
+    if (sibling && sibling.hasAttribute('data-section')) {
+      if (direction === -1) section.parentNode.insertBefore(section, sibling);
+      else section.parentNode.insertBefore(sibling, section);
+      isDirty = true;
+      updateStatus('섹션 순서 변경됨');
+      showSaveIndicator('섹션 이동 완료', 'success');
+    }
   }
-}
 
-// Initialize editor when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  window.adminEditor = new AdminEditor();
-});
+  function toggleSection(btn) {
+    const section = btn.closest('[data-section]');
+    if (!section) return;
+    const isHidden = section.style.display === 'none';
+    section.style.display = isHidden ? '' : 'none';
+    isDirty = true;
+    updateStatus(isHidden ? '섹션 표시' : '섹션 숨김');
+  }
+
+  /* ── Image Modal ── */
+  function openImageModal(imgElement) {
+    currentImgTarget = imgElement;
+    pendingImageUrl = null;
+    const modal = document.getElementById('imgUploadModal');
+    modal.classList.add('active');
+    document.getElementById('imgConfirmBtn').disabled = true;
+    document.getElementById('imgPreviewArea').classList.remove('active');
+    document.getElementById('imgUrlInput').value = imgElement ? (imgElement.src || '') : '';
+    document.getElementById('imgFileInput').value = '';
+    loadImageGallery();
+  }
+
+  function uploadImage() {
+    currentImgTarget = null;
+    pendingImageUrl = null;
+    const modal = document.getElementById('imgUploadModal');
+    modal.classList.add('active');
+    document.getElementById('imgConfirmBtn').disabled = true;
+    document.getElementById('imgPreviewArea').classList.remove('active');
+    document.getElementById('imgUrlInput').value = '';
+    document.getElementById('imgFileInput').value = '';
+    loadImageGallery();
+  }
+
+  function closeImageModal() {
+    document.getElementById('imgUploadModal').classList.remove('active');
+    currentImgTarget = null;
+    pendingImageUrl = null;
+  }
+
+  async function handleFileSelect(file) {
+    if (!file || !file.type.startsWith('image/')) {
+      showSaveIndicator('⚠️ 이미지 파일만 업로드 가능합니다', 'error');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      showSaveIndicator('⚠️ 파일 크기가 10MB를 초과합니다', 'error');
+      return;
+    }
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('imgPreview').src = e.target.result;
+      document.getElementById('imgPreviewInfo').textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      document.getElementById('imgPreviewArea').classList.add('active');
+    };
+    reader.readAsDataURL(file);
+
+    // Upload
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const res = await fetch('/api/admin/upload-image', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success) {
+        pendingImageUrl = data.image.url;
+        document.getElementById('imgConfirmBtn').disabled = false;
+        showSaveIndicator('✅ 이미지 업로드 완료', 'success');
+        loadImageGallery();
+      } else {
+        showSaveIndicator('❌ 업로드 실패: ' + (data.message || ''), 'error');
+      }
+    } catch (e) {
+      showSaveIndicator('❌ 업로드 오류', 'error');
+    }
+  }
+
+  function applyImageUrl() {
+    const url = document.getElementById('imgUrlInput').value.trim();
+    if (!url) return;
+    pendingImageUrl = url;
+    document.getElementById('imgPreview').src = url;
+    document.getElementById('imgPreviewInfo').textContent = 'External URL';
+    document.getElementById('imgPreviewArea').classList.add('active');
+    document.getElementById('imgConfirmBtn').disabled = false;
+  }
+
+  function confirmImage() {
+    if (!pendingImageUrl) return;
+
+    if (currentImgTarget) {
+      currentImgTarget.src = pendingImageUrl;
+      isDirty = true;
+      updateStatus('이미지 변경됨');
+      updateCounter();
+    }
+
+    closeImageModal();
+    showSaveIndicator('✅ 이미지 적용 완료', 'success');
+  }
+
+  async function loadImageGallery() {
+    try {
+      const res = await fetch('/api/admin/images', { credentials: 'include' });
+      const data = await res.json();
+      const grid = document.getElementById('imgGalleryGrid');
+      if (data.success && data.images && data.images.length > 0) {
+        grid.innerHTML = data.images.map(img => `
+          <div class="img-gallery-item" onclick="ADMIN_EDITOR.selectGalleryImage('${img.file_path}')" title="${img.original_name}">
+            <img src="${img.file_path}" alt="${img.original_name}" loading="lazy">
+          </div>
+        `).join('');
+        document.getElementById('imgGallerySection').style.display = '';
+      } else {
+        grid.innerHTML = '<p style="font-size:0.8rem;color:#999;grid-column:1/-1;text-align:center;">업로드된 이미지가 없습니다</p>';
+      }
+    } catch (e) {
+      document.getElementById('imgGallerySection').style.display = 'none';
+    }
+  }
+
+  function selectGalleryImage(url) {
+    pendingImageUrl = url;
+    document.getElementById('imgPreview').src = url;
+    document.getElementById('imgPreviewInfo').textContent = '갤러리 이미지';
+    document.getElementById('imgPreviewArea').classList.add('active');
+    document.getElementById('imgConfirmBtn').disabled = false;
+  }
+
+  /* ── UI Helpers ── */
+  function updateStatus(msg) {
+    const el = document.getElementById('editStatus');
+    if (el) el.textContent = msg;
+  }
+
+  function showSaveIndicator(msg, type) {
+    const ind = document.getElementById('saveIndicator');
+    if (!ind) return;
+    ind.textContent = msg;
+    ind.className = 'save-indicator show' + (type ? ' ' + type : '');
+    clearTimeout(ind._timeout);
+    ind._timeout = setTimeout(() => ind.classList.remove('show'), 3500);
+  }
+
+  /* ── Auto-init ── */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    setTimeout(init, 100); // Small delay to ensure page is fully rendered
+  }
+
+  /* ── Public API ── */
+  return {
+    startEditing,
+    cancelEditing,
+    saveAll,
+    resetContent,
+    uploadImage,
+    closeImageModal,
+    applyImageUrl,
+    confirmImage,
+    selectGalleryImage,
+    moveSection,
+    toggleSection
+  };
+})();

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>자료실 | 정중호 교수의 성경 사랑방</title>
+  <meta name="description" content="한국 사상과 성경 비교 연구를 위한 아카이브 — 텍스트, 개념사전, 비교링크, 연구노트">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="자료실 | Bible Glocal">
+  <meta property="og:description" content="성경 본문, 한국 고전, 개념 사전, 비교 링크, 연구 노트를 체계적으로 탐색하세요">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/social.css">
+  <style>
+    .archive-hero { background: linear-gradient(135deg, var(--primary) 0%, #1a2a4a 100%); color: white; padding: 4rem 0 3rem; text-align: center; }
+    .archive-hero h2 { font-family: var(--font-heading); font-size: 2.4rem; margin-bottom: 0.5rem; }
+    .archive-hero p { font-size: 1.05rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+    .stats-bar {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;
+      margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    .stat-item { text-align: center; }
+    .stat-item .stat-num { font-size: 2rem; font-weight: 700; color: var(--accent-light); display: block; }
+    .stat-item .stat-label { font-size: 0.82rem; opacity: 0.75; }
+    .categories-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem; padding: 3rem 0; max-width: 1100px; margin: 0 auto;
+    }
+    .cat-card {
+      background: var(--bg-white); border-radius: 14px; padding: 1.8rem;
+      border: 1px solid var(--border-light); transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .cat-card .cat-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+    .cat-card h3 { font-size: 1.1rem; color: var(--primary); margin-bottom: 0.4rem; }
+    .cat-card p { font-size: 0.88rem; color: var(--text-light); line-height: 1.6; margin-bottom: 0.8rem; }
+    .cat-card .cat-count { font-size: 0.78rem; color: var(--accent); font-weight: 600; }
+    .archive-structure {
+      background: var(--bg-cream); padding: 3rem 0;
+    }
+    .structure-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+      max-width: 900px; margin: 1.5rem auto 0;
+    }
+    .structure-list h4 { color: var(--primary); margin-bottom: 0.8rem; font-size: 1.05rem; }
+    .structure-list ul { list-style: none; padding: 0; }
+    .structure-list li {
+      padding: 6px 0; font-size: 0.88rem; color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .structure-list li::before { content: "📄 "; }
+    .explore-box {
+      background: var(--primary); color: white; border-radius: 12px; padding: 1.5rem;
+    }
+    .explore-box h4 { color: var(--accent-light); margin-bottom: 0.8rem; }
+    .explore-box .explore-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .explore-box .explore-tags a {
+      background: rgba(255,255,255,0.12); color: white; padding: 6px 14px;
+      border-radius: 20px; font-size: 0.82rem; text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2); transition: background 0.2s;
+    }
+    .explore-box .explore-tags a:hover { background: rgba(255,255,255,0.25); }
+    .search-placeholder {
+      max-width: 600px; margin: 2rem auto 3rem; text-align: center;
+      padding: 2rem; background: var(--bg-white); border-radius: 16px;
+      border: 2px dashed var(--border-light);
+    }
+    .search-placeholder h3 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.2rem; }
+    .search-placeholder p { color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem; }
+    .search-placeholder .fake-search {
+      display: flex; gap: 0.5rem; max-width: 400px; margin: 0 auto;
+    }
+    .search-placeholder .fake-search input {
+      flex: 1; padding: 10px 14px; border: 1px solid var(--border-light);
+      border-radius: 8px; font-size: 0.88rem; background: #f5f5f5; color: #aaa;
+    }
+    .search-placeholder .fake-search button {
+      background: var(--primary); color: white; border: none; padding: 10px 18px;
+      border-radius: 8px; opacity: 0.5; cursor: not-allowed;
+    }
+    @media (max-width: 768px) {
+      .archive-hero h2 { font-size: 1.8rem; }
+      .categories-grid { grid-template-columns: 1fr; }
+      .structure-grid { grid-template-columns: 1fr; }
+      .stats-bar { gap: 1.2rem; }
+    }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left"><span>📖 bibleglocal.org</span><span>|</span><span>계명대학교 명예교수 정중호</span></div>
+      <div class="top-bar-right"><div class="lang-switch"><a href="archive.html" class="active">한국어</a><a href="en/archive.html">ENG</a></div></div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a href="index.html" class="logo"><div class="logo-icon">BG</div><div class="logo-text"><h1>성경 사랑방</h1><span>Bible Glocal</span></div></a>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="index.html">홈</a></li>
+            <li><a href="about.html">운영자소개</a></li>
+            <li><a href="research-themes.html">연구 주제</a></li>
+            <li><a href="ai-assistant.html">AI 도우미</a></li>
+            <li><a href="archive.html" class="active">자료실</a></li>
+            <li><a href="korean-thought.html">한국사상과 성경</a></li>
+            <li><a href="world-thought.html">세계사상과 성경</a></li>
+            <li><a href="publications.html">책과 논문</a></li>
+            <li><a href="forum.html">열린마당</a></li>
+          </ul>
+        </nav>
+        <div class="auth-area"></div>
+        <button class="menu-toggle" aria-label="메뉴"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav-overlay"></div>
+  <nav class="mobile-nav">
+    <div class="mobile-nav-header"><h3>성경 사랑방</h3><p>Bible Glocal</p></div>
+    <ul>
+      <li><a href="index.html">🏠 홈</a></li>
+      <li><a href="about.html">👤 운영자소개</a></li>
+      <li><a href="research-themes.html">🔬 연구 주제</a></li>
+      <li><a href="ai-assistant.html">🤖 AI 도우미</a></li>
+      <li><a href="archive.html">📂 자료실</a></li>
+      <li><a href="korean-thought.html">🇰🇷 한국사상과 성경</a></li>
+      <li><a href="world-thought.html">🌍 세계사상과 성경</a></li>
+      <li><a href="publications.html">📚 책과 논문</a></li>
+      <li><a href="forum.html">💬 열린마당</a></li>
+    </ul>
+    <div class="mobile-auth-area"></div>
+    <div class="lang-mobile"><a href="archive.html" class="active">한국어</a><a href="en/archive.html">English</a></div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="archive-hero">
+    <div class="container">
+      <p class="breadcrumb" style="margin-bottom: 1rem;"><a href="index.html" style="color: rgba(255,255,255,0.7);">홈</a> &nbsp;/&nbsp; <span style="color: white;">자료실</span></p>
+      <h2>📂 자료 아카이브</h2>
+      <p>한국 사상과 성경 비교 연구를 위한 체계적인 자료 모음입니다.</p>
+      <div class="stats-bar">
+        <div class="stat-item"><span class="stat-num">120+</span><span class="stat-label">텍스트 자료</span></div>
+        <div class="stat-item"><span class="stat-num">40+</span><span class="stat-label">개념 항목</span></div>
+        <div class="stat-item"><span class="stat-num">80+</span><span class="stat-label">비교 링크</span></div>
+        <div class="stat-item"><span class="stat-num">60+</span><span class="stat-label">연구 노트</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Cards -->
+  <section class="page-content">
+    <div class="container">
+      <div class="categories-grid">
+        <div class="cat-card">
+          <div class="cat-icon">📜</div>
+          <h3>성경 본문 아카이브</h3>
+          <p>구약·신약 주요 본문과 한글/영문 번역본을 체계적으로 정리했습니다. 비교 연구에 필요한 핵심 구절을 빠르게 찾아보세요.</p>
+          <span class="cat-count">📄 수록 예정</span>
+        </div>
+        <div class="cat-card">
+          <div class="cat-icon">📚</div>
+          <h3>한국 고전 및 한문 원문</h3>
+          <p>삼일신고, 단군신화, 화랑세기 등 한국 고대 경전과 주요 문헌의 원문 및 현대어 번역을 제공합니다.</p>
+          <span class="cat-count">📄 수록 예정</span>
+        </div>
+        <div class="cat-card">
+          <div class="cat-icon">🔗</div>
+          <h3>개념 사전과 비교 링크</h3>
+          <p>홍익인간↔은혜, 천손↔Imago Dei 등 핵심 개념 쌍의 비교 분석과 상호 참조 링크를 모았습니다.</p>
+          <span class="cat-count">📄 수록 예정</span>
+        </div>
+        <div class="cat-card">
+          <div class="cat-icon">🗺️</div>
+          <h3>연표/지도/도판</h3>
+          <p>한국 성경 수용사 연표, 고대 근동 지도, 유적지 사진 등 시각 자료를 제공합니다.</p>
+          <span class="cat-count">📄 수록 예정</span>
+        </div>
+        <div class="cat-card">
+          <div class="cat-icon">📖</div>
+          <h3>논문 및 연구 서지</h3>
+          <p>정중호 교수의 55편 이상 학술 논문과 관련 연구 문헌의 서지 정보를 정리했습니다.</p>
+          <span class="cat-count"><a href="publications.html" style="color: var(--accent); text-decoration: none;">책과 논문 페이지 →</a></span>
+        </div>
+        <div class="cat-card">
+          <div class="cat-icon">📋</div>
+          <h3>연구 노트와 세미나 자료</h3>
+          <p>비교읽기 노트, 연구 메모, 세미나 발표 자료 등 실제 연구 과정에서 생산된 자료를 공유합니다.</p>
+          <span class="cat-count">📄 수록 예정</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Archive Structure -->
+  <section class="archive-structure">
+    <div class="container">
+      <h2 style="text-align: center; font-family: var(--font-heading); font-size: 1.8rem; color: var(--primary); margin-bottom: 0.5rem;">아카이브 구조</h2>
+      <p style="text-align: center; color: var(--text-light); font-size: 0.95rem;">체계적으로 분류된 자료를 탐색하세요</p>
+      <div class="structure-grid">
+        <div class="structure-list">
+          <h4>📁 수록 자료</h4>
+          <ul>
+            <li>성경 본문 (구약/신약 주요 텍스트)</li>
+            <li>한국 고전 원문 (삼일신고, 단군신화 등)</li>
+            <li>개념 비교 사전 (40+ 항목)</li>
+            <li>비교읽기 자료 (본문 병렬 배치)</li>
+            <li>연구 논문 서지 (55+ 편)</li>
+            <li>세미나 발표 자료</li>
+            <li>연표·지도·도판 자료</li>
+          </ul>
+        </div>
+        <div>
+          <div class="explore-box">
+            <h4>🔍 자료 탐색 방법</h4>
+            <div class="explore-tags">
+              <a href="research-themes.html">연구 주제별</a>
+              <a href="korean-thought.html">한국사상</a>
+              <a href="world-thought.html">세계사상</a>
+              <a href="publications.html">논문·저서</a>
+              <a href="forum.html#seminar">세미나</a>
+              <a href="ai-assistant.html">AI 도우미</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Placeholder -->
+  <section class="page-content">
+    <div class="container">
+      <div class="search-placeholder">
+        <h3>🔎 자료 검색 (Coming Soon)</h3>
+        <p>키워드로 아카이브 전체를 검색하는 기능이 곧 제공됩니다.</p>
+        <div class="fake-search">
+          <input type="text" placeholder="검색어를 입력하세요..." disabled>
+          <button disabled>검색</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand"><h3>✝ 정중호 교수의 성경 사랑방</h3><p>한국과 세계의 사상 속에서 성경을 연구하는 학문의 공간.</p></div>
+        <div class="footer-links"><h4>연구 분야</h4><ul><li><a href="korean-thought.html">한국사상과 성경</a></li><li><a href="world-thought.html">세계사상과 성경</a></li><li><a href="publications.html">책과 논문</a></li><li><a href="research-themes.html">연구 주제</a></li><li><a href="ai-assistant.html">AI 도우미</a></li><li><a href="archive.html">자료실</a></li></ul></div>
+        <div class="footer-links"><h4>열린마당</h4><ul><li><a href="forum.html#notices">공지사항</a></li><li><a href="forum.html#board">게시판</a></li><li><a href="forum.html#media">이미지 & 동영상</a></li><li><a href="forum.html#seminar">세미나</a></li><li><a href="forum.html#participation">참여 안내</a></li></ul></div>
+        <div class="footer-links"><h4>참고 사이트</h4><ul class="footer-contact"><li><span class="icon">🔗</span><span><a href="http://bibleglocal.org" target="_blank">bibleglocal.org</a></span></li><li><span class="icon">📧</span><span>bibleglocal@gmail.com</span></li></ul></div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2025 정중호 교수의 성경 사랑방 — Bible Glocal. All rights reserved.</p></div>
+    </div>
+  </footer>
+  <button class="scroll-top" aria-label="맨 위로">↑</button>
+    <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/social.js"></script>
+</body>
+</html>

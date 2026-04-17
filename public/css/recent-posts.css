@@ -1,184 +1,177 @@
-/* Recent Posts Section Styles */
-.recent-posts-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+/* Recent Posts Styles - Dynamic Board Content Display */
+
+/* Recent Posts Container */
+.recent-posts-container {
+  margin-top: 1rem;
 }
 
-.recent-posts-header i {
-    font-size: 1.5rem;
-}
-
-.recent-posts-header h3 {
-    color: #ffd700;
-    font-size: 1.2rem;
-    margin: 0;
-}
-
-.recent-posts-list {
-    min-height: 200px;
-}
-
+/* Recent Post Item */
 .recent-post-item {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-}
-
-.recent-post-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    padding-left: 0.5rem;
-    border-radius: 0.5rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+  transition: background-color 0.2s ease;
 }
 
 .recent-post-item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
-.recent-post-title {
-    color: rgba(255, 255, 255, 0.95);
-    font-size: 0.95rem;
-    margin-bottom: 0.25rem;
-    cursor: pointer;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+.recent-post-item:hover {
+  background-color: var(--bg-light);
 }
 
-.recent-post-title:hover {
-    color: #ffd700;
+/* Post Link */
+.post-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-main);
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  transition: color 0.2s ease;
 }
 
-.recent-post-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+.post-link:hover {
+  color: var(--primary);
 }
 
-.recent-post-author {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+/* Post Media Icon */
+.post-media-icon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
 }
 
-.recent-post-date {
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.4);
+/* Post Title */
+.post-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.recent-media-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    min-height: 150px;
+/* Post Meta */
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
 }
 
-.recent-media-item {
-    aspect-ratio: 16/9;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 0.5rem;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.3s ease;
+.post-date {
+  color: var(--accent-muted);
 }
 
-.recent-media-item:hover {
-    transform: scale(1.05);
+.post-author {
+  color: var(--text-muted);
 }
 
-.recent-media-item img,
-.recent-media-item video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+/* Post Excerpt */
+.post-excerpt {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-.recent-media-item .media-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 2rem;
-}
-
-.view-all-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #ffd700;
-    text-decoration: none;
-    font-size: 0.9rem;
-    margin-top: 1rem;
-    transition: opacity 0.3s;
-}
-
-.view-all-link:hover {
-    opacity: 0.8;
-}
-
+/* No Posts Message */
 .no-posts {
-    color: rgba(255, 255, 255, 0.4);
-    text-align: center;
-    padding: 2rem 0;
-    font-size: 0.9rem;
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
 }
 
-.loading-spinner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 150px;
-    color: rgba(255, 215, 0, 0.7);
-    font-size: 0.9rem;
+.no-posts p {
+  margin: 0;
 }
 
-.loading-spinner::after {
-    content: '';
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(255, 215, 0, 0.3);
-    border-top-color: #ffd700;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin-left: 0.5rem;
+/* Loading State */
+.posts-loading {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
+.posts-loading::after {
+  content: '...';
+  animation: dots 1.5s steps(4, end) infinite;
 }
 
-/* Pinned post indicator */
-.pinned-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    color: #ffd700;
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
+@keyframes dots {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
 }
 
-.pinned-indicator i {
-    font-size: 0.7rem;
+/* Pinned Post Indicator */
+.post-pinned {
+  position: relative;
+  padding-left: 0.5rem;
 }
 
-/* Responsive adjustments */
+.post-pinned::before {
+  content: '📌';
+  position: absolute;
+  left: 0;
+  font-size: 0.75rem;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-    .recent-posts-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .recent-posts-card {
-        grid-column: span 1 !important;
-    }
+  .recent-post-item {
+    padding: 0.5rem;
+  }
+  
+  .post-link {
+    font-size: 0.85rem;
+  }
+  
+  .post-meta {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .post-excerpt {
+    display: none;
+  }
 }
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .recent-post-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Animation for New Posts */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recent-post-item {
+  animation: fadeInUp 0.3s ease;
+}
+
+/* Stagger animation for list items */
+.recent-post-item:nth-child(1) { animation-delay: 0.1s; }
+.recent-post-item:nth-child(2) { animation-delay: 0.2s; }
+.recent-post-item:nth-child(3) { animation-delay: 0.3s; }
+.recent-post-item:nth-child(4) { animation-delay: 0.4s; }
+.recent-post-item:nth-child(5) { animation-delay: 0.5s; }
