@@ -17,3 +17,39 @@ const BG_CONFIG = (() => {
     }
   };
 })();
+
+// ============================================
+// UNIVERSAL PRELOADER DISMISSAL
+// Ensures no page gets stuck on the loading screen
+// regardless of which scripts load or fail
+// ============================================
+(function() {
+  function hidePreloader() {
+    const p = document.getElementById('preloader');
+    if (p) {
+      p.classList.add('hidden');
+      p.style.opacity = '0';
+      p.style.visibility = 'hidden';
+      p.style.pointerEvents = 'none';
+      // Remove from DOM after transition
+      setTimeout(function() {
+        if (p && p.parentNode) p.parentNode.removeChild(p);
+      }, 700);
+    }
+  }
+
+  // Attempt dismissal at multiple lifecycle points
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', hidePreloader);
+  } else {
+    hidePreloader();
+  }
+  window.addEventListener('load', hidePreloader);
+  // Hard fallback — dismiss after 2s no matter what
+  setTimeout(hidePreloader, 2000);
+  // Even harder fallback — 5s absolute safety net
+  setTimeout(hidePreloader, 5000);
+
+  // Expose globally so other scripts can call it
+  window.BG_hidePreloader = hidePreloader;
+})();

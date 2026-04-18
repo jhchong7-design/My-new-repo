@@ -11,12 +11,30 @@ let recentPosts = {};
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
+    // Dismiss preloader immediately (guard against infinite loading)
+    hidePreloader();
+
     loadRecentPosts();
     checkAuthStatus();
     initializeMobileMenu();
     initializeSearch();
     initializeScrollEffects();
 });
+
+// Belt-and-suspenders: also dismiss on window load and hard fallback
+window.addEventListener('load', hidePreloader);
+setTimeout(hidePreloader, 3000); // Hard fallback after 3s no matter what
+
+function hidePreloader() {
+    const p = document.getElementById('preloader');
+    if (p) {
+        p.classList.add('hidden');
+        // Remove from DOM after transition completes to prevent any blocking
+        setTimeout(() => {
+            if (p && p.parentNode) p.parentNode.removeChild(p);
+        }, 700);
+    }
+}
 
 /**
  * Load recent posts from API

@@ -234,10 +234,46 @@
     let allUsers = [];
 
     document.addEventListener('DOMContentLoaded', async () => {
-      await BG_AUTH.init();
+      // Handle static deployment (no backend) — show informative message instead of redirect
+      if (typeof BG_CONFIG !== 'undefined' && BG_CONFIG.isStaticDeploy) {
+        const main = document.querySelector('.admin-dashboard .container') || document.body;
+        main.innerHTML = `
+          <div style="max-width: 720px; margin: 80px auto; padding: 48px 32px; background: white; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); text-align: center; font-family: 'Noto Sans KR', sans-serif;">
+            <div style="font-size: 64px; margin-bottom: 16px;">🔒</div>
+            <h2 style="color: #8b2635; margin-bottom: 16px; font-size: 28px;">관리자 대시보드</h2>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 24px;">
+              이 페이지는 <strong>정적 미리보기 사이트</strong>입니다.<br>
+              관리자 대시보드 기능은 Node.js 서버가 실행 중일 때만 사용 가능합니다.
+            </p>
+            <div style="background: #f8f4ed; padding: 20px; border-radius: 8px; margin: 24px 0; text-align: left;">
+              <h3 style="color: #8b2635; margin-bottom: 12px; font-size: 18px;">🚀 로컬 서버 실행 방법</h3>
+              <pre style="background: #2d2d2d; color: #f8f4ed; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 14px;"><code>cd website
+npm install
+node server.js</code></pre>
+              <p style="color: #666; margin-top: 12px; font-size: 14px;">
+                서버 실행 후 <strong>http://localhost:3000/admin.html</strong>에서 접속하세요.
+              </p>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 32px;">
+              <a href="index.html" style="padding: 12px 24px; background: #8b2635; color: white; text-decoration: none; border-radius: 6px; font-weight: 500;">🏠 홈으로</a>
+              <a href="https://github.com/jhchong7-design/My-new-repo/tree/bibleglocal-production" style="padding: 12px 24px; background: #444; color: white; text-decoration: none; border-radius: 6px; font-weight: 500;" target="_blank">📦 GitHub 소스</a>
+            </div>
+            <p style="color: #888; margin-top: 24px; font-size: 13px;">
+              관리자 계정: <code>st805@naver.com</code>
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      // Dynamic deployment (with backend) — normal admin flow
+      try {
+        await BG_AUTH.init();
+      } catch(e) { console.error('Auth init error:', e); }
+
       if (!BG_AUTH.user || BG_AUTH.user.role !== 'admin') {
-        alert('관리자 권한이 필요합니다.');
-        window.location.href = 'index.html';
+        alert('관리자 권한이 필요합니다.\n\n관리자 계정으로 로그인해 주세요.');
+        window.location.href = 'login.html?redirect=admin.html';
         return;
       }
       loadStats();
