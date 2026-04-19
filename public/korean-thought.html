@@ -44,14 +44,35 @@
     <div class="container">
       <div class="header-inner">
         <a href="index.html" class="logo"><div class="logo-icon">BG</div><div class="logo-text"><h1>성경 사랑방</h1><span>Bible Glocal</span></div></a>
-        <nav class="main-nav">
+                <nav class="main-nav">
           <ul>
             <li><a href="index.html">홈</a></li>
             <li><a href="about.html">운영자소개</a></li>
-            <li><a href="korean-thought.html" class="active">한국사상과 성경</a></li>
-            <li><a href="world-thought.html">세계사상과 성경</a></li>
-            <li><a href="publications.html">책과 논문</a></li>
-            <li><a href="forum.html">열린마당</a></li>
+            <li class="has-dropdown">
+              <a href="forum.html" class="active">열린마당</a>
+              <ul class="dropdown">
+                <li>
+                  <a href="korean-thought.html" class="has-children">한국사상과 성경</a>
+                  <ul class="dropdown">
+                    <li><a href="korean-thought.html#history">한국 성경 수용사</a></li>
+                    <li><a href="korean-thought.html#interpretation">한국적 성경 해석</a></li>
+                    <li><a href="korean-thought.html#culture">한국문화와 성경</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="world-thought.html" class="has-children">세계사상과 성경</a>
+                  <ul class="dropdown">
+                    <li><a href="world-thought.html#ancient">고대 근동과 성경</a></li>
+                    <li><a href="world-thought.html#modern">현대사상과 성경</a></li>
+                    <li><a href="world-thought.html#comparative">비교 연구</a></li>
+                  </ul>
+                </li>
+                <li><a href="publications.html">책과 논문</a></li>
+                <li><a href="forum.html#notices">공지사항</a></li>
+                <li><a href="forum.html#board">게시판</a></li>
+                <li><a href="forum.html#media">이미지 & 동영상</a></li>
+              </ul>
+            </li>
           </ul>
         </nav>
         <div class="auth-area"></div>
@@ -62,18 +83,46 @@
   </header>
 
   <div class="mobile-nav-overlay"></div>
-  <nav class="mobile-nav">
-    <div class="mobile-nav-header"><h3>성경 사랑방</h3><p>Bible Glocal</p></div>
+    <nav class="mobile-nav">
+    <div class="mobile-nav-header">
+      <h3>성경 사랑방</h3>
+      <p>Bible Glocal — bibleglocal.org</p>
+    </div>
     <ul>
       <li><a href="index.html">🏠 홈</a></li>
       <li><a href="about.html">👤 운영자소개</a></li>
-      <li><a href="korean-thought.html">🇰🇷 한국사상과 성경</a></li>
-      <li><a href="world-thought.html">🌍 세계사상과 성경</a></li>
-      <li><a href="publications.html">📚 책과 논문</a></li>
-      <li><a href="forum.html">💬 열린마당</a></li>
+      <li class="has-submenu">
+        <a href="forum.html">💬 열린마당 ▾</a>
+        <ul class="sub-menu">
+          <li class="has-submenu">
+            <a href="korean-thought.html">🇰🇷 한국사상과 성경 ▾</a>
+            <ul class="sub-menu">
+              <li><a href="korean-thought.html#history">한국 성경 수용사</a></li>
+              <li><a href="korean-thought.html#interpretation">한국적 성경 해석</a></li>
+              <li><a href="korean-thought.html#culture">한국문화와 성경</a></li>
+            </ul>
+          </li>
+          <li class="has-submenu">
+            <a href="world-thought.html">🌍 세계사상과 성경 ▾</a>
+            <ul class="sub-menu">
+              <li><a href="world-thought.html#ancient">고대 근동과 성경</a></li>
+              <li><a href="world-thought.html#modern">현대사상과 성경</a></li>
+              <li><a href="world-thought.html#comparative">비교 연구</a></li>
+            </ul>
+          </li>
+          <li><a href="publications.html">📚 책과 논문</a></li>
+          <li><a href="forum.html#notices">📢 공지사항</a></li>
+          <li><a href="forum.html#board">📋 게시판</a></li>
+          <li><a href="forum.html#media">🎬 이미지 & 동영상</a></li>
+        </ul>
+      </li>
+      <li><a href="login.html">🔐 로그인 / 회원가입</a></li>
     </ul>
     <div class="mobile-auth-area"></div>
-    <div class="lang-mobile"><a href="korean-thought.html" class="active">한국어</a><a href="en/korean-thought.html">English</a></div>
+    <div class="lang-mobile">
+      <a href="index.html" class="active">한국어</a>
+      <a href="en/index.html">English</a>
+    </div>
   </nav>
 
   <!-- Page Hero -->

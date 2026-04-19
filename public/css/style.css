@@ -386,6 +386,46 @@ header {
   padding-left: 22px;
 }
 
+/* Nested dropdown (submenu within dropdown) */
+.main-nav .dropdown li {
+  position: relative;
+}
+
+.main-nav .dropdown .dropdown {
+  top: 0;
+  left: 100%;
+  margin-left: 2px;
+  transform: translateX(8px);
+}
+
+.main-nav .dropdown li:hover > .dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.main-nav .dropdown > li > a.has-children::after {
+  content: " ›";
+  float: right;
+  color: var(--accent-dark);
+  font-weight: bold;
+}
+
+/* Mobile nav: nested sub-submenu inside sub-menu */
+.mobile-nav .sub-menu .sub-menu {
+  background: rgba(196,151,59,0.05);
+}
+
+.mobile-nav .sub-menu .sub-menu a {
+  padding-left: 60px;
+  font-size: 0.8rem;
+  color: var(--text-medium);
+}
+
+.mobile-nav .sub-menu .sub-menu a:hover {
+  padding-left: 66px;
+}
+
 /* Mobile Menu Toggle */
 .menu-toggle {
   display: flex;

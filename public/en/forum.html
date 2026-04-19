@@ -33,22 +33,83 @@
 
   <header><div class="container"><div class="header-inner">
     <a href="index.html" class="logo"><div class="logo-icon">BG</div><div class="logo-text"><h1>Bible Study Room</h1><span>Bible Glocal</span></div></a>
-    <nav class="main-nav"><ul>
-      <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li>
-      <li><a href="korean-thought.html">Korean Thought & Bible</a></li><li><a href="world-thought.html">World Thought & Bible</a></li>
-      <li><a href="publications.html">Publications</a></li><li><a href="forum.html" class="active">Open Forum</a></li>
-    </ul></nav>
+            <nav class="main-nav">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li class="has-dropdown">
+              <a href="forum.html" class="active">Open Forum</a>
+              <ul class="dropdown">
+                <li>
+                  <a href="korean-thought.html" class="has-children">Korean Thought & Bible</a>
+                  <ul class="dropdown">
+                    <li><a href="korean-thought.html#history">History of Reception</a></li>
+                    <li><a href="korean-thought.html#interpretation">Korean Interpretation</a></li>
+                    <li><a href="korean-thought.html#culture">Culture & Bible</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="world-thought.html" class="has-children">World Thought & Bible</a>
+                  <ul class="dropdown">
+                    <li><a href="world-thought.html#ancient">Ancient Near East</a></li>
+                    <li><a href="world-thought.html#modern">Modern Thought</a></li>
+                    <li><a href="world-thought.html#comparative">Comparative Studies</a></li>
+                  </ul>
+                </li>
+                <li><a href="publications.html">Publications</a></li>
+                <li><a href="forum.html#notices">Notices</a></li>
+                <li><a href="forum.html#board">Discussion Board</a></li>
+                <li><a href="forum.html#media">Images & Videos</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
     <div class="auth-area"></div>
 
         <button class="menu-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
   </div></div></header>
 
   <div class="mobile-nav-overlay"></div>
-  <nav class="mobile-nav">
-    <div class="mobile-nav-header"><h3>Bible Study Room</h3><p>Bible Glocal</p></div>
-    <ul><li><a href="index.html">🏠 Home</a></li><li><a href="about.html">👤 About</a></li><li><a href="korean-thought.html">🇰🇷 Korean Thought & Bible</a></li><li><a href="world-thought.html">🌍 World Thought & Bible</a></li><li><a href="publications.html">📚 Publications</a></li><li><a href="forum.html">💬 Open Forum</a></li></ul>
+    <nav class="mobile-nav">
+    <div class="mobile-nav-header">
+      <h3>Bible Glocal</h3>
+      <p>Professor Jung Joong-Ho — bibleglocal.org</p>
+    </div>
+    <ul>
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="about.html">👤 About</a></li>
+      <li class="has-submenu">
+        <a href="forum.html">💬 Open Forum ▾</a>
+        <ul class="sub-menu">
+          <li class="has-submenu">
+            <a href="korean-thought.html">🇰🇷 Korean Thought & Bible ▾</a>
+            <ul class="sub-menu">
+              <li><a href="korean-thought.html#history">History of Reception</a></li>
+              <li><a href="korean-thought.html#interpretation">Korean Interpretation</a></li>
+              <li><a href="korean-thought.html#culture">Culture & Bible</a></li>
+            </ul>
+          </li>
+          <li class="has-submenu">
+            <a href="world-thought.html">🌍 World Thought & Bible ▾</a>
+            <ul class="sub-menu">
+              <li><a href="world-thought.html#ancient">Ancient Near East</a></li>
+              <li><a href="world-thought.html#modern">Modern Thought</a></li>
+              <li><a href="world-thought.html#comparative">Comparative Studies</a></li>
+            </ul>
+          </li>
+          <li><a href="publications.html">📚 Publications</a></li>
+          <li><a href="forum.html#notices">📢 Notices</a></li>
+          <li><a href="forum.html#board">📋 Discussion Board</a></li>
+          <li><a href="forum.html#media">🎬 Images & Videos</a></li>
+        </ul>
+      </li>
+      <li><a href="../login.html">🔐 Login / Register</a></li>
+    </ul>
     <div class="mobile-auth-area"></div>
-    <div class="lang-mobile"><a href="../forum.html">한국어</a><a href="forum.html" class="active">English</a></div>
+    <div class="lang-mobile">
+      <a href="../index.html">한국어</a>
+      <a href="index.html" class="active">English</a>
+    </div>
   </nav>
 
   <section class="page-hero"><div class="container"><h2>Open Forum</h2><p class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Open Forum</p></div></section>
